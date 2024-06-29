@@ -1,0 +1,43 @@
+.topnav{
+    background-color: #f1f0f0;
+    color: #6a6969;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.topnav ul{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.topnav a{
+    text-decoration: none;
+    height: 100%;
+    display: flex;
+    padding: 0.75rem;
+    color: #616161;
+}
+
+.topnav li a:hover{
+    color: black;
+}
+
+.topnav li.active{
+    background-color: #fff;
+}
+
+@media (max-width: 10px) {
+    .topnav {
+      display: none;
+    }
+}
+
+
+.logo{
+    width: 200px;
+}
