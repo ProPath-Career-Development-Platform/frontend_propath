@@ -1,7 +1,7 @@
 .job-search {
     position: relative;
     width: 100%;
-    background: #b0b0d9;
+    background: #9a80d4;
 }
 
 .job-search:before,
@@ -12,7 +12,7 @@
   height: 40px;
   width: 120px;
   border-top-left-radius: 50%;
-  box-shadow: -60px 0px 0 0 #b0b0d9;
+  box-shadow: -60px 0px 0 0 #9a80d4;
 }
 
 .job-search:before {
