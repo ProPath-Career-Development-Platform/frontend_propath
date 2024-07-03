@@ -1,21 +1,10 @@
+import React from 'react';
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
-import Home from "../pages/home/Home";
+import Home from "../pages/Home";
 
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
-
-//jobprovider
-import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
-
-import JpHome from "../pages/jobprovider/dashboard/Home";
-import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
-import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
-import JpMyJobs from "../pages/jobprovider/dashboard/MyJob";
-import JpApplications from "../pages/jobprovider/dashboard/Applications";
-import JpPlansAndBilling from "../pages/jobprovider/dashboard/PlanAndBilling";
-import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
-import JpSettings from "../pages/jobprovider/dashboard/Settings";
 
 //jobseeker
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
@@ -29,7 +18,7 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
-import Navbar1 from "../components/navbar/Navbar1";
+import TopNav from "../components/landingPage/navbar/TopNav";
 
 const router = createBrowserRouter([
   {
@@ -66,65 +55,13 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/Jobprovider",
-    element: <JPCompnaySetup1 />,
-    children: [
-      {
-        path: "Setup",
-        element: <JPCompnaySetup1 />,
-      },
-    ],
-  },
 
-  {
-    path: "/jobprovider",
-    element: <DashboardLayout user="jobprovider" />,
-    children: [
-      {
-        path: "/jobprovider",
-        element: <Navigate to="/jobprovider/home/" replace />,
-      },
-      {
-        path: "home",
-        element: <JpHome />,
-      },
-      {
-        path: "dashboard",
-        element: <JpDashboard />,
-      },
-      {
-        path: "post-a-job",
-        element: <JpPostAJob />,
-      },
-      {
-        path: "my-jobs",
-        element: <JpMyJobs />,
-      },
-      {
-        path: "my-jobs/applications",
-        element: <JpApplications />,
-      },
-      {
-        path: "plans-and-billing",
-        element: <JpPlansAndBilling />,
-      },
-      {
-        path: "meet-up",
-        element: <JpMeetUp />,
-      },
-      {
-        path: "settings",
-        element: <JpSettings />,
-      },
-    ],
-  },
 
   {
     path: "/Jobseeker",
     element: (
       <>
-        <Navbar1 />
+        <TopNav />
         <TopNavBar />
         <JobSeekerSetup />
       </>
@@ -141,7 +78,7 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        <Navbar1 />
+        <TopNav />
         <TopNavBar />
         <DashboardLayout user="jobseeker" />
       </>
