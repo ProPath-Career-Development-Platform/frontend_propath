@@ -1,3 +1,55 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.cv-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cv-upload-button {
+    background-color: #0071FF;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .cv-upload-button:hover {
+    background-color: #005DD1;
+  }
+  
+  .cv-file-display {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .cv-upload-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px dashed #0071FF;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    cursor: pointer;
+  }
+  
+  .cv-upload-prompt:hover {
+    background-color: #f0f7ff;
+  }
+  
+
+
+
+
+
