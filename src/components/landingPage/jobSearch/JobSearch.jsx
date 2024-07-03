@@ -4,7 +4,7 @@ import {Input, Button, Link, Select, SelectItem} from "@nextui-org/react";
 
 const JobSearch = () => {
   return (
-    <div className='job-search py-12 flex justify-center'>
+    <div className='job-search py-8 flex justify-center relative bg-purple2'>
       <div className="flex flex-row gap-1 w-7/12 justify-normal">
         <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-1 align-middle">
           <Input type="text" label="Job Title" size='sm' />
