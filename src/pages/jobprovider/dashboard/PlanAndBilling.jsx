@@ -22,6 +22,8 @@ import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import DownloadIcon from '@mui/icons-material/Download';
 
+import {Link as RouterLink} from 'react-router-dom';
+
 
 function PlanAndBilling() {
 
@@ -148,7 +150,13 @@ function PlanAndBilling() {
                                   
                                 }
                             })}>
-                              <Button variant="solid" size ="md">Change Plan </Button>
+                              <Button 
+                              variant="solid" 
+                              size ="md"
+                              component= {RouterLink}
+                              to = "/jobprovider/plan-and-billing/changePlan"
+                              >
+                               Change Plan </Button>
                               <Button variant="soft" size="md">Cancel Plan</Button>
 
                             </Box>

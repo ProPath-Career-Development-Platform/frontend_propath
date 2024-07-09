@@ -14,7 +14,9 @@ import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
 import JpMyJobs from "../pages/jobprovider/dashboard/MyJob";
 import JpApplications from "../pages/jobprovider/dashboard/Applications";
 import JpPlansAndBilling from "../pages/jobprovider/dashboard/PlanAndBilling";
-import JpMeetUp from "../pages/jobprovider/dashboard/CreateAnEvent";
+import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
+import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
+import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
 
 //jobseeker
@@ -113,8 +115,16 @@ const router = createBrowserRouter([
         element:<JpPlansAndBilling/>
       },
       {
+        path:"plan-and-billing/changePlan",
+        element:<JpChangePlan/>
+      },
+      {
         path:"meet-up",
         element:<JpMeetUp/>
+      },
+      {
+        path:"meet-up/createEvent",
+        element:<JpCreateEvent/>
       },
       {
         path:"settings",
