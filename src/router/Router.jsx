@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
-import Home from "../pages/home/Home";
+import Home from "../pages/Home";
 
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
@@ -14,8 +14,8 @@ import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
 import JpMyJobs from "../pages/jobprovider/dashboard/MyJob";
 import JpApplications from "../pages/jobprovider/dashboard/Applications";
 import JpPlansAndBilling from "../pages/jobprovider/dashboard/PlanAndBilling";
-import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
-import JpSettings from "../pages/jobprovider/dashboard/Settings";
+import JpMeetUp from "../pages/jobprovider/dashboard/CreateAnEvent";
+import JpSettings from "../pages/jobprovider/dashboard/Settings"
 
 //jobseeker
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
@@ -30,6 +30,7 @@ import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 import Navbar1 from "../components/navbar/Navbar1";
+
 
 const router = createBrowserRouter([
   {
@@ -66,58 +67,60 @@ const router = createBrowserRouter([
       },
     ],
   },
+
   {
-    path: "/Jobprovider",
-    element: <JPCompnaySetup1 />,
+    path: "/jobprovider",
+    element: <JPCompnaySetup1/>,
     children: [
       {
-        path: "Setup",
-        element: <JPCompnaySetup1 />,
-      },
-    ],
+        path:"Setup",
+        element:<JPCompnaySetup1/>
+      }
+    ]
   },
 
   {
     path: "/jobprovider",
-    element: <DashboardLayout user="jobprovider" />,
+    element: <DashboardLayout user="jobprovider"/>,
     children: [
       {
-        path: "/jobprovider",
-        element: <Navigate to="/jobprovider/home/" replace />,
+        path:"/jobprovider",
+        element: <Navigate to="/jobprovider/home/" replace />
       },
       {
-        path: "home",
-        element: <JpHome />,
+         path:"home",
+         element:<JpHome/>
+         
       },
       {
-        path: "dashboard",
-        element: <JpDashboard />,
+        path:"dashboard",
+        element:<JpDashboard/>
       },
       {
-        path: "post-a-job",
-        element: <JpPostAJob />,
+        path:"post-a-job",
+        element:<JpPostAJob/>
       },
       {
-        path: "my-jobs",
-        element: <JpMyJobs />,
+        path:"my-jobs",
+        element:<JpMyJobs/>
       },
       {
-        path: "my-jobs/applications",
-        element: <JpApplications />,
+        path:"my-jobs/applications",
+        element:<JpApplications/>
       },
       {
-        path: "plans-and-billing",
-        element: <JpPlansAndBilling />,
+        path:"plans-and-billing",
+        element:<JpPlansAndBilling/>
       },
       {
-        path: "meet-up",
-        element: <JpMeetUp />,
+        path:"meet-up",
+        element:<JpMeetUp/>
       },
       {
-        path: "settings",
-        element: <JpSettings />,
+        path:"settings",
+        element:<JpSettings/>
       },
-    ],
+    ]
   },
 
   {
@@ -170,6 +173,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+ 
 ]);
 
 export default router;
