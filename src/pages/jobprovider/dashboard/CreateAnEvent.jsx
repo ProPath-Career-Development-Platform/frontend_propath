@@ -36,8 +36,17 @@ import Autocomplete from '@mui/joy/Autocomplete';
 import CircularProgress from '@mui/joy/CircularProgress';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import Textarea from '@mui/joy/Textarea';
+import IconButton from '@mui/joy/IconButton';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import Tooltip from '@mui/joy/Tooltip';
+import Badge from '@mui/joy/Badge';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import UnpublishedIcon from '@mui/icons-material/Unpublished';
 
 function CreateAnEvent() {
+
+
 
   const VisuallyHiddenInput = styled('input')`
         clip: rect(0 0 0 0);
@@ -70,17 +79,129 @@ function CreateAnEvent() {
 
       }); // State for form data
 
-    const [step , setStep] = React.useState(0);
+      //errors
 
-    const handleNextStep = () => {
-        if(step === 2) return;
-        setStep(prevStep => prevStep + 1);
-    }
+      const [error, setError] = React.useState({});
+      const [step , setStep] = React.useState(0);
+      const[response, setResponse] = React.useState(
+        {
+        loading : false,
+        error : false,
+      }
+      );
 
-    const handleBackStep = () => {
-        if(step === 0) return;
-        setStep(prevStep => prevStep - 1);
-    }
+      const handleNextStep = () => {
+        if (step < 2) {
+
+          if (step === 0) {
+            const errors = validationStep1();
+            if (Object.keys(errors).length > 0) {
+              return;
+            }else{
+              setStep(prevStep => prevStep + 1);
+            
+            }
+          }else if(step === 1){
+            const errors = validationStep2();
+
+            if (Object.keys(errors).length > 0) {
+              return;
+            }else{
+              setStep(prevStep => prevStep + 1);
+            }
+
+          }
+
+           
+
+          
+        }
+      }
+
+      const handleBackStep = () => {
+        if (step > 0) {
+          setStep(prevStep => prevStep - 1);
+        }
+      }
+
+      //errors validation
+
+      const validationStep1 = () => {
+        const newErrors = {};
+
+        if (!formData.eventTitle) {
+          newErrors.eventTitle = 'Event Title is required';
+        }
+
+        if (!formData.eventDate) {
+          newErrors.eventDate = 'Event Date is required';
+        } else if (new Date(formData.eventDate) < new Date()) {
+          newErrors.eventDate = 'Event Date should be greater than today';
+        }
+
+        if (!formData.bannerImg) {
+          newErrors.bannerImg = 'Event Banner is required';
+        }
+
+        setError(newErrors);
+
+        return newErrors;
+
+      }
+
+      const validationStep2 = () => {
+
+        const newErrors = {};
+
+        if (!formData.startTime) {
+          newErrors.startTime = 'Start Time is required';
+        }
+
+        if (!formData.endTime) {
+          newErrors.endTime = 'End Time is required';
+        }
+
+        if (!formData.maxParticipant) {
+          newErrors.maxParticipant = 'Maximum Participant is required';
+        }else if (formData.maxParticipant < 1) {
+          newErrors.maxParticipant = 'Maximum Participant should be greater than 0';
+        }
+
+        if (!formData.closeDate) {
+          newErrors.closeDate = 'Registration Closing Date is required';
+        }
+
+        if (!formData.mapLocation) {
+          newErrors.mapLocation = 'Event Location is required';
+        }
+
+        setError(newErrors);
+
+        return newErrors;
+
+      }
+
+      const validationStep3 = () => {
+
+        const newErrors = {};
+
+        if (formData.keyWords.length < 1) {
+          newErrors.keyWords = 'Key Words is required';
+        }
+
+        if (!formData.eventDescription) {
+          newErrors.eventDescription = 'Event Description is required';
+        }
+
+        setError(newErrors);
+
+        return newErrors;
+      }
+        
+
+
+
+
 
 
     /* auto complete*/
@@ -100,9 +221,10 @@ function CreateAnEvent() {
           keySearching: true,
         }));
 
+        setOptions([]); // Clear the options before fetching new ones
 
         try {
-          if (input.length > 1) {
+          if (input.length > 0) {
             const response = await fetch(`https://api.datamuse.com/sug?s=${input}`);
 
            
@@ -113,9 +235,17 @@ function CreateAnEvent() {
               const formattedOptions = data.map(item => ({
                 word: capitalizeWords(item.word)
               }));
+
+              
+               
+           
+              formattedOptions.push({ word: capitalizeWords(input) });
+            
+              
+
               setOptions(formattedOptions);
             } else {
-              console.error('Unexpected data format:', data);
+              //console.error('Unexpected data format:', data);
               setOptions([]);
             }
           } else {
@@ -165,6 +295,14 @@ function CreateAnEvent() {
       const file = e.target.files[0];
       const inputTagName = e.target.name;
       //file type validation only accept (jpg,jpeg,png)
+
+      if(error.bannerImg){
+        setError((prevState) => {
+          const newErrors = { ...prevState };
+          delete newErrors.bannerImg;
+          return newErrors;
+        });
+      }
   
        // File type validation
        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
@@ -203,6 +341,38 @@ function CreateAnEvent() {
       reader.readAsDataURL(file);
     };
 
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+       
+          const errors = validationStep3();
+          if (Object.keys(errors).length > 0) {
+            return;
+          }else{
+
+            setResponse((prev) => ({
+              ...prev,
+              loading: true,
+            })
+            );
+
+
+            setStep(prevStep => prevStep + 1);
+            alert(JSON.stringify(formData));
+
+            //send data to server
+
+            
+
+           
+
+          }
+        
+
+
+    }
+
     const top100Films = [
       { label: 'The Shawshank Redemption', year: 1994 },
       { label: 'The Godfather', year: 1972 },
@@ -210,8 +380,19 @@ function CreateAnEvent() {
       { label: 'The Dark Knight', year: 2008 },
       { label: '12 Angry Men', year: 1957 },
       { label: "Schindler's List", year: 1993 },
-      { label: 'Pulp Fiction', year: 1994 }
-    ];
+      { label: 'Pulp Fiction', year: 1994 },
+    ]
+
+    const today = new Date();
+
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+   
 
     return (
         <Box
@@ -285,7 +466,9 @@ function CreateAnEvent() {
 
 
           
-
+            <form
+                 onSubmit={handleSubmit}
+            >    
                 <Card
                     sx={{
                         display: 'flex',
@@ -407,10 +590,17 @@ function CreateAnEvent() {
         orientation="vertical"
         active={step === 2}
         indicator={
-          <StepIndicator variant="outlined" color="primary">
-            <FactCheckIcon />
-          </StepIndicator>
-        }
+          step > 2 ? (
+              <StepIndicator variant="solid" color="primary">
+              <CheckRoundedIcon />
+              </StepIndicator>
+          ):(
+              <StepIndicator variant="outlined" color="primary">
+                  <EventIcon />
+              </StepIndicator>
+          )
+
+      }
       >
 
     <Box
@@ -440,9 +630,9 @@ function CreateAnEvent() {
 
     <Divider />
 
-                   
+       
                 <CardContent>
-
+            
                     {step === 0 && (
 
                       <>
@@ -456,26 +646,85 @@ function CreateAnEvent() {
                       }}
                     >
 
-                        <FormControl  sx={{ mt: 2 }}>
+                        <FormControl  sx={{ mt: 2 }} error={Boolean(error.eventTitle)}>
                             <FormLabel htmlFor="event-title">Event Title</FormLabel>
-                            <Input name="eventTitle" placeholder="Enter Event Title"  value={formData.eventTitle}   onChange={(event) => setFormData({...formData,eventTitle: event.target.value})} />
+                            <Input 
+                                  name="eventTitle" 
+                                  placeholder="Enter Event Title"  
+                                  value={formData.eventTitle}   
+                                  onChange={
+                                              (event) => {
+
+                                                if (error.eventTitle) {
+                                                  setError((prevState) => {
+                                                    const newErrors = { ...prevState };
+                                                    delete newErrors.eventTitle;
+                                                    return newErrors;
+                                                  });
+                                                }
+
+                                              
+                                                setFormData({...formData,eventTitle: event.target.value})
+                                               }
+                                            } 
+                            />
+
+                            {error.eventTitle && (
+                              <FormHelperText>
+                                <InfoOutlined/> {error.eventTitle}
+                              </FormHelperText>
+                            )}
                         </FormControl>
 
-                        <FormControl  sx={{ mt: 2 }}>
+                        <FormControl  sx={{ mt: 2 }} error={Boolean(error.eventDate)}>
                             <FormLabel htmlFor="event-title">Event Date</FormLabel>
-                            <Input name="eventDate" type='date' placeholder="Select Event Date" value={formData.eventDate} onChange={(event) => setFormData({...formData,eventDate: event.target.value})} />
+                            <Input 
+                                  name="eventDate" 
+                                  type='date' 
+                                  placeholder="Select Event Date" 
+                                  value={formData.eventDate} 
+                                  slotProps={{
+                                    input:{
+                                      min:formatDate(today)
+                                    }
+                                  }}
+                                  onChange={
+                                    
+                                              (event) => { 
+                                                
+                                                if (error.eventDate) {
+                                                  setError((prevState) => {
+                                                    const newErrors = { ...prevState };
+                                                    delete newErrors.eventDate;
+                                                    return newErrors;
+                                                  });
+                                                }
+
+
+                                                setFormData({...formData,eventDate: event.target.value})
+                                              }
+                                           } 
+                                  />
+
+                            {error.eventDate && (
+                              <FormHelperText>
+                                <InfoOutlined/> {error.eventDate}
+                              </FormHelperText>
+                            )}
                         </FormControl>
 
                       </Box>
 
                         <Typography level="title-md">Event Banner</Typography>
 
-                        <AspectRatio  ratio="21/9" objectFit='fit' sx={{ width: '100%', my: 2, bgcolor: 'background.level2', borderRadius: 'md', maxHeight:'auto' }}>
+                        <AspectRatio color={error.bannerImg ? 'danger' : 'neutral'} variant='outlined'  ratio="21/9" objectFit='fill'  sx={{  bgcolor: 'background.level1', borderRadius: 'md', position:'relative'  }}>
+
+                          <div>
 
                          {!formData.bannerImg ? (
 
 
-                          <Box sx={{ display: 'flex', flexDirection:'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                          <Box sx={{ display: 'flex', flexDirection:'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%',  }}>
 
                             <Box component="label" sx={{cursor:'pointer'}}>
                               <InsertPhotoOutlinedIcon sx={{fontSize:100}} />
@@ -488,11 +737,46 @@ function CreateAnEvent() {
                          ):
 
                          (
+
+                          <>
                           <img src={formData.bannerImg}  loading="lazy" alt="Event Banner"   />
+
+                          <IconButton
+                            component="label"
+                            size="sm"
+                            variant="outlined"
+                            color="neutral"
+                            sx={{
+                              position: 'absolute',
+                              bgcolor: 'background.body',
+                              zIndex: 2,
+                              borderRadius: '50%',
+                              right: '1rem',
+
+                              top: 0,
+                              transform: 'translateY(50%)',
+                            }}
+                          >
+                            <Tooltip title="Change Banner"  placement='right'>
+
+                             
+                                  <Badge>
+                                  <EditRoundedIcon />
+                                  </Badge>
+                             
+                              
+                             
+                              
+                            </Tooltip>
+
+                            <VisuallyHiddenInput name="bannerImg" type="file" onChange={imgInputHandle} />
+                            </IconButton>
+
+                          </>
                          )
                          }
 
-
+                          </div>
                             
 
                         </AspectRatio>
@@ -514,29 +798,131 @@ function CreateAnEvent() {
                       }}
                     >
 
-                        <FormControl  sx={{ mt: 2 }}>
+                        <FormControl  sx={{ mt: 2 }} error={Boolean(error.startTime)}>
                             <FormLabel >Start TIme</FormLabel>
-                            <Input name="startTime" type='time' placeholder="Select Start Time"  value={formData.startTime}   onChange={(event) => setFormData({...formData,startTime: event.target.value})} />
+                            <Input 
+                                  name="startTime" 
+                                  type='time' 
+                                  placeholder="Select Start Time"  
+                                  value={formData.startTime}   
+                                  onChange={(event) => {
+
+                                        if (error.startTime) {
+                                          setError((prevState) => {
+                                            const newErrors = { ...prevState };
+                                            delete newErrors.startTime;
+                                            return newErrors;
+                                          }
+                                          );
+                                        }
+                                    
+                                            setFormData({...formData,startTime: event.target.value})
+                                            }
+                                            }
+                                             />
+
+                            {error.startTime && (
+                              <FormHelperText>
+                                <InfoOutlined/> {error.startTime}
+                              </FormHelperText>
+                            )}
                         </FormControl>
 
-                        <FormControl  sx={{ mt: 2 }}>
+                        <FormControl  sx={{ mt: 2 }} error={Boolean(error.endTime)}>
                             <FormLabel >End Time</FormLabel>
-                            <Input name="endTime" type='time' placeholder="Select End Time" value={formData.endTime} onChange={(event) => setFormData({...formData,endTime: event.target.value})} />
+                            <Input 
+                                  name="endTime" 
+                                  type='time' 
+                                  placeholder="Select End Time" 
+                                  value={formData.endTime} 
+                                  onChange={(event) => {
+
+                                        if (error.endTime) {
+                                          setError((prevState) => {
+                                            const newErrors = { ...prevState };
+                                            delete newErrors.endTime;
+                                            return newErrors;
+                                          }
+                                          );
+                                        }
+
+                                              setFormData({...formData,endTime: event.target.value})
+                                            }
+                                            } 
+                            />
+
+                            {error.endTime && (
+                              <FormHelperText>
+                                <InfoOutlined/> {error.endTime}
+                              </FormHelperText>
+                            )}
                         </FormControl>
 
-                        <FormControl  sx={{ mt: 2 }}>
+                        <FormControl  sx={{ mt: 2 }} error={Boolean(error.maxParticipant)}>
                             <FormLabel >Maximum Number of Participants</FormLabel>
-                            <Input name="maxParticipant" placeholder="Enter Maximum Participant"  value={formData.maxParticipant}   onChange={(event) => setFormData({...formData,maxParticipant: event.target.value})} />
+                            <Input 
+                                  type='number' 
+                                  name="maxParticipant" 
+                                  placeholder="Enter Maximum Participant"  
+                                  value={formData.maxParticipant}   
+                                  onChange={(event) => {
+
+                                    if (error.maxParticipant) {
+                                      setError((prevState) => {
+                                        const newErrors = { ...prevState };
+                                        delete newErrors.maxParticipant;
+                                        return newErrors;
+                                      });
+                                    }
+
+                                    
+                                    setFormData({...formData,maxParticipant: event.target.value})
+                                    
+                                    }} />
+
+                            {error.maxParticipant && (
+                              <FormHelperText>
+                                <InfoOutlined/> {error.maxParticipant}
+                              </FormHelperText>
+                            )}
                         </FormControl>
 
-                        <FormControl  sx={{ mt: 2 }}>
+                        <FormControl  sx={{ mt: 2 }} error={Boolean(error.closeDate)}>
                             <FormLabel>Registration Closing Date</FormLabel>
-                            <Input name="closeDate" type='date' placeholder="Select a Close Date" value={formData.closeDate} onChange={(event) => setFormData({...formData,closeDate: event.target.value})} />
+                            <Input 
+                              name="closeDate" 
+                              type='date' 
+                              placeholder="Select a Close Date" 
+                              value={formData.closeDate} 
+                              onChange={(event) => {
+
+                                if (error.closeDate) {
+                                  setError((prevState) => {
+                                    const newErrors = { ...prevState };
+                                    delete newErrors.closeDate;
+                                    return newErrors;
+                                  });
+                                }
+                                
+                                setFormData({...formData,closeDate: event.target.value})
+                              }}
+                              slotProps={{
+                                input:{
+                                  min:formatDate(today),
+                                },
+                              }}
+                               />
+
+                            {error.closeDate && (
+                              <FormHelperText>
+                                <InfoOutlined/> {error.closeDate}
+                              </FormHelperText>
+                            )}
                         </FormControl>
 
                       </Box>
 
-                      <FormControl>
+                      <FormControl error={Boolean(error.mapLocation)}>
                       <FormLabel>Event Location</FormLabel>
                       <Autocomplete
                         name='mapLocation'
@@ -546,7 +932,13 @@ function CreateAnEvent() {
                         value={formData.mapLocation}
                         onChange={(event, newValue) => {
 
-                         
+                         if (error.mapLocation) {
+                            setError((prevState) => {
+                              const newErrors = { ...prevState };
+                              delete newErrors.mapLocation;
+                              return newErrors;
+                            });
+                          }
 
                           setFormData({...formData, mapLocation: newValue});
                         }}
@@ -555,17 +947,23 @@ function CreateAnEvent() {
                       
                       />
 
+                      {error.mapLocation && (
+                        <FormHelperText>
+                          <InfoOutlined/> {error.mapLocation}
+                        </FormHelperText>
+                      )}
+
                       </FormControl>
 
                         
                         </>
                     )}
 
-                    {step === 2 && (
+                    {step ===2 && (
 
                        <>
 
-                      <FormControl sx={{mb:2}}>
+                      <FormControl sx={{mb:2}} error={Boolean(error.keyWords)}>
                         
                         <FormLabel>Select Key Words</FormLabel>
                         <Autocomplete
@@ -580,6 +978,13 @@ function CreateAnEvent() {
                           value={formData.keyWords}
                           onChange={(event, newValue) => {
 
+                            if (error.keyWords) {
+                              setError((prevState) => {
+                                const newErrors = { ...prevState };
+                                delete newErrors.keyWords;
+                                return newErrors;
+                              });
+                            }
                           
 
                             setFormData({...formData, keyWords: newValue});
@@ -600,24 +1005,68 @@ function CreateAnEvent() {
                         
                         />
 
+                        {error.keyWords && (
+                          <FormHelperText>
+                            <InfoOutlined/> {error.keyWords}
+                          </FormHelperText>
+                        )}
+
                       </FormControl>
 
 
-                      <FormControl>
+                      <FormControl error={Boolean(error.eventDescription)}>
                         <FormLabel>Event Description</FormLabel>
                         <Textarea
                           name='eventDescription'
                           placeholder='Enter Event Description'
                           minRows={5}
                           maxRows={4}
-                          onChange ={(event) => setFormData({...formData, eventDescription: event.target.value})}
+                          onChange ={(event) => {
+
+                            if (error.eventDescription) {
+                              setError((prevState) => {
+                                const newErrors = { ...prevState };
+                                delete newErrors.eventDescription;
+                                return newErrors;
+                              });
+                            }
+                            
+                            setFormData({...formData, eventDescription: event.target.value})
+                          
+                          }}
                           value={formData.eventDescription}
                         />
+
+                        {error.eventDescription && (
+                          <FormHelperText>
+                            <InfoOutlined/> {error.eventDescription}
+                          </FormHelperText>
+                        )}
                       </FormControl>
 
 
 
                        </>
+                    )}
+
+                    {step >2 && !response.error && (
+
+                      <Box sx={{display:'flex',flexDirection:'column', justifyContent:'center', alignContent:'center', mx:'auto' ,gap:2}}>
+                        <PublishedWithChangesIcon sx={{fontSize:'120px', mx:'auto'}} color='success'/>
+                        <Typography  level="title-lg">Event Created Successfully!</Typography>
+                      </Box>
+                      
+                      
+                    )}
+
+                    {step >2 && response.error && (
+
+                    <Box sx={{display:'flex',flexDirection:'column', justifyContent:'center', alignContent:'center', mx:'auto' ,gap:2}}>
+                      <UnpublishedIcon sx={{fontSize:'120px', mx:'auto'}} color='danger'/>
+                      <Typography  level="title-lg">Failed to Create Event!</Typography>
+                    </Box>
+
+
                     )}
 
                 
@@ -629,7 +1078,7 @@ function CreateAnEvent() {
                 <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                     <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
 
-                        {step > 0 && (
+                        {step > 0 && step <= 2 && (
 
                         <Button onClick={handleBackStep}  size="sm" variant="outlined" color="neutral">
                             Back
@@ -637,23 +1086,81 @@ function CreateAnEvent() {
 
 
                         )}
-                        {step === 2 ? (
-                            <Button  size="sm" variant="solid">
+
+
+                        {step === 2 && (
+                            <Button loading={response.loading} onClick={handleSubmit}  size="sm" variant="solid">
                             Publish
                         </Button>
 
-                        ):
-                        
-                        <Button onClick={handleNextStep} size="sm" variant="solid">
+                        )}
+
+                        {step < 2 && (
+
+                          <Button type='button' onClick={handleNextStep} size="sm" variant="solid">
                             Next
-                        </Button>
-                        }
+                          </Button>
+
+                        )}
+
+                        {step >2 && !response.error && (
+
+                          <Button type='button' onClick={() => {
+                            
+                            setStep(0)
+
+                            setResponse((prev) => ({
+                              ...prev,
+                              loading: false,
+                            })
+                            );
+
+                            setFormData({
+                              bannerImg: false,
+                              eventTitle: '',
+                              eventDate: '',
+                              startTime: '',
+                              endTime: '',
+                              maxParticipant: '',
+                              closeDate: '',
+                              mapLocation: '',
+                              keyWords: [],
+                              eventDescription: ''
+                            });
+
+
+                          }} size="sm" variant="solid">
+                            Create Another Event
+                          </Button>
+
+                        )}
+
+                        {step >2 && response.error && (
+
+                          <Button type='button' onClick={() => {
+                            
+                            setStep(0)
+
+                            setResponse((prev) => ({
+                              ...prev,
+                              loading: false,
+                              error: false,
+                            })
+                            );
+                          }}>
+                            Try Again
+                          </Button>
+
+                        )}
+                        
                     </CardActions>
             
                 </CardOverflow>
 
 
                 </Card>
+
+                </form>  
 
 
 
