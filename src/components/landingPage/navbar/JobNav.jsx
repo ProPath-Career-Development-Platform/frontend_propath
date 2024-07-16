@@ -1,5 +1,6 @@
 import React from 'react'
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Button} from "@nextui-org/react";
+import { Link } from 'react-router-dom';
 import logo from "/logo.png";
 import './Navbar.css'
 
@@ -10,13 +11,13 @@ const JobNav = () => {
         <img src={logo} alt="" className='h-10'/>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-10 mx-16" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#" className='font-semibold text-[#808080]'>
+        <NavbarItem className='isActive'>
+          <Link color="foreground" to='/' className='font-semibold text-[#808080]'>
             Job Search
           </Link>
         </NavbarItem>
-        <NavbarItem className='isActive font-semibold text-[#808080]'>
-          <Link href="#" aria-current="page">
+        <NavbarItem>
+          <Link color="foreground" href="#" className='font-semibold text-[#808080]'>
             Career Advice
           </Link>
         </NavbarItem>
@@ -33,7 +34,7 @@ const JobNav = () => {
           </Button>
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">
-          <Link href="#" className='text-purple1 font-bold'>Employer Site</Link>
+          <Link to="/employersite" className='text-purple1 font-bold'>Employer Site</Link>
         </NavbarItem>
       </NavbarContent>
     </Navbar>

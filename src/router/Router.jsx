@@ -32,6 +32,7 @@ import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 import Navbar1 from "../components/navbar/Navbar1";
+import EmployerSite from "../pages/landingPage/EmployerSite";
 
 
 const router = createBrowserRouter([
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "employersite",
+        element: <EmployerSite />,
       },
       {
         path: "login",
