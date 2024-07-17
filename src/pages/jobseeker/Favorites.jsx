@@ -144,7 +144,6 @@ const Favorites = () => {
         minWidth: 0,
         height: "100dvh",
         gap: 1,
-        overflow: "auto",
         maxHeight: "calc(100vh - 10px)",
       }}
     >
