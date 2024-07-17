@@ -217,7 +217,7 @@ function PlanAndBilling() {
                         })}>
                                 
                                 <img
-                                  src="/dash-credit2.png"
+                                  src="/wallet-purple.png"
                                   loading="lazy"
                                   alt=""
                                 />
