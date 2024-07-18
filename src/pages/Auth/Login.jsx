@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
@@ -19,7 +19,18 @@ function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    const savedPassword = localStorage.getItem('rememberedPassword');
+    if (savedEmail && savedPassword) {
+      setEmail(savedEmail);
+      setPassword(savedPassword);
+      setRememberMe(true);
+    }
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -51,25 +62,28 @@ function Login() {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
-
+  
     try {
       const response = await axios.post('http://localhost:8080/login', {
         email,
         password
       });
       console.log(response.data);
-
+  
       const token = response.data.jwt;
-
+  
       // Use the utility function to decode the token
       const decodedToken = decodeJWT(token);
       console.log(decodedToken);
       const role = decodedToken.role;
       console.log(role);
-
-      // Save the token (optional)
+  
+      // Save the token with expiration time (3 days)
+      const expirationTime = new Date();
+      expirationTime.setDate(expirationTime.getDate() + 3); // 3 days from now
       localStorage.setItem('token', token);
-
+      localStorage.setItem('tokenExpiration', expirationTime.getTime());
+  
       if (role === 'JobSeeker') {
         navigate("/jobseeker/home/");
       } else if (role === 'JobProvider') {
@@ -77,13 +91,27 @@ function Login() {
       } else if (role === 'Admin') {
         navigate("/admin/home/");
       }
-
+  
     } catch (error) {
       const message = error.response?.data?.message || 'Incorrect email or password';
       setErrorMessage(message);
       console.error('Login failed:', error);
     }
   };
+  
+  // Check and remove expired tokens on component mount
+  useEffect(() => {
+    const tokenExpiration = localStorage.getItem('tokenExpiration');
+    if (tokenExpiration) {
+      const now = new Date().getTime();
+      if (now > tokenExpiration) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('tokenExpiration');
+      }
+    }
+  }, []);
+  
+  
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-white overflow-hidden">
@@ -155,7 +183,12 @@ function Login() {
               </div>
               <div className="mt-8 flex justify-between items-center">
                 <div>
-                  <input type="checkbox" id="remember" />
+                <input 
+                    type="checkbox" 
+                    id="remember" 
+                    checked={rememberMe} 
+                    onChange={(e) => setRememberMe(e.target.checked)} 
+                  />
                   <label
                     className="ml-2 font-medium text-base text-black"
                     htmlFor="remember"
