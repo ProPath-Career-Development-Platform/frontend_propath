@@ -16,13 +16,13 @@ const JobNav = () => {
             Job Search
           </Link>
         </NavbarItem>
-        <NavbarItem>
+        {/* <NavbarItem>
           <Link color="foreground" href="#" className='font-semibold text-[#808080]'>
             Career Advice
           </Link>
-        </NavbarItem>
+        </NavbarItem> */}
         <NavbarItem>
-          <Link color="foreground" href="#" className='font-semibold text-[#808080]'>
+          <Link color="foreground" to='/explorecompanies' href="#" className='font-semibold text-[#808080]'>
             Explore Companies
           </Link>
         </NavbarItem>
