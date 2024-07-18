@@ -2,6 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
+// src/decodeJWT.js
+ function decodeJWT(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
+
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,8 +41,26 @@ function Login() {
         password
       });
       console.log(response.data);
-      navigate("/jobseeker/home/");
-      // Handle success - save token, navigate to another page, etc.
+
+      const token = response.data.jwt;
+
+      // Use the utility function to decode the token
+      const decodedToken = decodeJWT(token);
+      console.log(decodedToken);
+      const role = decodedToken.role;
+      console.log(role);
+
+      // Save the token (optional)
+      localStorage.setItem('token', token);
+
+      if (role === 'JobSeeker') {
+        navigate("/jobseeker/home/");
+      } else if (role === 'JobProvider') {
+        navigate("/jobprovider/home/");
+      } else if (role === 'Admin') {
+        navigate("/admin/home/");
+      }
+
     } catch (error) {
       const message = error.response?.data?.message || 'Incorrect email or password';
       setErrorMessage(message);
@@ -43,7 +73,7 @@ function Login() {
       <div className="flex items-center justify-center w-full h-full lg:w-1/2">
         <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-white border-2 border-gray-300">
           <h1 className="text-4xl font-bold flex justify-center items-center text-black w-full">
-            Sign in
+            Log in
           </h1>
 
           <form onSubmit={handleSubmit}>
@@ -104,7 +134,7 @@ function Login() {
                     </svg>
                   )}
                 </button>
-                {errorMessage && <div className="text-red-500 text-center mt-2">{errorMessage}</div>}
+                {/* {errorMessage && <div className="text-red-500 text-center mt-2">{errorMessage}</div>} */}
               </div>
               <div className="mt-8 flex justify-between items-center">
                 <div>
@@ -123,7 +153,8 @@ function Login() {
                   Forgot password
                 </button>
               </div>
-              <div className="mt-8 flex flex-col gap-y-4">
+              {errorMessage && <div className="text-red-500 text-center mt-5">{errorMessage}</div>}
+              <div className="mt-5 flex flex-col gap-y-4">
                 <button type="submit" className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#9a80d4] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]">
                   Sign in
                 </button>
