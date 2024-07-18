@@ -1,9 +1,11 @@
+import React from 'react';
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/Home";
 
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
+
 
 //jobprovider
 import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
@@ -31,6 +33,7 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
+
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
@@ -79,6 +82,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+
 
   {
     path: "/jobprovider",
@@ -147,7 +151,7 @@ const router = createBrowserRouter([
     path: "/Jobseeker",
     element: (
       <>
-        <Navbar1 />
+        <TopNav />
         <TopNavBar />
         <JobSeekerSetup />
       </>
@@ -164,7 +168,7 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        <Navbar1 />
+        <TopNav />
         <TopNavBar />
         <DashboardLayout user="jobseeker" />
       </>

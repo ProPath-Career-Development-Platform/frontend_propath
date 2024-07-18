@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar1 from '../../../components/navbar/Navbar1'
+import TopNav from '../../../components/landingPage/navbar/TopNav';
 import NavigationPanel from './NavigationPanel'
 import '../../../index.css'
 import Box from '@mui/material/Box';
