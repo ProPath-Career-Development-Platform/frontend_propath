@@ -6,6 +6,21 @@ import Home from "../pages/Home";
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
 
+
+//jobprovider
+import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
+
+import JpHome from "../pages/jobprovider/dashboard/Home";
+import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
+import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
+import JpMyJobs from "../pages/jobprovider/dashboard/MyJob";
+import JpApplications from "../pages/jobprovider/dashboard/Applications";
+import JpPlansAndBilling from "../pages/jobprovider/dashboard/PlanAndBilling";
+import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
+import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
+import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
+import JpSettings from "../pages/jobprovider/dashboard/Settings"
+
 //jobseeker
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
 import Login from "../pages/Auth/Login";
@@ -18,7 +33,11 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
-import TopNav from "../components/landingPage/navbar/TopNav";
+
+import Navbar1 from "../components/navbar/Navbar1";
+import EmployerSite from "../pages/landingPage/EmployerSite";
+import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+
 
 const router = createBrowserRouter([
   {
@@ -28,6 +47,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "explorecompanies",
+        element: <ExploreCompanies />,
+      },
+      {
+        path: "employersite",
+        element: <EmployerSite />,
       },
       {
         path: "login",
@@ -56,6 +83,69 @@ const router = createBrowserRouter([
     ],
   },
 
+
+  {
+    path: "/jobprovider",
+    element: <JPCompnaySetup1/>,
+    children: [
+      {
+        path:"Setup",
+        element:<JPCompnaySetup1/>
+      }
+    ]
+  },
+
+  {
+    path: "/jobprovider",
+    element: <DashboardLayout user="jobprovider"/>,
+    children: [
+      {
+        path:"/jobprovider",
+        element: <Navigate to="/jobprovider/home/" replace />
+      },
+      {
+         path:"home",
+         element:<JpHome/>
+         
+      },
+      {
+        path:"dashboard",
+        element:<JpDashboard/>
+      },
+      {
+        path:"post-a-job",
+        element:<JpPostAJob/>
+      },
+      {
+        path:"my-jobs",
+        element:<JpMyJobs/>
+      },
+      {
+        path:"my-jobs/applications",
+        element:<JpApplications/>
+      },
+      {
+        path:"plans-and-billing",
+        element:<JpPlansAndBilling/>
+      },
+      {
+        path:"plan-and-billing/changePlan",
+        element:<JpChangePlan/>
+      },
+      {
+        path:"meet-up",
+        element:<JpMeetUp/>
+      },
+      {
+        path:"meet-up/createEvent",
+        element:<JpCreateEvent/>
+      },
+      {
+        path:"settings",
+        element:<JpSettings/>
+      },
+    ]
+  },
 
   {
     path: "/Jobseeker",
@@ -107,6 +197,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+ 
 ]);
 
 export default router;
