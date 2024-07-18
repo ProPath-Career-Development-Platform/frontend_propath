@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-// src/decodeJWT.js
+
  function decodeJWT(token) {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -33,8 +33,25 @@ function Login() {
     navigate("/signup")
   }
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!email) {
+      setErrorMessage("Email is required.");
+      return;
+    }
+    if (!password) {
+      setErrorMessage("Password is required.");
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:8080/login', {
         email,
@@ -82,7 +99,7 @@ function Login() {
                 <input
                   className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
                   placeholder="Email address"
-                  type="email"
+                  
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

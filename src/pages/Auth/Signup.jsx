@@ -2,6 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
+function decodeJWT(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
 function Signup() {
   const navigate = useNavigate();
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -10,9 +20,9 @@ function Signup() {
   const [selectedRole, setSelectedRole] = useState("Job Seeker");
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  // const [companyName, setCompanyName] = useState('');
-  // const [companyEmail, setCompanyEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);
@@ -37,6 +47,33 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Basic validation
+    if (!name) {
+      setErrorMessage("Name is required.");
+      return;
+    }
+    if (!email) {
+      setErrorMessage("Email is required.");
+      return;
+    }
+    if (!password) {
+      setErrorMessage("Password is required.");
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters long.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
     const userData = selectedRole === "Job Seeker" ? {
       name,
       email,
@@ -52,7 +89,23 @@ function Signup() {
     try {
       const response = await axios.post('http://localhost:8080/signup', userData);
       console.log(response.data);
-      navigate("/login"); // Redirect user to login page after successful signup
+
+      const token = response.data.jwt;
+
+      // Use the utility function to decode the token
+      const decodedToken = decodeJWT(token);
+      console.log(decodedToken);
+      const role = decodedToken.role;
+      console.log(role);
+
+      // Save the token (optional)
+      localStorage.setItem('token', token);
+
+      if (role === 'JobSeeker') {
+        navigate("/jobseeker/setup/");
+      } else if (role === 'JobProvider') {
+        navigate("/jobprovider/setup/");
+      }
     } catch (error) {
       console.error('Signup failed:', error);
     }
@@ -123,7 +176,6 @@ function Signup() {
                     <input
                       className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Email address"
-                      type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -181,6 +233,8 @@ function Signup() {
                       className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -238,7 +292,6 @@ function Signup() {
                     <input
                       className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Company Email address"
-                      type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -296,6 +349,8 @@ function Signup() {
                       className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -340,6 +395,7 @@ function Signup() {
                 </div>
               )}
             </div>
+            {errorMessage && <div className="text-red-500 text-center mt-5">{errorMessage}</div>}
             <div className="mt-8 flex flex-col gap-y-4">
               <button
                 type="submit"
