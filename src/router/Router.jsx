@@ -40,6 +40,10 @@ import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
 import Workshops from "../pages/landingPage/Workshops";
 
 
+
+import AdminHome from "../pages/Admin/AdminHome";
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -156,7 +160,7 @@ const router = createBrowserRouter([
     path: "/Jobseeker",
     element: (
       <>
-        <TopNav />
+        {/* <TopNav /> */}
         <TopNavBar />
         <JobSeekerSetup />
       </>
@@ -173,7 +177,7 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        <TopNav />
+        {/* <TopNav /> */}
         <TopNavBar />
         <DashboardLayout user="jobseeker" />
       </>
@@ -187,6 +191,41 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <JobSeekerHome />,
+      },
+      {
+        path: "applied-jobs",
+        element: <JsAppliedJobs />,
+      },
+      {
+        path: "favorites",
+        element: <JsFavorites />,
+      },
+      {
+        path: "job-alert",
+        element: <JsJobAlert />,
+      },
+    ],
+  },
+
+
+  {
+    path: "/admin",
+    element: (
+      <>
+        {/* <TopNav /> */}
+        <TopNavBar /> {/* insert correct navbar for admin */}
+        <DashboardLayout user="admin" />
+      </>
+    ),
+    children: [
+      {
+        path: "/admin",
+        element: <Navigate to="/admin/home" replace />,
+      },
+
+      {
+        path: "home",
+        element: <AdminHome />,
       },
       {
         path: "applied-jobs",
