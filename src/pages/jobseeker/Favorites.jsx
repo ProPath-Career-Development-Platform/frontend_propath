@@ -145,6 +145,10 @@ const Favorites = () => {
         height: "100dvh",
         gap: 1,
         maxHeight: "calc(100vh - 10px)",
+         overflow: 'auto ',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>

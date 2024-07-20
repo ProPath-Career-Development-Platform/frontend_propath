@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState} from 'react';
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -29,6 +29,8 @@ import Jobcard from '../../components/JobSeeker/jobcard';
 import Companycard from '../../components/JobSeeker/companycard';
 import JSCard from '../../components/JobSeeker/card';
 import { useLocation } from 'react-router-dom';
+import ApplyJob from '../../components/JobSeeker/applyJob';
+import AppliedCard from '../../components/JobSeeker/appliedcard';
 const JobDetails = () => {
 
   const responsibilities = [
@@ -59,6 +61,13 @@ const JobDetails = () => {
   const location = useLocation();
   const { title } = location.state || {}
   
+  const [Submit , setSubmit] = useState(0)
+  const applyhandleChange = (value)=> {
+
+    setSubmit(value)
+    console.log(Submit)
+
+  }
   return (
     <Box
       component="main"
@@ -78,6 +87,10 @@ const JobDetails = () => {
         height: '100dvh',
         gap: 1,
         maxHeight: 'calc(100vh - 10px)',
+        overflow: 'auto ',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
       }}
     >
       <Box
@@ -175,10 +188,23 @@ const JobDetails = () => {
       <Button variant="contained" sx={{backgroundColor:'blue' , height: '42px' , width:{xs : '50px', sm: '50px' , md : '50px' , lg : 'auto'} }} >
          <BookmarkBorderIcon sx={{color:'white' }}/>
       </Button>
+      {Submit == 0 && (
+        <ApplyJob title = {title} callback={applyhandleChange}></ApplyJob>
+      )}
+
+      {Submit == 1 && (
+         <Button
+        
+         sx={{backgroundColor:'red'}}
+
+       >
+         <Typography sx = {{display : {xs:'none' , sm:'none' , md: 'none' , lg: 'block'}, color: 'white'}}>Pending</Typography> 
+       </Button>
+      )
+      }
      
-      <Button  sx={{backgroundColor:'blue'  } }>
-       <Typography sx = {{display : {xs:'none' , sm:'none' , md: 'none' , lg: 'block'}, color: 'white'}}>Apply Now</Typography>  <ArrowRightAltIcon sx = {{marginLeft: {xs : '0px' , sm : '3px '}}}></ArrowRightAltIcon>
-      </Button>
+     
+      
       </Stack>
       <Typography sx={{ fontSize: '12px', marginTop: '3px' , display: 'flex' , flexDirection: {xs: 'column' , sm: 'row' }}}>
         Job expires in : <span style={{ color: 'red' }}>30 June 2021</span>
@@ -209,6 +235,9 @@ const JobDetails = () => {
           </Stack>
         </Box>
         <Box sx = {{marginLeft : '16px' , minWidth : '40%'}}>
+        {Submit == 1 && (
+          <AppliedCard></AppliedCard>
+        )}
         <Jobcard/>
         <Companycard/>
         </Box>
@@ -233,10 +262,10 @@ const JobDetails = () => {
                           ))}
                           
                         
-                      </Box>
+      </Box>
                       
       </Box>
-
+     
      
 
     </Box>

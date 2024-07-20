@@ -131,6 +131,10 @@ const Courses = () => {
               height: '100dvh',
               gap: 1,
               maxHeight: 'calc(100vh - 10px)',
+              overflow: 'auto ',
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
             }}
           >
            

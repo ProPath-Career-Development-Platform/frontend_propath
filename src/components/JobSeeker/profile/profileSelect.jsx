@@ -33,7 +33,7 @@ export default function ProfileSelect() {
       
       {type == 1 && (
         <Box sx={{display:'flex' , gap: 3 , mt: '40px'}}> 
-         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 3, backgroundColor: '#f9f9f9', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', width: '400px', margin: '0 auto' }}>
+         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 3, backgroundColor: '#EDF3FC', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', width: '400px', margin: '0 auto' }}>
           <Avatar src={seba} sx={{ width: '150px', height: '150px', borderRadius: '50%', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
           <Box sx={{ mt: '20px', mb: '20px', textAlign: 'center' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Santhush Fernando</Typography>

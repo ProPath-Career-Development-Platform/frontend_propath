@@ -7,18 +7,27 @@ import JSSearch from '../../components/JobSeeker/search'
 import Alert from '../../components/JobSeeker/alert'
 import ProfileDropdown from '../../components/JobSeeker/ProfileDropDown'
 import DoneIcon from '@mui/icons-material/Done';
-import { Typography } from '@mui/joy'
+import { ModalClose, ModalDialog, Typography } from '@mui/joy'
 import Chip from '@mui/joy/Chip';
 import AccordionIndicator from '../../components/JobSeeker/course/accodion'
 import CourseOverview from '../../components/JobSeeker/course/courseOverview'
 import CourseFAQ from '../../components/JobSeeker/course/faq'
-
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+import Modal from '@mui/joy/Modal'
+import Button from '@mui/joy/Button';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
+import IconButton from '@mui/joy/IconButton'
+import CloseIcon from '@mui/icons-material/Close';
 const Course = () => {
     
   const images = ['/ml1.jpg','/ml2.png','/ml3.png']
   const[img, setImg] = useState(0)
  
-
+  const [Open, setOpen] = useState(false)
   const headline = {title : 'Introduction to Flutter Course Online' , h1 : 'Stand Out in a Python Coding Interview' , 
                     description:'This Python Interview Course is the ultimate answer if you are looking to crack a job in python. It will take you through all the questions that can be expected from a python developer with answers explained in Hindi. In this Interview questions series, you will learn questions and answers with python basics and advanced topics that will help you get your desired python job.' ,
                     learner: ['App developers' , 'Software Developers' , 'Full Stack Developers' , 'Coding enthuisiastics']}
@@ -55,6 +64,10 @@ const Course = () => {
                     height: '100dvh',
                     gap: 1,
                     maxHeight: 'calc(100vh - 10px)',
+                    overflow: 'auto ',
+                    '&::-webkit-scrollbar': {
+                      display: 'none',
+                    },
     }}>
 
         <Box  sx={{
@@ -89,6 +102,11 @@ const Course = () => {
                     <Box sx={{marginLeft : '6%' , marginTop : '8px'}}>
                         <Typography sx={{ color: 'white' , fontSize : 18 , }}>{headline.h1}</Typography>
                     </Box>
+                    <Box sx={{marginLeft : '6%' , marginTop : '8px' , display: 'flex' , flexDirection: 'row' , gap: 4}}>
+                        <Typography sx={{ color: 'white' , fontSize : 13  }}><GroupAddIcon sx={{color:'white' , marginRight: '5px'}}/>381 enrolled </Typography>
+                        <Typography sx={{ color: 'white' , fontSize : 13 }}> <WhatshotIcon sx={{color:'white' , marginRight: '4px'}}/>54 remaining</Typography>
+                        
+                    </Box>
                    <Box sx={{marginLeft : '6%' , marginTop : '8px'}}>
                         <Typography sx={{ color: 'white' , fontSize : 13 , }}>{headline.description}</Typography>
                    </Box>
@@ -98,7 +116,7 @@ const Course = () => {
               
         </Box>
         <Box sx={{position: 'absolute' , right: '8%' , top: '25%'}}>
-                <BasicCard  url = {images[img]}></BasicCard>
+                <BasicCard  url = {images[img]} callback = {(value)=>{setOpen(true)}}></BasicCard>
                 </Box>
         <Box>
             <Box>
@@ -192,6 +210,38 @@ const Course = () => {
             </Box>
 
         </Box>
+       
+        <React.Fragment>
+            <Modal open = {Open} sx={{display: 'flex' , justifyContent: 'center' , alignItems: 'center' }}>
+                 <ModalDialog>
+                 <IconButton variant="solid" sx={{width: 'fit-content' , marginLeft: '90%' ,  "--IconButton-size": "25px" , backgroundColor: 'white'}} onClick={()=>{setOpen(false)}}>
+                    <CloseIcon sx={{color:'black'}}/>
+                 </IconButton>
+              
+                    <form
+                    onSubmit={(event) => {
+                    event.preventDefault();
+                    setOpen(false);
+                    }}
+                >
+                    <Stack spacing={2}>
+                    <FormControl>
+                        <FormLabel>Name</FormLabel>
+                        <Input autoFocus required />
+                       
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Description</FormLabel>
+                        <Input required />
+                    </FormControl>
+                    <Button type="submit">Enroll</Button>
+                    </Stack>
+                </form>
+              
+                </ModalDialog>
+            
+            </Modal>
+        </React.Fragment>
             
        
         

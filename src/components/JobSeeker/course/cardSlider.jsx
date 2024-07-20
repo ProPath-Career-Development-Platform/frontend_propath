@@ -10,8 +10,9 @@ import { Box } from '@mui/joy';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import Chip from '@mui/joy/Chip';
 
-export default function BasicCard({url}) {
+export default function BasicCard({url , callback}) {
 
   const [scrollTop, setScrollTop] = useState(15); // Initial top position in percentage
 
@@ -32,8 +33,8 @@ export default function BasicCard({url}) {
   return (
     <Card sx={{ width: 320 }}>
       <div>
-        <Typography level="title-lg">Yosemite National Park</Typography>
-        <Typography level="body-sm">April 24 to May 02, 2021</Typography>
+     
+      
         <IconButton
           aria-label="bookmark Bahamas Islands"
           variant="plain"
@@ -67,6 +68,9 @@ export default function BasicCard({url}) {
         color="primary"
         aria-label="Explore Bahamas Islands"
         sx={{ fontWeight: 600 , width: 200 }}
+        onClick={()=> {
+          callback(true)
+        }}
       >
         Enroll
       </Button>
