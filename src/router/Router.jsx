@@ -34,6 +34,7 @@ import TopNavBar from "../components/JobSeeker/TopNavBar";
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+import Workshops from "../pages/landingPage/Workshops";
 
 
 const router = createBrowserRouter([
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "employersite",
         element: <EmployerSite />,
+      },
+      {
+        path: "workshops",
+        element: <Workshops />,
       },
       {
         path: "login",

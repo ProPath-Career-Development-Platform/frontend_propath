@@ -1,12 +1,13 @@
 import React from 'react'
 import './Navbar.css';
+import { Link } from 'react-router-dom';
 
 function TopNav() {
   return (
     <nav className='topnav'>
       <ul>
-        <li className='active'><a href='#'>Jobs</a></li>
-        <li><a href="#">Workshops</a></li>
+        <li className='active'><Link to='/'>Jobs</Link></li>
+        <li><Link to='/workshops'>Workshops</Link></li>
         <li><a href="#">Professional Memberships</a></li>
         <li><a href="#">Continuous Professional Development</a></li>
       </ul>
