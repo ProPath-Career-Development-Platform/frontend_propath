@@ -38,6 +38,7 @@ function SettingsAccount() {
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
+    
   });
 
   
@@ -80,6 +81,8 @@ function SettingsAccount() {
       ...prevState,
       [name]: value,
     }));
+
+    
   };
 
   
@@ -108,6 +111,24 @@ function SettingsAccount() {
 
 
     }else if(form === 'password'){
+
+      if (!passwordFormData.currentPassword) {
+        newErrors.currentPassword = 'Current Password is required';
+      }else{
+
+        if (!passwordFormData.newPassword) {
+          newErrors.newPassword = 'New Password is required';
+        }else if (passwordFormData.newPassword.length < 8) {
+          newErrors.newPassword = 'New Password must be at least 8 characters';
+        } else if (!passwordFormData.confirmPassword) {
+  
+          newErrors.confirmPassword = 'Confirm Password is required';
+        }else if (passwordFormData.newPassword !== passwordFormData.confirmPassword) {
+          newErrors.confirmPassword = 'Passwords do not match';
+  
+        }
+
+      }
 
     }
 
@@ -290,7 +311,11 @@ function SettingsAccount() {
     </form>   
 
 
-        <form>
+        <form
+         onSubmit={handleSubmit}
+        >
+
+        <Input sx={{display:'none'}} name='form' value='password' />
         <Card>
                 
                 <CardContent>
@@ -310,14 +335,21 @@ function SettingsAccount() {
                         mb:2
                         
                       }}
+
+                    error={Boolean(errors.currentPassword)}
                     >
                     <FormLabel>Current Password</FormLabel>
                     <Input
-                        name='mapLocation'
+                        name='currentPassword'
                         startDecorator={<Button disabled><LockIcon /></Button>}
-                        placeholder='Enter your map location'
+                        placeholder='Enter your current password'
+                        onChange={handleChangeForPassword}
                        
                     />
+
+                    {errors.currentPassword && (
+                        <FormHelperText error>{errors.currentPassword}</FormHelperText>
+                    )}
                     </FormControl>
 
                     <Stack
@@ -330,15 +362,39 @@ function SettingsAccount() {
                             sx={{
                             mb: 2,
                             }}
+
+                            error={Boolean(errors.newPassword)}
                         >
                          <FormLabel>New Password</FormLabel>
                         <Input
                             type="password"
+                            name="newPassword"
                             placeholder="Type in here…"
                             startDecorator={<Button disabled><KeyIcon /></Button>}
                             value={value}
-                            onChange={(event) => setValue(event.target.value)}
+                            onChange={(event) => {
+                              
+                              setValue(event.target.value);
+
+                              if (errors.newPassword) {
+                                setErrors((prevState) => {
+                                  const newErrors = { ...prevState };
+                                  delete newErrors.newPassword;
+                                  return newErrors;
+                                });
+                              }
+
+                              handleChangeForPassword(event);
+
+
+                            }}
                         />
+                        {errors.newPassword && (
+                            <FormHelperText error>{errors.newPassword}</FormHelperText>
+                        )  
+                        }
+
+
                         </FormControl>
                         <LinearProgress
                             determinate
@@ -352,7 +408,7 @@ function SettingsAccount() {
                         <Typography
                             level="body-xs"
                             sx={{ alignSelf: 'flex-end', color: 'hsl(var(--hue) 80% 30%)' }}
-                        >
+                            >
                             {value.length < 3 && 'Very weak'}
                             {value.length >= 3 && value.length < 6 && 'Weak'}
                             {value.length >= 6 && value.length < 10 && 'Strong'}
@@ -361,18 +417,27 @@ function SettingsAccount() {
                         </Stack>
 
                         <FormControl
-                    sx={{
-                        mb:2
-                        
-                      }}
+                        sx={{
+                            mb:2
+                            
+                          }}
+
+                    error={Boolean(errors.confirmPassword)}
                     >
                     <FormLabel>Confirm Password</FormLabel>
                     <Input
                         type='password'
-                        name='mapLocation'
+                        name='confirmPassword'
                         startDecorator={<Button disabled><KeyIcon /></Button>}
-                        placeholder='Enter your map location'
+                        placeholder='Confirm your password'
+                        onChange={
+                          handleChangeForPassword
+                        }
                     />
+
+                    {errors.confirmPassword && (
+                        <FormHelperText error>{errors.confirmPassword}</FormHelperText>
+                    )}
                     </FormControl>
 
                 </Box>
@@ -381,7 +446,7 @@ function SettingsAccount() {
 
                 <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                     <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-                        <Button onClick={resetForm} size="sm" variant="outlined" color="neutral">
+                        <Button type="reset" size="sm" variant="outlined" color="neutral">
                             Cancel
                         </Button>
                         <Button type="submit" size="sm" variant="solid">
