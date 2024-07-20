@@ -14,6 +14,7 @@ import { closeSidebar } from '../../utils/sidebarUtils';
 
 import JpMenuItems from '../jobprovider/dashboard/sidebarMenuItems';
 import JsMenuItems from '../JobSeeker/JobSeekerSideBar';
+import AdminMenuItems from '../Admin/SidebarMenuItems'
 //import admin menu items
 
 function Toggler({
