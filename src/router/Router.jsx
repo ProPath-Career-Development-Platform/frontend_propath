@@ -1,9 +1,11 @@
+import React from 'react';
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/Home";
 
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
+
 
 //jobprovider
 import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
@@ -31,9 +33,14 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
+
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+
+
+
+import AdminHome from "../pages/Admin/AdminHome";
 
 
 const router = createBrowserRouter([
@@ -79,6 +86,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+
 
   {
     path: "/jobprovider",
@@ -147,7 +155,7 @@ const router = createBrowserRouter([
     path: "/Jobseeker",
     element: (
       <>
-        <Navbar1 />
+        {/* <TopNav /> */}
         <TopNavBar />
         <JobSeekerSetup />
       </>
@@ -164,7 +172,7 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        <Navbar1 />
+        {/* <TopNav /> */}
         <TopNavBar />
         <DashboardLayout user="jobseeker" />
       </>
@@ -178,6 +186,41 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <JobSeekerHome />,
+      },
+      {
+        path: "applied-jobs",
+        element: <JsAppliedJobs />,
+      },
+      {
+        path: "favorites",
+        element: <JsFavorites />,
+      },
+      {
+        path: "job-alert",
+        element: <JsJobAlert />,
+      },
+    ],
+  },
+
+
+  {
+    path: "/admin",
+    element: (
+      <>
+        {/* <TopNav /> */}
+        <TopNavBar /> {/* insert correct navbar for admin */}
+        <DashboardLayout user="admin" />
+      </>
+    ),
+    children: [
+      {
+        path: "/admin",
+        element: <Navigate to="/admin/home" replace />,
+      },
+
+      {
+        path: "home",
+        element: <AdminHome />,
       },
       {
         path: "applied-jobs",
