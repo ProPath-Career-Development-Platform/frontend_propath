@@ -124,23 +124,10 @@ function SidebarMenuItems() {
         <ListItem>
           <ListItemButton
             component={RouterLink}
-            to="/jobprovider/home/"
-            selected={location.pathname === "/jobprovider/home/"}
+            to="/admin/home/"
+            selected={location.pathname === "/admin/home/"}
           >
             <HomeRoundedIcon />
-            <ListItemContent>
-              <Typography level="title-sm">Home</Typography>
-            </ListItemContent>
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem>
-          <ListItemButton
-            component={RouterLink}
-            to="/jobprovider/dashboard/"
-            selected={location.pathname === "/jobprovider/dashboard/"}
-          >
-            <DashboardRoundedIcon />
             <ListItemContent>
               <Typography level="title-sm">Dashboard</Typography>
             </ListItemContent>
@@ -150,25 +137,26 @@ function SidebarMenuItems() {
         <ListItem>
           <ListItemButton
             component={RouterLink}
-            to="/jobprovider/post-a-job/"
-            selected={location.pathname === "/jobprovider/post-a-job/"}
+            to="/admin/RegisterdCompanies/"
+            selected={location.pathname === "/admin/RegisterdCompanies/"}
           >
-            <AddCircleOutlineIcon />
+            <DashboardRoundedIcon />
             <ListItemContent>
-              <Typography level="title-sm">Post a Job</Typography>
+              <Typography level="title-sm">companies</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>
 
+
         <ListItem>
           <ListItemButton
             component={RouterLink}
-            to="/jobprovider/my-jobs/"
-            selected={location.pathname === "/jobprovider/my-jobs/"}
+            to="/admin/RegisterdUsers/"
+            selected={location.pathname === "/admin/RegisterdUsers/"}
           >
             <WorkIcon />
             <ListItemContent>
-              <Typography level="title-sm">My Jobs</Typography>
+              <Typography level="title-sm">Users</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>
@@ -176,88 +164,25 @@ function SidebarMenuItems() {
         <ListItem>
           <ListItemButton
             component={RouterLink}
-            to="/jobprovider/plans-and-billing/"
-            selected={location.pathname === "/jobprovider/plans-and-billing/"}
+            to="/admin/Postedjobs/"
+            selected={location.pathname === "/admin/Postedjobs/"}
           >
-            <PaymentIcon />
+            <AddCircleOutlineIcon />
             <ListItemContent>
-              <Typography level="title-sm">Plans and Billing</Typography>
+              <Typography level="title-sm">Jobs</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>
-
-        <ListItem>
-          <ListItemButton
-            component={RouterLink}
-            to="/jobprovider/meet-up/"
-            selected={location.pathname === "/jobprovider/meet-up/"}
-          >
-            <GroupsIcon />
-            <ListItemContent>
-              <Typography level="title-sm">Meet Up</Typography>
-            </ListItemContent>
-          </ListItemButton>
-        </ListItem>
-          
-
-        {/*   <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <AssignmentRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">Tasks</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>All tasks</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Backlog</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>In progress</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Done</ListItemButton>
-                </ListItem>
-              </List>
-            </Toggler>
-          </ListItem>
-        */}
 
         
-          <ListItem>
-            <ListItemButton
-              role="menuitem"
-              component={RouterLink}
-              href="/joy-ui/getting-started/templates/messages/"
-            >
-              <QuestionAnswerRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Notifications</Typography>
-              </ListItemContent>
-              <Chip size="sm" color="primary" variant="solid">
-                4
-              </Chip>
-            </ListItemButton>
-          </ListItem>
 
-          
-
-          <ListItem nested>
+            <ListItem nested>
             <Toggler
               renderToggle={({ open, setOpen }) => (
                 <ListItemButton onClick={() => setOpen(!open)}>
                   <GroupRoundedIcon />
                   <ListItemContent>
-                    <Typography level="title-sm">Users</Typography>
+                    <Typography level="title-sm">Events</Typography>
                   </ListItemContent>
                   <KeyboardArrowDownIcon
                     sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
@@ -272,33 +197,45 @@ function SidebarMenuItems() {
                     component="a"
                     href="/joy-ui/getting-started/templates/profile-dashboard/"
                   >
-                    My profile
+                    Meetups
                   </ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>Create a new user</ListItemButton>
+                  <ListItemButton>Workshops</ListItemButton>
                 </ListItem>
-                <ListItem>
-                  <ListItemButton>Roles & permission</ListItemButton>
-                </ListItem>
+               
               </List>
             </Toggler>
           </ListItem>
 
-          <ListItem>
-            <ListItemButton
-
+        <ListItem>
+          <ListItemButton
             component={RouterLink}
-            to="/jobprovider/settings/"
-            selected={location.pathname === "/jobprovider/settings/"}
-            
-            >
-              <SettingsRoundedIcon />
-              <Typography level="title-sm">Settings</Typography>
-            </ListItemButton>
-          </ListItem>
+            to="/admin/PDC_Courses/"
+            selected={location.pathname === "/admin/PDC_Courses/"}
+          >
+            <PaymentIcon />
+            <ListItemContent>
+              <Typography level="title-sm">PDC Courses</Typography>
+            </ListItemContent>
+          </ListItemButton>
+        </ListItem>
 
+        <ListItem>
+          <ListItemButton
+            component={RouterLink}
+            to="/admin/Interviews/"
+            selected={location.pathname === "/admin/Interviews/"}
+          >
+            <GroupsIcon />
+            <ListItemContent>
+              <Typography level="title-sm">Interviews</Typography>
+            </ListItemContent>
+          </ListItemButton>
+        </ListItem>
+          
 
+        
         </List>
 
         <List
