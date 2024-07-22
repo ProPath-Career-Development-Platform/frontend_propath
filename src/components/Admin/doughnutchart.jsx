@@ -1,16 +1,8 @@
 import React from 'react';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
-function PieChart({ chartData }) {
-  return (
-    <div>
-      <Pie data={chartData} /> 
-    </div>
-  );
-}
-
-const PieChartComponent = ({ data }) => {
+const DoughnutChartComponent = ({ data }) => {
   const chartData = {
     labels: data.map((item) => item.jobtitle),
     datasets: [
@@ -24,7 +16,7 @@ const PieChartComponent = ({ data }) => {
     ],
   };
 
-  return <PieChart chartData={chartData} />;
+  return <Doughnut data={chartData} />;
 };
 
-export default PieChartComponent;
+export default DoughnutChartComponent;
