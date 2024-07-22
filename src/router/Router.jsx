@@ -42,6 +42,7 @@ import Workshops from "../pages/landingPage/Workshops";
 
 
 import AdminHome from "../pages/Admin/AdminHome";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 
 
 const router = createBrowserRouter([
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "workshops",
         element: <Workshops />,
+      },
+      {
+        path: "professionalmemberships",
+        element: <ProfessionalMemberships />,
       },
       {
         path: "login",

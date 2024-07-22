@@ -8,7 +8,7 @@ function TopNav() {
       <ul>
         <li className='active'><Link to='/'>Jobs</Link></li>
         <li><Link to='/workshops'>Workshops</Link></li>
-        <li><a href="#">Professional Memberships</a></li>
+        <li><Link to='/professionalmemberships'>Professional Memberships</Link></li>
         <li><a href="#">Continuous Professional Development</a></li>
       </ul>
     </nav>
