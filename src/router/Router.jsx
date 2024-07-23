@@ -33,6 +33,8 @@ import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
+import Interview from "../pages/jobseeker/interview";
+import Meetingview from "../components/JobSeeker/meetingview";
 
 
 const router = createBrowserRouter([
@@ -186,6 +188,15 @@ const router = createBrowserRouter([
         path: "job-alert",
         element: <JsJobAlert />,
       },
+      {
+        path: "interview",
+        element: <Interview/>,
+      },
+      {
+        path: "meetingview",
+        element: <Meetingview/>,
+      },
+      
     ],
   },
  
