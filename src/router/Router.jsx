@@ -20,6 +20,7 @@ import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
 import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
+import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
 
 //jobseeker
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
@@ -127,6 +128,10 @@ const router = createBrowserRouter([
       {
         path:"my-jobs/applications",
         element:<JpApplications/>
+      },
+      {
+        path:"my-jobs/shedule-interview",
+        element:<><JpInterviewSchedule/></>
       },
       {
         path:"plans-and-billing",
