@@ -37,6 +37,8 @@ import TopNavBar from "../components/JobSeeker/TopNavBar";
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+import Workshops from "../pages/landingPage/Workshops";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 
 
 
@@ -45,7 +47,6 @@ import AdminCompanies from "../pages/Admin/AdminCompanies";
 import AdminUsers from "../pages/Admin/AdminUsers";
 import AdminJobs from "../pages/Admin/AdminJobs";
 import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
-
 
 
 const router = createBrowserRouter([
@@ -64,6 +65,14 @@ const router = createBrowserRouter([
       {
         path: "employersite",
         element: <EmployerSite />,
+      },
+      {
+        path: "workshops",
+        element: <Workshops />,
+      },
+      {
+        path: "professionalmemberships",
+        element: <ProfessionalMemberships />,
       },
       {
         path: "login",
