@@ -38,11 +38,15 @@ import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
 import Workshops from "../pages/landingPage/Workshops";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 
 
 
 import AdminHome from "../pages/Admin/AdminHome";
-import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+import AdminCompanies from "../pages/Admin/AdminCompanies";
+import AdminUsers from "../pages/Admin/AdminUsers";
+import AdminJobs from "../pages/Admin/AdminJobs";
+import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
 
 
 const router = createBrowserRouter([
@@ -233,16 +237,20 @@ const router = createBrowserRouter([
         element: <AdminHome />,
       },
       {
-        path: "applied-jobs",
-        element: <JsAppliedJobs />,
+        path: "RegisterdCompanies",
+        element: <AdminCompanies />,
       },
       {
-        path: "favorites",
-        element: <JsFavorites />,
+        path: "RegisterdUsers",
+        element: <AdminUsers />,
       },
       {
-        path: "job-alert",
-        element: <JsJobAlert />,
+        path: "RegisterdCompany/info",
+        element: <AdminCompanyInfo />,
+      },
+      {
+        path: "Postedjobs",
+        element: <AdminJobs />,
       },
     ],
   },
