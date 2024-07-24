@@ -43,10 +43,7 @@ export default function DateCalendarServerRequest({highlightedDays, setHighlight
  
   
   
-  const handleDateChange = (newValue) => {
-    setHighlightedDays((prev) => [...prev, newValue.toDate()]);
-    //alert(highlightedDays);
-  };
+
 
   
 

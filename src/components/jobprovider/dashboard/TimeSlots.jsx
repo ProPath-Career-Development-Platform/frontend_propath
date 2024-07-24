@@ -4,7 +4,7 @@ import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import Done from '@mui/icons-material/Done';
 
-const TimeSlots = ({ data, valueTimeSlots, setValueTimeSlots }) => {
+const TimeSlots = ({ data, valueTimeSlots, onChange }) => {
   return (
     <div role="group" aria-labelledby="">
       <List
@@ -17,7 +17,7 @@ const TimeSlots = ({ data, valueTimeSlots, setValueTimeSlots }) => {
           '--ListItem-gap': '4px',
         }}
       >
-        {data.map((item, index) => (
+        {data.map((item) => (
           <ListItem key={item}>
             {valueTimeSlots.includes(item) && (
               <Done
@@ -28,19 +28,13 @@ const TimeSlots = ({ data, valueTimeSlots, setValueTimeSlots }) => {
             )}
 
             <Checkbox
-              size="sm"
+              size="md"
               disableIcon
               overlay
               label={item}
               checked={valueTimeSlots.includes(item)}
               variant={valueTimeSlots.includes(item) ? 'soft' : 'outlined'}
-              onChange={(event) => {
-                if (event.target.checked) {
-                  setValueTimeSlots((val) => [...val, item]);
-                } else {
-                  setValueTimeSlots((val) => val.filter((text) => text !== item));
-                }
-              }}
+              onChange={(event) => onChange(event, item)}
               slotProps={{
                 action: ({ checked }) => ({
                   sx: checked

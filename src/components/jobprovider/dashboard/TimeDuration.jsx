@@ -7,7 +7,7 @@ function TimeDuration({ value, onChange }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
       <RadioGroup
-        size="sm"
+        size="md"
         orientation="horizontal"
         aria-labelledby="segmented-controls-example"
         name="justify"

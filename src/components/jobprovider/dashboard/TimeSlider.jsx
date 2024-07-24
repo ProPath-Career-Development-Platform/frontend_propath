@@ -35,7 +35,7 @@ function TimeSlider({ value, onChange }) {
 
   return (
     <Slider
-      size="sm"
+      size="md"
       aria-label="Always visible"
       getAriaValueText={valueText}
       step={1}
