@@ -41,12 +41,15 @@ import Workshops from "../pages/landingPage/Workshops";
 import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 
 
-
+//Admin
 import AdminHome from "../pages/Admin/AdminHome";
 import AdminCompanies from "../pages/Admin/AdminCompanies";
 import AdminUsers from "../pages/Admin/AdminUsers";
 import AdminJobs from "../pages/Admin/AdminJobs";
 import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
+import AdminEvents from '../pages/Admin/AdminEvents'
+import AdminCourses from '../pages/Admin/AdminCourses';
+import AdminInterviews from '../pages/Admin/AdminInterviews';
 
 
 const router = createBrowserRouter([
@@ -251,6 +254,18 @@ const router = createBrowserRouter([
       {
         path: "Postedjobs",
         element: <AdminJobs />,
+      },
+      {
+        path: "Events",
+        element: <AdminEvents />,
+      },
+      {
+        path:"PDC_Courses",
+        element:<AdminCourses/>
+      },
+      {
+        path:"Interviews",
+        element:<AdminInterviews/>
       },
     ],
   },

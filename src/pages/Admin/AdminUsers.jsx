@@ -199,7 +199,7 @@ const AdminUsers = () => {
                 <td>{row.city}</td>
                 <td style={{textAlign:'center' }}>{row.Applied_jobs}</td>
                 <td><Button startDecorator={<VisibilityIcon />} size="sm">View</Button></td>
-                <td><Button startDecorator={<DeleteForeverIcon />} size="sm" color="danger">Delete</Button></td>
+                <td><Button startDecorator={<DeleteForeverIcon />} size="sm" color="danger">Remove</Button></td>
                 </tr>
         ))}
       </tbody>

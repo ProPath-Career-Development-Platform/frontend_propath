@@ -5,66 +5,83 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import PublicIcon from '@mui/icons-material/Public';
+import GroupsIcon from '@mui/icons-material/Groups';
+import SchoolIcon from '@mui/icons-material/School';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
+import Card from '@mui/joy/Card';
 import Table from '@mui/joy/Table';
 import Button from '@mui/joy/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import Card from '@mui/joy/Card';
 import {Link as RouterLink} from 'react-router-dom';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
-import DoughnutChartComponent from '../../components/Admin/doughnutchart';
+import SmallCard from '../../components/Admin/Smallcards';
+import MultipleBarComponent from '../../components/Admin/MultipleBar';
+
+const AdminEvents = () => {
 
 
-const jobDataDoughnut1 = [
-    { id: 1, jobtitle: "Private Limited", count: 100 },
-    { id: 2, jobtitle: "Public Limited ", count: 50 },
-    { id: 3, jobtitle: "Government Agencies", count: 150 },
-    { id: 4, jobtitle: "Partnerships", count: 300 },
-  ];
-  
-  const jobDataDoughnut2 = [
-    { id: 1, jobtitle: "Tech Company", count: 120 },
-    { id: 2, jobtitle: "Consulting", count: 80 },
-    { id: 3, jobtitle: "Finance", count: 200 },
-    { id: 4, jobtitle: "Healthcare", count: 100 },
-  ];
+    const cardData = [
+        { icon: GroupsIcon, heading: 'Physical Events', count: 12},
+        { icon: PublicIcon, heading: 'Virtual Events', count: 5},
+        { icon: Diversity1Icon, heading: 'Meetups', count: 10},
+        { icon: SchoolIcon, heading: 'Workshops', count: 7},
+      ];
 
-  const companies = [
-    {
-      name: '99x',
-      status: 'Approved',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    },
-    {
-      name: 'IFS',
-      status: 'Declined',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    },
-    {
-      name: 'LSEG',
-      status: 'Approved',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    },
-    {
-      name: 'MASS',
-      status: 'Approved',
-      orgType: 'Public Limited',
-      IndustryType: 'Apparel'
-    },
-    {
-      name: 'Sysco Labs',
-      status: 'Approved',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    }
-  ];
+      const EventData = [
+        {
+        item1:'MeetUps',
+        item2:'3',
+        item3:'7'
+        
+        },
+        {
+        item1:'Workshops',
+        item2:'2',
+        item3:'5'
+        
+        },
+        
+        ];
 
-const AdminCompanies = () => {
+
+        const companies = [
+            {
+              name: '99x',
+              status: 'Approved',
+              orgType: 'Private Limited',
+              IndustryType: 'Information Technology'
+            },
+            {
+              name: 'IFS',
+              status: 'Declined',
+              orgType: 'Private Limited',
+              IndustryType: 'Information Technology'
+            },
+            {
+              name: 'LSEG',
+              status: 'Approved',
+              orgType: 'Private Limited',
+              IndustryType: 'Information Technology'
+            },
+            {
+              name: 'MASS',
+              status: 'Approved',
+              orgType: 'Public Limited',
+              IndustryType: 'Apparel'
+            },
+            {
+              name: 'Sysco Labs',
+              status: 'Approved',
+              orgType: 'Private Limited',
+              IndustryType: 'Information Technology'
+            }
+          ];
+      
   return (
+    
     <Box
     component="main"
              className="MainContent"
@@ -115,65 +132,47 @@ const AdminCompanies = () => {
                  <Link
                    underline="hover"
                    color="primary"
-                   href="/jobprovider/Dashboard/"
+                   href="/admin/Events/"
                    fontSize={12}
                    fontWeight={500}
                  >
-                   Company
+                   Events
                  </Link>
-                 
-                
-                
-               </Breadcrumbs>
+                </Breadcrumbs>
              </Box>
 
              <Box
-                sx={{
-                    width:'100%',
-                    display:'flex',
-                    flexDirection:'row',
-                    justifyContent:'space-around',
-                    marginTop:5,
-                   
-                  
-                    
-                }}
-                >
-                    <Box
-                    // sx={{ width: 400, height: 400 }}
-                    >
-                    <Typography level="h5" sx={{textAlign:'center'}}>Organization Types of Registerd Companies</Typography>
-                    <br />
-                    <Card
-                        sx={{
-                            display:'flex',
-                            alignItems:'center',
-                            justifyContent:'center',
-                            // width: '100%',
-                            // height: '100%',
-                        }}
-                    >
-                    <DoughnutChartComponent data={jobDataDoughnut1} />  
-                    </Card>  
-                    </Box>
-                    <Box
-                    // sx={{ width: 400, height: 400 }}
-                    >
-                    <Typography level="h5"sx={{textAlign:'center'}}>Industry Types of Registerd Companies</Typography>
-                    <br />
-                    <Card
-                     sx={{
+                    sx={{
                         display:'flex',
-                        alignItems:'center',
-                        justifyContent:'center',
-                        // width: '100%',
-                        // height: '100%',
+                        flexDirection:'row',
+                        width:'100%',
+                        justifyContent:'space-evenly'
                     }}
-                    >
-                    <DoughnutChartComponent data={jobDataDoughnut2} /> 
-                    </Card>  
-                    </Box>
-                
+                >
+                    {cardData.map((card, index) => (
+                    <SmallCard 
+                        key={index}
+                        icon={card.icon}
+                        heading={card.heading}
+                        count={card.count}
+            
+                        />
+                        ))}
+                </Box>
+                        
+                <Box
+                    sx={{
+                        
+                        mt:5,
+                        width:'60%',
+                        alignSelf:'center'
+                    }}
+                >
+                    
+                    <Card>
+                    <Typography level="h5" sx={{textAlign:'center'}}>Organization Types of Registerd Companies</Typography>
+                    <MultipleBarComponent data={EventData} style={{ width:'60%'}}/> 
+                  </Card> 
                 </Box>
 
                 <Box 
@@ -190,7 +189,7 @@ const AdminCompanies = () => {
                 sx={{
                     marginBottom:2
                 }}
-                >Registered Companies</Typography>
+                >Events</Typography>
                 <Table hoverRow >
       `         <thead color='primary'>
                 <tr>
@@ -221,9 +220,10 @@ const AdminCompanies = () => {
     </Table>
     </Card>
                 </Box>
-             
+
+                
              </Box>
   )
 }
 
-export default AdminCompanies
+export default AdminEvents
