@@ -3,10 +3,14 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/Home";
 
-//dashboard Layout
+// dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
 
-//jobseeker
+// jobprovider
+import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
+
+// jobseeker
+import JobSeekerHomeOverview from "../pages/jobseeker/JobSeekerHomeOverview";
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
 import Login from "../pages/Auth/Login";
 import ForgotPassword from "../pages/Auth/ForgetPassword";
@@ -55,10 +59,18 @@ const router = createBrowserRouter([
       },
     ],
   },
-
-
   {
-    path: "/Jobseeker",
+    path: "/jobprovider",
+    element: <DashboardLayout user="jobprovider" />,
+    children: [
+      {
+        path: "post-a-job",
+        element: <JpPostAJob />,
+      },
+    ],
+  },
+  {
+    path: "/jobseeker/setup",
     element: (
       <>
         <TopNav />
@@ -66,14 +78,7 @@ const router = createBrowserRouter([
         <JobSeekerSetup />
       </>
     ),
-    children: [
-      {
-        path: "Setup",
-        element: <JobSeekerSetup />,
-      },
-    ],
   },
-
   {
     path: "/jobseeker",
     element: (
@@ -85,13 +90,16 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/jobseeker",
-        element: <Navigate to="/jobseeker/home/" replace />,
+        path: "",
+        element: <Navigate to="home" replace />,
       },
-
       {
         path: "home",
         element: <JobSeekerHome />,
+      },
+      {
+        path: "overview",
+        element: <JobSeekerHomeOverview />,
       },
       {
         path: "applied-jobs",

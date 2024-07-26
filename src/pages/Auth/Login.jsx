@@ -87,7 +87,7 @@ function Login() {
       if (role === 'JobSeeker') {
         navigate("/jobseeker/home/");
       } else if (role === 'JobProvider') {
-        navigate("/jobprovider/home/");
+        navigate("/jobprovider/post-a-job/");
       } else if (role === 'Admin') {
         navigate("/admin/home/");
       }
