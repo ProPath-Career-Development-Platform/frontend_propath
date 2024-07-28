@@ -22,7 +22,11 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
-import TopNav from "../components/landingPage/navbar/TopNav";
+
+import Navbar1 from "../components/navbar/Navbar1";
+import EmployerSite from "../pages/landingPage/EmployerSite";
+import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+
 
 const router = createBrowserRouter([
   {
@@ -32,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "explorecompanies",
+        element: <ExploreCompanies />,
+      },
+      {
+        path: "employersite",
+        element: <EmployerSite />,
       },
       {
         path: "login",
@@ -73,7 +85,7 @@ const router = createBrowserRouter([
     path: "/jobseeker/setup",
     element: (
       <>
-        <TopNav />
+        {/* <TopNav /> */}
         <TopNavBar />
         <JobSeekerSetup />
       </>
@@ -83,7 +95,7 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        <TopNav />
+        {/* <TopNav /> */}
         <TopNavBar />
         <DashboardLayout user="jobseeker" />
       </>
@@ -115,6 +127,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+ 
 ]);
 
 export default router;

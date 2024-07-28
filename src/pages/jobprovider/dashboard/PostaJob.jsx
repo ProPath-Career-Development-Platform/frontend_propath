@@ -100,21 +100,22 @@ const Dashboard = () => {
   const [formData, setFormData] = useState({
     jobProviderId: getUserIdFromToken(),
     jobTitle: "",
-    tags: [], 
+    tags: [],
     jobRole: "",
-    minSalary: 0, 
-    maxSalary: 0, 
+    minSalary: "",
+    maxSalary: "",
     salaryType: "",
     education: "",
     experience: "",
     jobType: "",
     jobLocation: "",
-    vacancies: 0, 
+    vacancies: "",
     expiryDate: "",
     jobLevel: "",
     jobDescription: "",
-    // customizedForm: "",
-    // isCustomizedFormNeeded: false,
+    customizedForm: null,
+    isCustomizedFormNeeded: false,
+    customQuestions: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -148,9 +149,11 @@ const Dashboard = () => {
 
   const saveSurveyJson = (json, saveNo, callback) => {
     const jsonDataString = JSON.stringify(json);
+    console.log("Survey JSON:", jsonDataString); // Log the survey JSON
     setFormData((prevFormData) => ({
       ...prevFormData,
       customizedForm: jsonDataString,
+      customQuestions: json.pages[0].elements, // Adjust this line based on your actual survey structure
     }));
     callback(saveNo, true);
   };
@@ -239,8 +242,8 @@ const Dashboard = () => {
       console.log("Event or event.target is null");
     }
   };
-
   const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -259,19 +262,46 @@ const Dashboard = () => {
 
     console.log("Token from localStorage:", token); // Debug logging
 
+    // Check if customQuestions is already an object
+    let parsedCustomQuestions;
+    if (typeof formData.customQuestions === "string") {
+      try {
+        parsedCustomQuestions = JSON.parse(formData.customQuestions);
+      } catch (error) {
+        console.error("Invalid JSON in customQuestions:", formData.customQuestions);
+        return;
+      }
+    } else {
+      parsedCustomQuestions = formData.customQuestions;
+    }
+
+    // Transform customQuestions to match the expected DTO format
+    const transformedCustomQuestions = parsedCustomQuestions.map((question) => ({
+      questionText: question.name,
+    }));
+
+    const jobData = {
+      ...formData,
+      customQuestions: transformedCustomQuestions,
+      minSalary: Number(formData.minSalary),
+      maxSalary: Number(formData.maxSalary),
+      vacancies: Number(formData.vacancies),
+    };
+
+    console.log("Submitting job data: ", jobData);
+
     try {
       const response = await axios.post(
         "http://localhost:8080/jobprovider/post-a-job",
-        formData,
+        jobData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
         }
       );
-
-      console.log("Job posted successfully:", response.data);
+      console.log("Job posted successfully!", response.data);
+      navigate("login");
 
       if (plan === "basic" && postCount >= 1) {
         setOpen(true);
@@ -283,14 +313,13 @@ const Dashboard = () => {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
           setErrors(validationErrors);
-        } else {
-          navigate("login");
-        }
+        } 
       }
     } catch (error) {
       console.error("There was an error posting the job!", error);
     }
   };
+
 
   const renderValue = (selected) => (
     <Box sx={{ display: "flex", gap: "0.25rem" }}>
@@ -789,9 +818,7 @@ const Dashboard = () => {
               </FormControl>
             </Box>
 
-            {/* Swithch here for Survey */}
-
-            {/* <FormControl error={Boolean(errors.customizedForm)}>
+            <FormControl error={Boolean(errors.customizedForm)}>
               <Typography
                 sx={{ marginBottom: "1rem" }}
                 level="title-lg"
@@ -839,7 +866,7 @@ const Dashboard = () => {
               >
                 {creator && <SurveyCreatorComponent creator={creator} />}
               </Box>
-            </FormControl> */}
+            </FormControl>
 
             <Typography level="title-lg" sx={{ marginBottom: "1rem" }}>
               Job jobDescription
@@ -909,12 +936,12 @@ const Dashboard = () => {
           variant="soft"
           color="danger"
           open={surveyOpen}
-          onClose={() => setsurveyOpen(false)}
+          onClose={() => setSurveyOpen(false)}
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           startDecorator={<WarningAmberIcon />}
           endDecorator={
             <Button
-              onClick={() => setsurveyOpen(false)}
+              onClick={() => setSurveyOpen(false)}
               size="sm"
               variant="soft"
               color="danger"
