@@ -65,7 +65,6 @@ function JobSeekerSideBar() {
         sx={{
           minHeight: 0,
           overflow: "hidden auto",
-          flexGrow: 1,
           display: "flex",
           flexDirection: "column",
           [`& .${listItemButtonClasses.root}`]: {
@@ -82,6 +81,7 @@ function JobSeekerSideBar() {
             "--ListItem-radius": (theme) => theme.vars.radius.sm,
           }}
         >
+
           <ListItem>
             <ListItemButton
               component="a"
@@ -90,11 +90,25 @@ function JobSeekerSideBar() {
             >
               <LayersIcon />
               <ListItemContent>
-                <Typography level="title-sm">Overview</Typography>
+                <Typography level="title-sm">Home</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
 
+          <ListItem>
+            <ListItemButton
+              component="a"
+              href="/jobseeker/dashboard/"
+              selected={location.pathname === "/jobseeker/dashboard/"}
+            >
+              <LayersIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Dashboard</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+
+          
           <ListItem>
             <ListItemButton
               component="a"
@@ -140,6 +154,22 @@ function JobSeekerSideBar() {
 
           <ListItem>
             <ListItemButton
+              role="menuitem"
+              component="a"
+              href="/jobseeker/courses/"
+              selected={location.pathname === "/jobseeker/courses/"}
+            >
+              <NotificationsActiveIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Courses</Typography>
+              </ListItemContent>
+             
+            </ListItemButton>
+          </ListItem>
+          
+
+          <ListItem>
+            <ListItemButton
               component="a"
               href="/jobseeker/setup/"
               selected={location.pathname === "/jobseeker/setup/"}
@@ -152,7 +182,7 @@ function JobSeekerSideBar() {
           </ListItem>
         </List>
 
-        <Card
+        {/* <Card
           invertedColors
           variant="soft"
           color="warning"
@@ -176,10 +206,9 @@ function JobSeekerSideBar() {
           <Button size="sm" variant="solid">
             Upgrade plan
           </Button>
-        </Card>
-      </Box>
-      <Divider />
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        </Card> */}
+
+    <Box sx={{ display: "flex", gap: 1, alignItems: "center" , marginTop: "230px" }}>
         <Avatar
           variant="outlined"
           size="sm"
@@ -193,6 +222,10 @@ function JobSeekerSideBar() {
           <LogoutRoundedIcon />
         </IconButton>
       </Box>
+      </Box>
+      
+     
+     
     </>
   );
 }
