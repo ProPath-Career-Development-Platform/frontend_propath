@@ -142,17 +142,17 @@ const ChangePlan = () => {
             </ListItemDecorator>
             24/7 Critical support
           </ListItem>
-          {/* <ListItem>
+          <ListItem>
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            API Integration
-          </ListItem> */}
+            One Meetup or Workshop
+          </ListItem>
         </List>
         <Divider inset="none" />
         <CardActions>
           <Typography level="title-lg" sx={{ mr: 'auto' }} color="primary">
-            3.990€{' '}
+            1,000 LKR{' '}
             <Typography fontSize="sm" textColor="text.tertiary">
               / month
             </Typography>
@@ -170,7 +170,7 @@ const ChangePlan = () => {
                 <Box>
                <Card size="lg" variant="outlined">
         <Chip size="sm" variant="outlined" color="primary">
-          Recommended
+          RECOMMENDED
         </Chip>
         <Typography level="h2">Professional</Typography>
         <Divider inset="none" />
@@ -193,17 +193,17 @@ const ChangePlan = () => {
             </ListItemDecorator>
             24/7 Critical support
           </ListItem>
-          {/* <ListItem>
+          <ListItem>
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            
-          </ListItem> */}
+            3 Meetups or Workshps
+          </ListItem>
         </List>
         <Divider inset="none" />
         <CardActions>
           <Typography level="title-lg" sx={{ mr: 'auto' }} color="primary">
-            3.990€{' '}
+            5,000 LKR{' '}
             <Typography fontSize="sm" textColor="text.tertiary">
               / month
             </Typography>
@@ -221,7 +221,7 @@ const ChangePlan = () => {
                 <Box>
                <Card size="lg" variant="outlined">
         <Chip size="sm" variant="outlined" color="primary">
-            Premium
+            PREMIUM
         </Chip>
         <Typography level="h2">Professional</Typography>
         <Divider inset="none" />
@@ -254,7 +254,7 @@ const ChangePlan = () => {
         <Divider inset="none" />
         <CardActions>
           <Typography level="title-lg" sx={{ mr: 'auto' }} color="primary">
-            3.990€{' '}
+            10,000 LKR€{' '}
             <Typography fontSize="sm" textColor="text.tertiary">
               / month
             </Typography>

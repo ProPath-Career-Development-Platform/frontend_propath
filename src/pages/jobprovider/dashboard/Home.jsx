@@ -26,7 +26,14 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
+
 import Divider from '@mui/joy/Divider';
+import SmallCard from '../../../components/Admin/Smallcards';
+import HomeIcon from '@mui/icons-material/Home';
+import WorkIcon from '@mui/icons-material/Work';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import InsertInvitationTwoToneIcon from '@mui/icons-material/InsertInvitationTwoTone';
+
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -38,6 +45,14 @@ const rows = [
   createData('Techical Support Specialist', 'Active', 50, 24),
   createData('Junior Graphic Designer', 'Expire', 1000, 67),
   createData('Front End Developer', 'Active', 300, 49),
+];
+
+
+const cardData = [
+  { icon: HomeIcon, heading: 'Registered Companies', count: 560},
+  { icon: WorkIcon, heading: 'Jobs Posts', count: 120},
+  { icon: PeopleAltIcon, heading: 'Job Seekers', count: 3000},
+  { icon: InsertInvitationTwoToneIcon, heading: 'Registered Events', count: 75},
 ];
 
 const Home = () => {
@@ -116,7 +131,7 @@ const Home = () => {
             <Box sx={{  alignItems: 'center', marginTop:'20px' }}>
 
               <Typography color="primary" fontSize="lg" fontWeight="lg">
-                Hello, Company Name
+                Hello, IFS
               </Typography>
 
               <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
@@ -127,14 +142,24 @@ const Home = () => {
 
             {/* insights */}
 
-            <Box sx={{ width: '100%',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                        gap: 2,
-                        marginTop: '20px',
+            <Box sx={{   
+                        display:'flex',
+                        flexDirection:'row',
+                        width:'100%',
+                        justifyContent:'space-evenly',
+                        mt:4
+                   
             }}>
-
-            <Card variant="soft" color="primary"  invertedColors>
+                 {cardData.map((card, index) => (
+                    <SmallCard 
+                        key={index}
+                        icon={card.icon}
+                        heading={card.heading}
+                        count={card.count}
+            
+                        />
+                        ))}
+            {/* <Card variant="soft" color="primary"  invertedColors>
               <CardContent orientation="horizontal">
                 <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
@@ -174,7 +199,7 @@ const Home = () => {
                   See Jobs
                 </Button>
               </CardActions>
-            </Card>
+            </Card> */}
             </Box>
 
 

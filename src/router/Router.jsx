@@ -9,8 +9,8 @@ import JobDetail from "../pages/jobseeker/jobDetail";
 
 
 //jobprovider
-import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
-
+import JPCompnaySetup1 from "../pages/jobprovider/dashboard/CompanyInfo";
+import JPCompany from "../pages/jobprovider/dashboard/CompanyRegister"
 import JpHome from "../pages/jobprovider/dashboard/Home";
 import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
 import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
@@ -21,7 +21,12 @@ import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
 import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
+
+import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
+
+
 import JobDetails from "../pages/jobseeker/jobDetail";
+
 //jobseeker
 import JobSeekerDashboard from "../pages/jobseeker/JobSeekerDashboard";
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
@@ -45,6 +50,7 @@ import Profile from "../pages/jobseeker/profile";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
 import Workshops from "../pages/landingPage/Workshops";
 import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+
 
 
 //Admin
@@ -122,6 +128,11 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: "/jobprovider/plan-and-billing/Paynow",
+    element: <JpCheckout/>,
+    
+  },
 
   {
     path: "/jobprovider",
@@ -135,6 +146,10 @@ const router = createBrowserRouter([
          path:"home",
          element:<JpHome/>
          
+      },
+      {
+        path:"CompanyRegister",
+        element:<JPCompany/>
       },
       {
         path:"dashboard",
@@ -159,6 +174,10 @@ const router = createBrowserRouter([
       {
         path:"plan-and-billing/changePlan",
         element:<JpChangePlan/>
+      },
+      {
+        path:"plan-and-billing/Paynow",
+        element:<JpCheckout/>
       },
       {
         path:"meet-up",
