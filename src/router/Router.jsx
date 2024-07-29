@@ -47,6 +47,7 @@ import AdminCompanies from "../pages/Admin/AdminCompanies";
 import AdminUsers from "../pages/Admin/AdminUsers";
 import AdminJobs from "../pages/Admin/AdminJobs";
 import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
+import CPDcourses from '../pages/landingPage/CPDcourses';
 
 
 const router = createBrowserRouter([
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: "professionalmemberships",
         element: <ProfessionalMemberships />,
+      },
+      {
+        path: "cpdcourses",
+        element: <CPDcourses />,
       },
       {
         path: "login",
