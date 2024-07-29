@@ -57,11 +57,11 @@ export default function Interviewcart() {
       <CardContent>
         <Box sx={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
           alignItems: 'center',
         }} >
 
-        <CheckCircleOutlineIcon sx={{color:'green', fontSize:'50px', backgroundColor:'', display:'flex',justifyContent:'center' , flexDirection:'row'}}/>
+        <CheckCircleOutlineIcon sx={{color:'green', fontSize:'50px',}}/>
         </Box>
         <Typography level="title-lg" sx={{ textAlign: 'center' }}>Thank you! your meeting is confirmed.</Typography>
         <Box sx={{ display: 'flex', gap: 1, alignItem: 'center'}}>

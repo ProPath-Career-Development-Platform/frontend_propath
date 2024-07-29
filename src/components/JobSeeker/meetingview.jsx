@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React , {useState} from 'react'
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
@@ -18,9 +18,16 @@ import Select, { selectClasses } from '@mui/joy/Select';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import Grid from '@mui/joy/Grid';
+import GroupsSharpIcon from '@mui/icons-material/GroupsSharp';
 
 export default function Meetingview() {
     const time =["7.30am","8.30am","9.30am","10.30am","11.30am"]
+    const date =[['Mon','11','7 slots'],['Tue','12','7 slots'],['Wed','13','7 slots'],['Thu','14','7 slots'],['Fri','15','7 slots'],['Sat','16','7 slots'],['Sun','17','7 slots']]
+    const [selectedDate, setSelectedDate] = useState(-1); 
+    const [selectedTime, setSelectedTime] = useState(-1);
+    const [datenum, setDatenum] = useState(0);
+
   return (
     <Card
       variant="outlined"
@@ -34,6 +41,13 @@ export default function Meetingview() {
     >
       
       <CardContent>
+      <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }} >
+        <GroupsSharpIcon sx={{fontSize:'50px', color:'#814DDE'}}/>
+        </Box>
         <Typography sx={{marginLeft:'10px'}} level="title-lg">30 minute call with David Bromberg</Typography>
         <Typography sx={{marginLeft:'10px'}} level="body-sm">
         Let's schedule a quick call and jamp on the potential between
@@ -59,74 +73,64 @@ export default function Meetingview() {
         <Option value="October 2023">October 2023</Option>
         </Select>
         <ButtonGroup aria-label="outlined primary button group">
-      <Button>{<KeyboardArrowLeft />}</Button>
-      <Button>{<KeyboardArrowRight />}</Button>
+      <Button onClick={()=>(datenum!=0 && (setDatenum(datenum-4)))}>{<KeyboardArrowLeft />}</Button>
+      <Button onClick={()=>(datenum!=date.length-3 && (setDatenum(datenum+4)))}>{<KeyboardArrowRight />}</Button>
       
         </ButtonGroup>
         </Box>
-       {/* <Card
-      sx={{
-        boxShadow: 3,
-        width: 80,
-        height: 130,
-        maxWidth: '100%',
-        // to make the demo resizeable
-        overflow: 'auto',
-        resize: 'horizontal',
-      }}
-    >
-    
-      <div>
-        <Typography sx={{display:'flex',justifyContent:'center'}}level="title-lg">
-          Mon
-        </Typography>
-      </div>
-      <CardContent>
-        <Typography sx={{display:'flex',justifyContent:'center'}} level="title-lg">11</Typography>
-      </CardContent>
-      <CardActions>
-      <Typography sx={{display:'flex',alignItems:'center'}} level="body-sm">7 slots</Typography>
-      </CardActions>
-    </Card> */}
-    <Box sx={{margin:'10px'}}>
-    <Button sx={{width:'100px', height:'125px', display:'flex', flexDirection:'column', }} variant="outlined">
-    <Typography level="title-lg">Mon</Typography>
-        <Typography level="title-lg">11</Typography>
-        <Typography level="body-sm">7 slots</Typography>
-    </Button>
-    </Box>
-    <Box sx={{display:'flex', justifyContent:'space-between', marginBottom:'10px',marginLeft:'10px' }}>
-    <Select
-      varient="plain"
-      placeholder="Select city"
-      indicator={<KeyboardArrowDown />}
-      sx={{
-        width: 240,
-        color:'var(--joy-palette-primary-600)',
-        [`& .${selectClasses.indicator}`]: {
-          transition: '0.2s',
-          [`&.${selectClasses.expanded}`]: {
-            transform: 'rotate(-180deg)',
-          },
-        },
-      }}
-    >
-      <Option value="dog">colombo</Option>
-      <Option value="cat">Gampaha</Option>
-      <Option value="fish">Mathara</Option>
-      <Option value="bird">Galle</Option>
-    </Select>
-    <Typography sx={{display:'flex',justifyContent:'flex-end'}} level="title-md"><AccessTimeIcon/>30 min meeting</Typography>
-    </Box>
-    <Box sx={{display:'flex'}}>
-    {time.map((item)=>(
-        <Button sx={{width:'150px',marginLeft:'10px'}} variant="outlined">{item}</Button>
+    <Box 
+                          sx={{ 
+                            marginLeft:'10px',
+                            marginBottom:'20px',
+                            display: 'grid', 
+                            gridTemplateColumns: {
+                              xs: 'repeat(1, 1fr)', // 1 column for extra-small screens (mobile)
+                              sm: 'repeat(2, 1fr)', // 2 columns for small screens (tablet)
+                              md: 'repeat(4, 1fr)', // 3 columns for medium and larger screens (desktop)
+                            }, 
+                           
+                            gap: 1, 
+                            
+                          }}
+                        >
+                             {date.slice(datenum,datenum+4).map((item,index)=>(
+                                <Button onClick={()=>{setSelectedDate(index) ,setSelectedTime(-1)}} sx={{width:'100px', height:'125px', display:'flex', flexDirection:'column', backgroundColor:index==selectedDate?'Var(--joy-palette-primary-100)':'#fff' }} variant="outlined">
+                                <Typography level="title-lg">{item[0]}</Typography>
+                                    <Typography level="title-lg">{item[1]}</Typography>
+                                    <Typography level="body-sm">{item[2]}</Typography>
+                                </Button>
     ))}
-    {/* <Button sx={{width:'150px',marginLeft:'10px'}} variant="outlined">8.30am</Button>
-    <Button sx={{width:'150px',marginLeft:'10px'}} variant="outlined">9.30am</Button>
-    <Button sx={{width:'150px',marginLeft:'10px'}} variant="outlined">10.30am</Button>
-    <Button sx={{width:'150px',marginLeft:'10px'}} variant="outlined">11.30am</Button> */}
-    </Box>
+                        </Box>
+                        
+    
+    {selectedDate!=-1 && (
+        <Box>
+        <Box sx={{display:'flex', justifyContent:'center', marginBottom:'10px',marginLeft:'10px' }}>
+    
+        <Chip sx={{backgroundColor:'linear-gradient(to left, #E1CBFF , #fff, 200px)',marginBottom:"10px"}} >
+    
+    <Typography sx={{display:'flex',justifyContent:'center', color:'#814DDE', width:'400px',margin:'5px'}} level="title-md"><AccessTimeIcon sx={{color:'#814DDE',marginRight:'5px'}}/>Time Slots</Typography>
+    </Chip>
+        </Box>
+    <Box 
+                          sx={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: {
+                              xs: 'repeat(1, 1fr)', // 1 column for extra-small screens (mobile)
+                              sm: 'repeat(2, 1fr)', // 2 columns for small screens (tablet)
+                              md: 'repeat(3, 1fr)', // 3 columns for medium and larger screens (desktop)
+                            }, 
+                           
+                            gap: 1, 
+                            
+                          }}
+                        >
+                             {time.map((item, index)=>(
+        <Button onClick={()=>{setSelectedTime(index)}} sx={{width:'130px',marginLeft:'10px',backgroundColor:index==selectedTime?'Var(--joy-palette-primary-100)':'#fff'}} variant="outlined">{item}</Button>
+    ))}
+                        </Box>
+                        </Box>
+    )}
         </CardContent>
 
 
