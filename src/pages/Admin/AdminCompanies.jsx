@@ -10,6 +10,7 @@ import Button from '@mui/joy/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Card from '@mui/joy/Card';
 import {Link as RouterLink} from 'react-router-dom';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
 import DoughnutChartComponent from '../../components/Admin/doughnutchart';
@@ -190,14 +191,15 @@ const AdminCompanies = () => {
                     marginBottom:2
                 }}
                 >Registered Companies</Typography>
-                <Table hoverRow>
+                <Table hoverRow >
       `         <thead color='primary'>
                 <tr>
-                <th style={{ width: '20%' }}>Name</th>
+                <th>Name</th>
                 <th>Status</th>
                 <th>Organization Type</th>
                 <th>Industry Type</th>
-                <th></th>
+                <th style={{ width: '12%' }}></th>
+                <th style={{ width: '12%' }}></th>
                 </tr>
                  </thead>
                 <tbody>
@@ -212,6 +214,7 @@ const AdminCompanies = () => {
                         component= {RouterLink}
                         to = "/admin/RegisterdCompany/info"
                 >View</Button></td>
+                 <td><Button startDecorator={<DeleteForeverIcon />} size="sm" color="danger">Remove</Button></td>
                 </tr>
         ))}
       </tbody>

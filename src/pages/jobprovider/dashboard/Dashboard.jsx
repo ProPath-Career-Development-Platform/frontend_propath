@@ -10,10 +10,19 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import Box from '@mui/joy/Box';
 import { Container } from '@mui/material';
 import { typographyClasses } from '@mui/joy/Typography';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
 
 
 
 const Dashboard = () => {
+
+  const navigate = useNavigate();
+
+  const handleSignInClick = () => {
+    navigate('/jobprovider/Setup');
+  };
+
   return (
     
     <Box
@@ -78,13 +87,13 @@ const Dashboard = () => {
               <Typography level="h2" component="h1">
                 Dashboard
               </Typography>
-              <Button
+              {/* <Button
                 color="primary"
                 startDecorator={<DownloadRoundedIcon />}
                 size="sm"
               >
                 Test button
-              </Button>
+              </Button> */}
             </Box>
 
             <Container sx={(theme) => ({
@@ -92,11 +101,12 @@ const Dashboard = () => {
         overflow: 'auto',
         maxHeight: 'calc(100vh - 64px)',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
         borderRadius: '10px',
+        mt:4,
         padding: '16px',
-        border: '1px solid #e0e0e0',
+        border: '2px solid #814DDE',
         py: 10,
         gap: 4,
         [theme.breakpoints.up(834)]: {
@@ -115,10 +125,12 @@ const Dashboard = () => {
           alignItems: 'center',
           gap: '1rem',
           maxWidth: '50ch',
+          width:'100%',
+          
           textAlign: 'center',
           flexShrink: 999,
           [theme.breakpoints.up(834)]: {
-            minWidth: 420,
+            minWidth: 500,
             alignItems: 'flex-start',
             textAlign: 'initial',
           },
@@ -127,36 +139,48 @@ const Dashboard = () => {
           },
         })}
       >
-
-<Typography color="primary" fontSize="lg" fontWeight="lg">
-        Dashboard page
+        <Box>
+          <img src="/logonew.png" alt="" style={{width:'300px',height:'70px'}} />
+        </Box>
+      <Typography color="primary" fontSize="m" fontWeight="lg">
+        Where Talents Meet Opportunity
       </Typography>
       <Typography
-        level="h1"
-        fontWeight="xl"
+        level="h2"
+        fontWeight="l"
         fontSize="clamp(1.875rem, 1.3636rem + 2.1818vw, 3rem)"
       >
-        A large headlinerer about our product features & services
+       Register your Company To Startup
       </Typography>
-      <Typography fontSize="lg" textColor="text.secondary" lineHeight="lg">
+      {/* <Typography fontSize="lg" textColor="text.secondary" lineHeight="lg">
         Dashboard Pgae
-      </Typography>
-      <Button size="lg" endDecorator={<ArrowForward fontSize="xl" />}>
+      </Typography> */}
+      <Button size="lg" endDecorator={<ArrowForward fontSize="xl" />} onClick={handleSignInClick}>
         Get Started
       </Button>
-      <Typography>
-        Already a member? <Link fontWeight="lg">Sign in</Link>
-      </Typography>
+      {/* <Typography>
+        Already a member?  <Link
+      component="button"
+      fontWeight="lg"
+      onClick={handleSignInClick}
+    >
+      Sign in
+    </Link>
+      </Typography> */}
      
 
   
       </Box>
 
-
-              <Typography >
-                This is Dashboard page
-              </Typography>
-
+                <Box
+                sx={{
+                  
+                  height:'100%'
+                }}
+                
+                >
+              <img src="/new.jpg" alt="" style ={{borderRadius:'5px',height:'370px',width:'550px'}} />
+              </Box>
 
             </Container>
 
