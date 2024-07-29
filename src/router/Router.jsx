@@ -6,7 +6,7 @@ import Home from "../pages/Home";
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
 import JobDetail from "../pages/jobseeker/jobDetail";
-
+import JobScore from '../components/JobSeeker/jobScore';
 
 //jobprovider
 import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
@@ -201,7 +201,7 @@ const router = createBrowserRouter([
         
         <Navbar1 />
         {/* <TopNav /> */}
-        <TopNavBar />
+     
         <DashboardLayout user="jobseeker" />
         
       </>
@@ -251,7 +251,11 @@ const router = createBrowserRouter([
       {
         path : "profile",
         element : <Profile/>
-      }
+      },
+      {
+        path:"JobScore",
+        element:<JobScore/>
+      },
 
       
     ],
@@ -305,6 +309,7 @@ const router = createBrowserRouter([
         path:"Interviews",
         element:<AdminInterviews/>
       },
+      
     ],
   },
  
