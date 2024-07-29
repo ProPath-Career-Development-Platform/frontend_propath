@@ -8,8 +8,8 @@ import DashboardLayout from "../layout/Dashboard";
 
 
 //jobprovider
-import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
-
+import JPCompnaySetup1 from "../pages/jobprovider/dashboard/CompanyInfo";
+import JPCompany from "../pages/jobprovider/dashboard/CompanyRegister"
 import JpHome from "../pages/jobprovider/dashboard/Home";
 import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
 import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
@@ -20,6 +20,7 @@ import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
 import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
+import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
 
 //jobseeker
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
@@ -37,6 +38,7 @@ import TopNavBar from "../components/JobSeeker/TopNavBar";
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+
 
 
 //Admin
@@ -106,6 +108,11 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: "/jobprovider/plan-and-billing/Paynow",
+    element: <JpCheckout/>,
+    
+  },
 
   {
     path: "/jobprovider",
@@ -119,6 +126,10 @@ const router = createBrowserRouter([
          path:"home",
          element:<JpHome/>
          
+      },
+      {
+        path:"CompanyRegister",
+        element:<JPCompany/>
       },
       {
         path:"dashboard",
@@ -143,6 +154,10 @@ const router = createBrowserRouter([
       {
         path:"plan-and-billing/changePlan",
         element:<JpChangePlan/>
+      },
+      {
+        path:"plan-and-billing/Paynow",
+        element:<JpCheckout/>
       },
       {
         path:"meet-up",

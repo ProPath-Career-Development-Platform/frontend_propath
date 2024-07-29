@@ -196,7 +196,12 @@ function PlanAndBilling() {
                                   
                                   >Package Started: <Typography fontWeight="md">Jan 28, 2024</Typography></Typography>
 
-                                <Button variant="solid" size ="md" endDecorator={<PaymentIcon/>}>Pay Now </Button>
+                                <Button 
+                                variant="solid" size ="md" endDecorator={<PaymentIcon/>}  
+                                component= {RouterLink}
+                                to = "/jobprovider/plan-and-billing/Paynow">
+                                  Pay Now 
+                                </Button>
 
                         </CardContent>
 

@@ -1,3 +1,13 @@
+
+
+import Breadcrumbs from '@mui/joy/Breadcrumbs';
+// import Box from '@mui/joy/Box';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+// import Link from '@mui/joy/Link';
+// import Typography from '@mui/joy/Typography';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import Divider from '@mui/joy/Divider';
+
 import React, { useState, useRef} from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -43,7 +53,6 @@ import Check from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
 import { getToken } from '../../../pages/Auth/Auth';
 
-
 import axios from 'axios';
 
 
@@ -56,365 +65,420 @@ export const RegisterCompany = (companyData, token) => {
   });
 };
 
-export default function NavigationPanel() {
 
+
+const CompanyRegister = () => {
+
+
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+      companyName: '',
+      aboutUs: '',
+      logoImg: null,
+      bannerImg: null,
+      organizationType: '',
+      industryType: '',
+      establishedDate: '',
+      companyWebsite: '',
+      companyVision: '',
+      location:'',
+      contactNumber:'',
+      email:'',
+    });
   
-
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    companyName: '',
-    aboutUs: '',
-    logoImg: null,
-    bannerImg: null,
-    organizationType: '',
-    industryType: '',
-    establishedDate: '',
-    companyWebsite: '',
-    companyVision: '',
-    location:'',
-    contactNumber:'',
-    email:'',
-  });
-
-  const [error, setError] = useState({});
-  const [highlightLogo, setHighlightLogo] = useState(false);
-  const [highlightBanner, setHighlightBanner] = useState(false);
-
-  const inputFileRef = useRef(null);
-  const inputBannerRef = useRef(null);
-
+    const [error, setError] = useState({});
+    const [highlightLogo, setHighlightLogo] = useState(false);
+    const [highlightBanner, setHighlightBanner] = useState(false);
   
-
-  // const handleInputChange = (event) => {
+    const inputFileRef = useRef(null);
+    const inputBannerRef = useRef(null);
+  
+    
+  
+    // const handleInputChange = (event) => {
+    //   const { name, value } = event.target;
+    //   if (error[name]) {
+    //     setError((prevState) => {
+    //       const newErrors = { ...prevState };
+    //       delete newErrors[name];
+    //       return newErrors;
+    //     });
+    //   }
+    //   setFormData({ ...formData, [name]: value });
+    // };
+  
+  //   const handleInputChange = (event) => {
   //   const { name, value } = event.target;
-  //   if (error[name]) {
-  //     setError((prevState) => {
-  //       const newErrors = { ...prevState };
-  //       delete newErrors[name];
-  //       return newErrors;
-  //     });
-  //   }
-  //   setFormData({ ...formData, [name]: value });
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
   // };
-
-//   const handleInputChange = (event) => {
-//   const { name, value } = event.target;
-//   setFormData((prevData) => ({
-//     ...prevData,
-//     [name]: value,
-//   }));
-// };
-
-  // const handleInputChange = (event) => {
-  //   if (event && event.target) {
-  //     const { name, value } = event.target;
-  //     console.log(`Name: ${name}, Value: ${value}`); // Debug log
   
-  //     if (error[name]) {
-  //       setError((prevState) => {
-  //         const newErrors = { ...prevState };
-  //         delete newErrors[name];
-  //         return newErrors;
-  //       });
-  //     }
-  //     setFormData({ ...formData, [name]: value });
-  //   } else {
-  //     console.error('handleInputChange received an invalid event:', event);
-  //   }
-  // };
-
-  const handleInputChange = (event) => {
-    if (event && event.target) {
-      const { name, value } = event.target;
-      console.log(`Name: ${name}, Value: ${value}`); // Debug log
+    // const handleInputChange = (event) => {
+    //   if (event && event.target) {
+    //     const { name, value } = event.target;
+    //     console.log(`Name: ${name}, Value: ${value}`); // Debug log
+    
+    //     if (error[name]) {
+    //       setError((prevState) => {
+    //         const newErrors = { ...prevState };
+    //         delete newErrors[name];
+    //         return newErrors;
+    //       });
+    //     }
+    //     setFormData({ ...formData, [name]: value });
+    //   } else {
+    //     console.error('handleInputChange received an invalid event:', event);
+    //   }
+    // };
   
-      if (error[name]) {
-        setError((prevState) => {
-          const newErrors = { ...prevState };
-          delete newErrors[name];
-          return newErrors;
-        });
+    const handleInputChange = (event) => {
+      if (event && event.target) {
+        const { name, value } = event.target;
+        console.log(`Name: ${name}, Value: ${value}`); // Debug log
+    
+        if (error[name]) {
+          setError((prevState) => {
+            const newErrors = { ...prevState };
+            delete newErrors[name];
+            return newErrors;
+          });
+        }
+        setFormData((prevState) => ({
+          ...prevState,
+          [name]: value
+        }));
+      } else {
+        console.error('handleInputChange received an invalid event:', event);
       }
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value
+    };
+  
+    const handleChangeOrgType = (event) => {
+      const selectedValue = event.target.value;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        organizationType: selectedValue,
       }));
-    } else {
-      console.error('handleInputChange received an invalid event:', event);
-    }
-  };
-
-  const handleChangeOrgType = (event) => {
-    const selectedValue = event.target.value;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      organizationType: selectedValue,
-    }));
-    console.log(formData.organizationType);
-  };
-
+      console.log(formData.organizationType);
+    };
   
-
-  const handleChangeIndType = (event) => {
-    const selectedValue = event.target.value;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      industryType: selectedValue,
-    }));
     
-  };
-
-
   
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        setError((prevState) => ({
-          ...prevState,
-          logoImg: 'Image size must be less than 2MB',
-        }));
-      } else {
-        setFormData({ ...formData, logoImg: URL.createObjectURL(file) });
-        setHighlightLogo(false);
-      }
-    }
-  };
-
-  const handleBannerUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError((prevState) => ({
-          ...prevState,
-          bannerImg: 'Image size must be less than 5MB',
-        }));
-      } else {
-        setFormData({ ...formData, bannerImg: URL.createObjectURL(file) });
-        setHighlightBanner(false);
-      }
-    }
-  };
-
-  const handleSubmit1 = () => {
-    let hasError = false;
-    const newErrors = {};
-
-    if (!formData.companyName) {
-      newErrors.companyName = 'Company Name is required';
-      hasError = true;
-    }
-    if (!formData.aboutUs) {
-      newErrors.aboutUs = 'About Us is required';
-      hasError = true;
-    }
-    if (!formData.logoImg) {
-      setHighlightLogo(true);
-      hasError = true;
-    }
-    if (!formData.bannerImg) {
-      setHighlightBanner(true);
-      hasError = true;
-    }
-
-    if (hasError) {
-      setError(newErrors);
-    } else {
+    const handleChangeIndType = (event) => {
+      const selectedValue = event.target.value;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        industryType: selectedValue,
+      }));
       
-      setActiveTab("2");
-    }
-  };
-
-  const handleSubmit2 = () => {
-    let hasError = false;
-    const newErrors = {};
-
-    // console.log("Form Data:", formData);
-
-    if (!formData.organizationType) {
-      newErrors.organizationType = 'Organization Type is required';
-      hasError = true;
-    }
-    if (!formData.industryType) {
-      newErrors.industryType = 'Industry Type is required';
-      hasError = true;
-
-    }
-    if (!formData.establishedDate) {
-      newErrors.establishedDate = 'Established Date is required';
-      hasError = true;
-    }
-    if (!formData.companyWebsite) {
-      newErrors.companyWebsite = 'Company Website is required';
-      hasError = true;
-    }
-    if (!formData.companyVision) {
-      newErrors.companyVision = 'Company Vision is required';
-      hasError = true;
-    }
-
-
-    if (hasError) {
-      setError(newErrors);
-    } else {
-      
-      setActiveTab("3");
-    }
-  };
-
-  const haddlesubmit3 =()=>{
+    };
+  
+  
     
-    setActiveTab("4");
-  };
-
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  const handleSubmit4 = async (event) => {
-    event.preventDefault();
-    let hasError = false;
-    const newErrors = {};
-  
-    if (!formData.location) {
-      newErrors.location = 'Organization Location is required';
-      hasError = true;
-    }
-    if (!formData.contactNumber) {
-      newErrors.contactNumber = 'Contact Number is required';
-      hasError = true;
-    }
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-      hasError = true;
-    }
-    if(!emailPattern.test(formData.email)){
-      newErrors.email = 'Enter a valid Email Address!';
-      hasError = true;
-    }
-    if (hasError) {
-      setError(newErrors);
-    } else {
-      try {
-        const companyData = {
-          companyName: formData.companyName,
-          aboutUs: formData.aboutUs,
-          logoImg: formData.logoImg, // Assuming this is a URL or base64 string
-          bannerImg: formData.bannerImg, // Assuming this is a URL or base64 string
-          organizationType: formData.organizationType,
-          industryType: formData.industryType,
-          establishedDate: formData.establishedDate,
-          companyWebsite: formData.companyWebsite,
-          companyVision: formData.companyVision,
-          location: formData.location,
-          contactNumber: formData.contactNumber,
-          email: formData.email,
-        };
-
-        const token = getToken();
-        console.log(token);
-        if (!token) {
-          console.error('No valid token found');
-          return;
-        }
-
-  
-        // Submit the form data
-        const response = await RegisterCompany(companyData,token);
-        console.log(response.data);
-        navigate('/jobprovider/home/');
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        if (error.response) {
-          console.error('Response data:', error.response.data);
-          console.error('Response status:', error.response.status);
-          console.error('Response headers:', error.response.headers);
+    const handleImageUpload = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          setError((prevState) => ({
+            ...prevState,
+            logoImg: 'Image size must be less than 2MB',
+          }));
+        } else {
+          setFormData({ ...formData, logoImg: URL.createObjectURL(file) });
+          setHighlightLogo(false);
         }
       }
-    }
-  };
+    };
   
-
+    const handleBannerUpload = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          setError((prevState) => ({
+            ...prevState,
+            bannerImg: 'Image size must be less than 5MB',
+          }));
+        } else {
+          setFormData({ ...formData, bannerImg: URL.createObjectURL(file) });
+          setHighlightBanner(false);
+        }
+      }
+    };
   
-
-
-
+    const handleSubmit1 = () => {
+      let hasError = false;
+      const newErrors = {};
+  
+      if (!formData.companyName) {
+        newErrors.companyName = 'Company Name is required';
+        hasError = true;
+      }
+      if (!formData.aboutUs) {
+        newErrors.aboutUs = 'About Us is required';
+        hasError = true;
+      }
+      if (!formData.logoImg) {
+        setHighlightLogo(true);
+        hasError = true;
+      }
+      if (!formData.bannerImg) {
+        setHighlightBanner(true);
+        hasError = true;
+      }
+  
+      if (hasError) {
+        setError(newErrors);
+      } else {
+        
+        setActiveTab("2");
+      }
+    };
+  
+    const handleSubmit2 = () => {
+      let hasError = false;
+      const newErrors = {};
+  
+      // console.log("Form Data:", formData);
+  
+      if (!formData.organizationType) {
+        newErrors.organizationType = 'Organization Type is required';
+        hasError = true;
+      }
+      if (!formData.industryType) {
+        newErrors.industryType = 'Industry Type is required';
+        hasError = true;
+  
+      }
+      if (!formData.establishedDate) {
+        newErrors.establishedDate = 'Established Date is required';
+        hasError = true;
+      }
+      if (!formData.companyWebsite) {
+        newErrors.companyWebsite = 'Company Website is required';
+        hasError = true;
+      }
+      if (!formData.companyVision) {
+        newErrors.companyVision = 'Company Vision is required';
+        hasError = true;
+      }
+  
+  
+      if (hasError) {
+        setError(newErrors);
+      } else {
+        
+        setActiveTab("3");
+      }
+    };
+  
+    const haddlesubmit3 =()=>{
+      
+      setActiveTab("4");
+    };
+  
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    const handleSubmit4 = async (event) => {
+      event.preventDefault();
+      let hasError = false;
+      const newErrors = {};
+    
+      if (!formData.location) {
+        newErrors.location = 'Organization Location is required';
+        hasError = true;
+      }
+      if (!formData.contactNumber) {
+        newErrors.contactNumber = 'Contact Number is required';
+        hasError = true;
+      }
+      if (!formData.email) {
+        newErrors.email = 'Email is required';
+        hasError = true;
+      }
+      if(!emailPattern.test(formData.email)){
+        newErrors.email = 'Enter a valid Email Address!';
+        hasError = true;
+      }
+      if (hasError) {
+        setError(newErrors);
+      } else {
+        try {
+          const companyData = {
+            companyName: formData.companyName,
+            aboutUs: formData.aboutUs,
+            logoImg: formData.logoImg, // Assuming this is a URL or base64 string
+            bannerImg: formData.bannerImg, // Assuming this is a URL or base64 string
+            organizationType: formData.organizationType,
+            industryType: formData.industryType,
+            establishedDate: formData.establishedDate,
+            companyWebsite: formData.companyWebsite,
+            companyVision: formData.companyVision,
+            location: formData.location,
+            contactNumber: formData.contactNumber,
+            email: formData.email,
+          };
+  
+          const token = getToken();
+          console.log(token);
+          if (!token) {
+            console.error('No valid token found');
+            return;
+          }
   
     
-  const [activeTab, setActiveTab] = useState("1");
-
-  const handleChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
-
-  
-
-
-  const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState('');
-  // const inputFileRef = useRef(null);
-
-  
-
-  const [bannerImage, setBannerImage] = useState(null);
-  const [bannerImageName, setBannerImageName] = useState('');
-  const inputFileRef2 = useRef(null);
-
-  
-
-  const today = new Date().toISOString().split('T')[0]; 
-
-
-const [italic, setItalic] = React.useState(false);
-  const [fontWeight, setFontWeight] = React.useState('normal');
-  const [anchorEl, setAnchorEl] = React.useState(null);const [underline, setUnderline] = React.useState(false);
-  const [bulletPoints, setBulletPoints] = React.useState(false);
-  const [link, setLink] = React.useState(false);
-
- 
-  
-
-
-  const [links, setLinks] = useState([
-    { platform: 'Facebook', url: '' },
-    { platform: 'Instagram', url: '' },
-    { platform: 'Linkedin', url: '' },
-  ]);
-
-  const handleSocialChange = (index, event) => {
-    const newLinks = [...links];
-    newLinks[index].platform = event.target.value;
-    setLinks(newLinks);
-  };
-
-  const handleUrlChange = (index, event) => {
-    const newLinks = [...links];
-    newLinks[index].url = event.target.value;
-    setLinks(newLinks);
-  };
-
-  const handleAddLink = () => {
-    setLinks([...links, { platform: 'Facebook', url: '' }]);
-  };
-
-  const handleCancel = (index) => {
-    const newLinks = [...links];
-    newLinks.splice(index, 1);
-    setLinks(newLinks);
-  };
-
-
-  
-
-
- 
-
-  
- 
+          // Submit the form data
+          const response = await RegisterCompany(companyData,token);
+          console.log(response.data);
+          navigate('/jobprovider/home/');
+        } catch (error) {
+          console.error('Error submitting form:', error);
+          if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+          }
+        }
+      }
+    };
+    
   
     
   
+  
+  
+    
+      
+    const [activeTab, setActiveTab] = useState("1");
+  
+    const handleChange = (event, newValue) => {
+      setActiveTab(newValue);
+    };
+  
+    
+  
+  
+    const [image, setImage] = useState(null);
+    const [imageName, setImageName] = useState('');
+    // const inputFileRef = useRef(null);
+  
+    
+  
+    const [bannerImage, setBannerImage] = useState(null);
+    const [bannerImageName, setBannerImageName] = useState('');
+    const inputFileRef2 = useRef(null);
+  
+    
+  
+    const today = new Date().toISOString().split('T')[0]; 
+  
+  
+  const [italic, setItalic] = React.useState(false);
+    const [fontWeight, setFontWeight] = React.useState('normal');
+    const [anchorEl, setAnchorEl] = React.useState(null);const [underline, setUnderline] = React.useState(false);
+    const [bulletPoints, setBulletPoints] = React.useState(false);
+    const [link, setLink] = React.useState(false);
+  
+   
+    
+  
+  
+    const [links, setLinks] = useState([
+      { platform: 'Facebook', url: '' },
+      { platform: 'Instagram', url: '' },
+      { platform: 'Linkedin', url: '' },
+    ]);
+  
+    const handleSocialChange = (index, event) => {
+      const newLinks = [...links];
+      newLinks[index].platform = event.target.value;
+      setLinks(newLinks);
+    };
+  
+    const handleUrlChange = (index, event) => {
+      const newLinks = [...links];
+      newLinks[index].url = event.target.value;
+      setLinks(newLinks);
+    };
+  
+    const handleAddLink = () => {
+      setLinks([...links, { platform: 'Facebook', url: '' }]);
+    };
+  
+    const handleCancel = (index) => {
+      const newLinks = [...links];
+      newLinks.splice(index, 1);
+      setLinks(newLinks);
+    };
+    
   return (
-    <Box sx={{ width: '100%', typography: 'body1',mt:6}}>
+    <Box
+   component="main"
+            className="MainContent"
+            sx={{
+              px: { xs: 2, md: 6 },
+              pt: {
+                xs: 'calc(12px + var(--Header-height))',
+                sm: 'calc(12px + var(--Header-height))',
+                md: 3,
+              },
+              pb: { xs: 2, sm: 2, md: 3 },
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minWidth: 0,
+              height: '100dvh',
+              gap: 1,
+              overflow: 'auto',
+              maxHeight: 'calc(100vh - 10px)',
+            }}
+    >
+              <Box>
+              <Breadcrumbs
+                size="sm"
+                aria-label="breadcrumbs"
+                separator={<ChevronRightRoundedIcon fontSize="sm" />}
+                sx={{ pl: 0 }}
+              >
+                <Link
+                  underline="none"
+                  color="neutral"
+                  href="#some-link"
+                  aria-label="Home"
+                >
+                  <HomeRoundedIcon />
+                </Link>
+                <Link
+                  underline="hover"
+                  color="neutral"
+                  href="/jobprovider/Dashboard/"
+                  fontSize={12}
+                  fontWeight={500}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  underline="hover"
+                  color="neutral"
+                  href="/jobprovider/my-jobs/"
+                  fontSize={12}
+                  fontWeight={500}
+                >
+                  My Jobs
+                </Link>
+                <Typography color="neutral" fontWeight={500} fontSize={12}>
+                  UI/UX Designer
+                </Typography>
+                <Typography color="primary" fontWeight={500} fontSize={12}>
+                  Applications
+                </Typography>
+              </Breadcrumbs>
+            </Box>
+
+            <Box>
+
+            <Box sx={{ width: '100%', typography: 'body1',mt:6}}>
       <form  onSubmit={handleSubmit4}>
       <TabContext value={activeTab} centered>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
@@ -1557,6 +1621,15 @@ const [italic, setItalic] = React.useState(false);
       </TabContext>
       </form>
     </Box>
-    
-  );
+
+
+
+
+
+                
+            </Box>
+            </Box>
+  )
 }
+
+export default CompanyRegister

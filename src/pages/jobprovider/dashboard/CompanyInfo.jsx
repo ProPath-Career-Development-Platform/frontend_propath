@@ -1,8 +1,10 @@
 import React from 'react'
 import Navbar1 from '../../../components/navbar/Navbar1'
 import NavigationPanel from '../../../components/jobprovider/CompanySetup1/NavigationPanel'
+
 import '../../../index.css'
 import Box from '@mui/material/Box';
+import DashboardLayout from "../../../layout/Dashboard";
 
 
 
@@ -23,6 +25,7 @@ const CompanyInfo = () => {
        
       <Box sx={{ width: '100%', height:'100'}} >
       <Navbar1/> 
+      {/* <DashboardLayout/> */}
       <NavigationPanel/>
       </Box>
      
