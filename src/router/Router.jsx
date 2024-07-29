@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
+import JobDetail from "../pages/jobseeker/jobDetail";
 
 
 //jobprovider
@@ -20,8 +21,9 @@ import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
 import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
-
+import JobDetails from "../pages/jobseeker/jobDetail";
 //jobseeker
+import JobSeekerDashboard from "../pages/jobseeker/JobSeekerDashboard";
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
 import Login from "../pages/Auth/Login";
 import ForgotPassword from "../pages/Auth/ForgetPassword";
@@ -36,6 +38,10 @@ import TopNavBar from "../components/JobSeeker/TopNavBar";
 
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
+import Courses from "../pages/jobseeker/courses";
+import Course from "../pages/jobseeker/course";
+import Footer from "../components/landingPage/footer/Footer";
+import Profile from "../pages/jobseeker/profile";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
 import Workshops from "../pages/landingPage/Workshops";
 import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
@@ -101,6 +107,7 @@ const router = createBrowserRouter([
         path: "topnavbar",
         element: <TopNavBar />,
       },
+      
     ],
   },
 
@@ -172,9 +179,11 @@ const router = createBrowserRouter([
     path: "/Jobseeker",
     element: (
       <>
+        
         {/* <TopNav /> */}
         <TopNavBar />
         <JobSeekerSetup />
+       
       </>
     ),
     children: [
@@ -189,9 +198,12 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
+        
+        <Navbar1 />
         {/* <TopNav /> */}
         <TopNavBar />
         <DashboardLayout user="jobseeker" />
+        
       </>
     ),
     children: [
@@ -205,6 +217,10 @@ const router = createBrowserRouter([
         element: <JobSeekerHome />,
       },
       {
+        path: "dashboard",
+        element: <JobSeekerDashboard />,
+      },
+      {
         path: "applied-jobs",
         element: <JsAppliedJobs />,
       },
@@ -216,6 +232,28 @@ const router = createBrowserRouter([
         path: "job-alert",
         element: <JsJobAlert />,
       },
+      
+      {
+        path: "JobDetails",
+        element: <JobDetail />,
+      },
+
+      {
+        path: "Courses",
+        element: <Courses />,
+      },
+
+      {
+        path: "courses/course",
+        element: <Course />,
+      },
+
+      {
+        path : "profile",
+        element : <Profile/>
+      }
+
+      
     ],
   },
 
