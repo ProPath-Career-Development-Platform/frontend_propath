@@ -1,5 +1,4 @@
 import React from 'react'
-import {Button, Link} from "@nextui-org/react";
 import bgimage from '/exploreCompanies.jpg'
 import {Input} from "@nextui-org/react";
 import { IoMdSearch } from "react-icons/io";

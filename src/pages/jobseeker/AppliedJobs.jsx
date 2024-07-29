@@ -133,8 +133,11 @@ const AppliedJobs = () => {
         minWidth: 0,
         height: "100dvh",
         gap: 1,
-        overflow: "auto",
         maxHeight: "calc(100vh - 10px)",
+        overflow: 'auto ',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -270,8 +273,7 @@ const AppliedJobs = () => {
           justifyContent: "center",
           gap: 2,
           marginTop: 2,
-          position: "fixed",
-          marginLeft: "30%",
+          position: "relative",
           bottom: 0,
           pb: 3, 
           backgroundColor: "inherit", 

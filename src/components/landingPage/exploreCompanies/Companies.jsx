@@ -11,7 +11,7 @@ const Companies = () => {
           <p className='text-purple4 font-bold text-3xl'>Explore companies</p>
           <p className="mb-5 text-grey1 text-lg font-light">Learn about new jobs, reviews, company culture, perks and benefits.</p>
           </div>
-          <Button as={Link} className='bg-white outline-purple1 text-purple1 font-semibold py-6 mt-2' href="#" variant="flat">
+          <Button as={Link} className='bg-white outline-purple1 text-purple1 font-semibold mt-2' href="#" variant="flat">
           View all<IoArrowForward/>
           </Button>
         </div>
