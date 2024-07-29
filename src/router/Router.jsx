@@ -43,14 +43,10 @@ import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 
 import Navbar1 from "../components/navbar/Navbar1";
-import EmployerSite from "../pages/landingPage/EmployerSite";
 import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
-import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
-import Workshops from "../pages/landingPage/Workshops";
-import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 
 
 
@@ -63,6 +59,15 @@ import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
 import AdminEvents from '../pages/Admin/AdminEvents'
 import AdminCourses from '../pages/Admin/AdminCourses';
 import AdminInterviews from '../pages/Admin/AdminInterviews';
+
+
+//landing page
+import CPDcourses from '../pages/landingPage/CPDcourses';
+import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+import Workshops from "../pages/landingPage/Workshops";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+import EmployerSite from "../pages/landingPage/EmployerSite";
+
 
 
 const router = createBrowserRouter([
@@ -89,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "professionalmemberships",
         element: <ProfessionalMemberships />,
+      },
+      {
+        path: "cpdcourses",
+        element: <CPDcourses />,
       },
       {
         path: "login",
