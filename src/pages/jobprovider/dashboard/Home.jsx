@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -33,6 +33,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import WorkIcon from '@mui/icons-material/Work';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import InsertInvitationTwoToneIcon from '@mui/icons-material/InsertInvitationTwoTone';
+import {getUserIdFromToken} from '../../../utils/tokenUtils';
+import axios from 'axios';
+
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -55,7 +58,34 @@ const cardData = [
   { icon: InsertInvitationTwoToneIcon, heading: 'Registered Events', count: 75},
 ];
 
+
+
+
+export const GetCompany = (id) => {
+  return axios.get(`http://localhost:8080/company/details?userId=${id}`);
+}
+  
+
 const Home = () => {
+
+  const [company, setCompany] = useState(null);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const id = getUserIdFromToken();
+    if (id) {
+      GetCompany(id)
+        .then((response) => {
+          setCompany(response.data);
+          console.log(company);
+        })
+        .catch((error) => {
+          setError('Error fetching company details');
+          console.error(error);
+        });
+    }
+  }, []);
+
   return (
     
     <Box

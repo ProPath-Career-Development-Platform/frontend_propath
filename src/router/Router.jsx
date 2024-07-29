@@ -56,7 +56,7 @@ import AdminInterviews from '../pages/Admin/AdminInterviews';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Main />,
+    // element: <Main />,
     children: [
       {
         path: "/",
@@ -230,8 +230,8 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <>
-        {/* <TopNav /> */}
-        <TopNavBar /> {/* insert correct navbar for admin */}
+      
+       
         <DashboardLayout user="admin" />
       </>
     ),

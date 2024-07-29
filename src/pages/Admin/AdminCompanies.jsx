@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Box from '@mui/joy/Box';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -11,9 +11,19 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Card from '@mui/joy/Card';
 import {Link as RouterLink} from 'react-router-dom';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import CheckIcon from '@mui/icons-material/Check';
 
 
 import DoughnutChartComponent from '../../components/Admin/doughnutchart';
+import axios from "axios";
+
+export const listCompanies = () => {
+  return axios.get('http://localhost:8080/admin/RegisterdCompanies');
+}
+
+export const updateCompanyStatus = (id, company) => {
+  return axios.put(`http://localhost:8080/admin/RegisterdCompanies/verify/${id}`, company);
+};
 
 
 const jobDataDoughnut1 = [
@@ -30,40 +40,36 @@ const jobDataDoughnut1 = [
     { id: 4, jobtitle: "Healthcare", count: 100 },
   ];
 
-  const companies = [
-    {
-      name: '99x',
-      status: 'Approved',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    },
-    {
-      name: 'IFS',
-      status: 'Declined',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    },
-    {
-      name: 'LSEG',
-      status: 'Approved',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    },
-    {
-      name: 'MASS',
-      status: 'Approved',
-      orgType: 'Public Limited',
-      IndustryType: 'Apparel'
-    },
-    {
-      name: 'Sysco Labs',
-      status: 'Approved',
-      orgType: 'Private Limited',
-      IndustryType: 'Information Technology'
-    }
-  ];
+  
 
 const AdminCompanies = () => {
+
+  const[companies,setCompanies] = useState([])
+      
+  useEffect(()=>{
+      listCompanies().then((response)=>{
+        
+        setCompanies(response.data);
+        
+      }).catch(error=>{
+        console.error(error);
+      })
+  },[]);
+
+  const handleApprove = (id) => {
+    const updatedCompany = { status: 'verified' };
+    updateCompanyStatus(id, updatedCompany)
+      .then((response) => {
+        const updatedCompanies = companies.map((company) =>
+          company.id === id ? { ...company, status: 'verified' } : company
+        );
+        setCompanies(updatedCompanies);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <Box
     component="main"
@@ -194,27 +200,29 @@ const AdminCompanies = () => {
                 <Table hoverRow >
       `         <thead color='primary'>
                 <tr>
-                <th>Name</th>
-                <th>Status</th>
+                <th style={{ width: '12%' }}>Name</th>
+                <th style={{ width: '12%' }}>Status</th>
                 <th>Organization Type</th>
                 <th>Industry Type</th>
+                <th style={{ width: '12%' }}></th>
                 <th style={{ width: '12%' }}></th>
                 <th style={{ width: '12%' }}></th>
                 </tr>
                  </thead>
                 <tbody>
                 {companies.map((row) => (
-                <tr key={row.name}>
-                <td>{row.name}</td>
+                <tr key={row.id}>
+                <td>{row.companyName}</td>
                 <td>{row.status}</td>
-                <td>{row.orgType}</td>
-                <td>{row.IndustryType}</td>
+                <td>{row.organizationType}</td>
+                <td>{row.industryType}</td>
                 <td>
                     <Button startDecorator={<VisibilityIcon />} size="sm"
                         component= {RouterLink}
                         to = "/admin/RegisterdCompany/info"
                 >View</Button></td>
-                 <td><Button startDecorator={<DeleteForeverIcon />} size="sm" color="danger">Remove</Button></td>
+                <td><Button startDecorator={<CheckIcon />} size="sm" color="success"  onClick={() => handleApprove(row.id)}>Approve</Button></td>
+                <td><Button startDecorator={<DeleteForeverIcon />} size="sm" color="danger">Reject</Button></td>
                 </tr>
         ))}
       </tbody>
