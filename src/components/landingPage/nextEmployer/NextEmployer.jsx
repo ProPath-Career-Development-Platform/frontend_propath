@@ -11,7 +11,7 @@ const NextEmployer = () => {
           <p className='text-purple4 font-bold text-3xl'>Find your next employer</p>
           <p className="mb-5 text-grey1 text-lg font-light">Join ProPath to find career opportunities that match your skills and ambitions for a fulfilling professional journey.</p>
           </div>
-          <Button as={Link} className='bg-white outline-purple1 text-purple1 font-semibold py-6 mt-2' href="#" variant="flat">
+          <Button as={Link} className='bg-white outline-purple1 text-purple1 font-semibold mt-2' href="#" variant="flat">
           View all<IoArrowForward/>
           </Button>
         </div>
