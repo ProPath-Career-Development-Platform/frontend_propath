@@ -14,20 +14,40 @@ import ListItem from '@mui/joy/ListItem';
 import Sheet from '@mui/joy/Sheet';
 import Done from '@mui/icons-material/Done';
 import Avatar from '@mui/joy/Avatar';
-import AvatarGroup from '@mui/joy/AvatarGroup';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CardActions from '@mui/joy/CardActions';
 import IconButton from '@mui/joy/IconButton';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import CandidateCard from '../../../components/jobprovider/dashboard/CandidateTable';
+import { Link as RouterLink } from 'react-router-dom';
+import Radio from '@mui/joy/Radio';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import RadioGroup from '@mui/joy/RadioGroup';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+
+import FinalCandidateList from '../../../components/jobprovider/dashboard/FinalCandidateList';
 
 
 
 const Applications = () => {
   
-  const [value, setValue] = React.useState([]);
 
+  const [filteredRows, setFilteredRows] = React.useState();
+  const [value, setValue] = React.useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  const [selectedRows, setSelectedRows] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+
+    if(!selectedRows){
+
+      setSelectedRows(true);
+    }
+  }, [rowSelectionModel]);
 
   const cardData = [
     { id: 1, name: 'Santhush Fernando',title: 'NYC Coders', description: '2024/06/10', imgSrc: '../../public/seba.jpg' },
@@ -166,7 +186,31 @@ const Applications = () => {
               <Typography level="h2" component="h1">
                 Job Applications <Typography fontWeight={400} color="neutral">({100})</Typography>
               </Typography>
+
+              <Box sx={{ display:'flex', gap:1}}>
+
+              
+                  
+                  <Button 
+                  
+                    color="primary" 
+                    startDecorator={<ScheduleIcon />} 
+                    disabled={rowSelectionModel.length === 0}
+                    onClick={() => setOpen(true)}
+                    size="sm">
+                      Go to Schedule
+                  </Button>
+                    
+                  
+                  
+                
+
+
+
+              </Box>
              
+
+            
             </Box>
 
             <Divider />
@@ -201,7 +245,17 @@ const Applications = () => {
             '--ListItem-gap': '4px',
           }}
         >
-          {[' above 85%', 'between 50% - 85%', 'Below 50%'].map(
+           <RadioGroup
+            name='a'
+            value={value}
+          
+
+            sx={{
+              flexDirection:{xs:'column',sm:'row'}
+            }}
+            >
+          
+          {['Above 85%', 'Between 50% - 85%', 'Below 50%','All'].map(
             (item, index) => (
               <ListItem key={item}>
                 {value.includes(item) && (
@@ -212,35 +266,32 @@ const Applications = () => {
                   />
                 )}
 
-                <Checkbox
+                <Radio
                   size="sm"
-                  // disabled={index === 0}
+                  
+                  value={item}
                   disableIcon
                   overlay
                   label={item}
-                  checked={value.includes(item)}
-                  variant={value.includes(item) ? 'soft' : 'outlined'}
                   onChange={(event) => {
-                    if (event.target.checked) {
-                      setValue((val) => [...val, item]);
-                    } else {
-                      setValue((val) => val.filter((text) => text !== item));
-                    }
+                    setValue(event.target.value);
+                  
+                   
+                    
+
+                    console.log(filteredRows);
                   }}
-                  slotProps={{
-                    action: ({ checked }) => ({
-                      sx: checked
-                        ? {
-                            border: '1px solid',
-                            borderColor: 'primary.500',
-                          }
-                        : {},
-                    }),
-                  }}
+                  checkedIcon={<CheckCircleRoundedIcon />}
+                  
+                  
+                  
+                  
                 />
+               
               </ListItem>
             ),
           )}
+           </RadioGroup>
         </List>
       </div>
     </Sheet>
@@ -316,19 +367,18 @@ const Applications = () => {
             </Box>
               
             <Box
-            sx={{
-              pt:3
-            }}
+             sx={{
+              
+          }}
             
             >
-               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-              {cardData.map(card => (
-              <Box key={card.id} sx={{ width:'100%'}}>
-               <CardComponent name={card.name} title={card.title} description={card.description} imgSrc={card.imgSrc} />
-               </Box>
-                 ))}
-              </Box>
+
+              <CandidateCard filteredRows={filteredRows} setFilteredRows={setFilteredRows} criteria={value}   rowSelectionModel = {rowSelectionModel} setRowSelectionModel = {setRowSelectionModel}/>
+              
+               
             </Box>
+
+            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} />
 
             
             

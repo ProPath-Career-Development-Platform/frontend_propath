@@ -44,7 +44,7 @@ function InterviewSchedule() {
           date: dateString,
           tabTitle: tabTitle,
           sliderValue: [8, 12],
-          duration: 15,
+          duration: 60,
           holdTime: [],     
           timeSlots: [],
         },
@@ -157,7 +157,7 @@ function InterviewSchedule() {
             Dashboard
           </Link>
           <Typography color="primary" fontWeight={500} fontSize={12}>
-            Settings
+            Schedule Interview
           </Typography>
         </Breadcrumbs>
       </Box>
@@ -234,9 +234,10 @@ function InterviewSchedule() {
                 sx={{
                   borderRadius: 8,
                   width: '100%',
+                  transition: 'height 0.9s ease-in-out, width 0.9s ease-in-out'
                   
                 }}
-                defaultValue={0}
+               
               >
                 <TabList sx={{
                         overflow: 'auto',
@@ -315,21 +316,7 @@ function InterviewSchedule() {
 
                     <Divider />
 
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        gap: 1,
-                        mt: 2,
-                      }}
-                    >
-                      <Button size="sm" variant="outlined" color="neutral">
-                        Cancel
-                      </Button>
-                      <Button type="submit" size="sm" variant="solid">
-                        Save
-                      </Button>
-                    </Box>
+                    
                   </TabPanel>
                 ))}
               </Tabs>

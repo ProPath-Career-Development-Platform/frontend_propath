@@ -59,6 +59,9 @@ export default function DateCalendarServerRequest({highlightedDays, setHighlight
     }
   });
 
+  // Set the minimum date to today
+  const minDate = dayjs();
+
   return (
     <ThemeProvider theme={theme}>
        <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -74,8 +77,10 @@ export default function DateCalendarServerRequest({highlightedDays, setHighlight
             },
           }}
 
-        
+          
 
+        
+          minDate={minDate}
           sx={{
             border: '1px solid',
             borderColor: 'divider',
