@@ -15,7 +15,7 @@ const HeroLanding = () => {
         <div className='mx-auto pt-16 w-3/4 ml-8'>
           <h1 className='text-purple1 text-5xl font-bold'>Your Next Career Move Starts Here.</h1>
           <p className="mb-5 text-grey1 text-lg mt-8 font-light">Join ProPath to find career opportunities that match your skills and ambitions for a fulfilling professional journey.</p>
-          <Button as={Link} className='bg-purple1 text-white font-semibold py-6 mt-2' href="#" variant="flat">
+          <Button as={Link} className='bg-purple1 text-white font-semibold mt-2' href="#" variant="flat">
             Join Now
           </Button>
         </div>

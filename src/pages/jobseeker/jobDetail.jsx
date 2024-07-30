@@ -49,6 +49,7 @@ const JobDetails = ({
   type,
   img,
 }) => {
+
   const responsibilities = [
     "Quisque semper gravida est et consectetur.",
     "Curabitur blandit lorem velit, vitae pretium leo placerat eget.",
@@ -153,6 +154,7 @@ const JobDetails = ({
   const location1 = useLocation();
   const { title } = location1.state || {}
   
+
   const applyhandleChange = (value)=> {
 
     setSubmit(value)
@@ -171,12 +173,15 @@ const JobDetails = ({
       sx={{
         px: { xs: 2, md: 6 },
         pt: {
+
           xs: "calc(12px + var(--Header-height))",
           sm: "calc(12px + var(--Header-height))",
+
           md: 3,
         },
         pb: { xs: 2, sm: 2, md: 3 },
         flex: 1,
+
         display: "flex",
         flexDirection: "column",
         minWidth: 0,
@@ -186,6 +191,7 @@ const JobDetails = ({
         overflow: "auto ",
         "&::-webkit-scrollbar": {
           display: "none",
+
         },
       }}
     >
@@ -229,7 +235,9 @@ const JobDetails = ({
             </Typography>
           </Breadcrumbs>
         </Box>
+
         <Box sx={{ display: "flex" }}>
+
           <JSSearch />
           <Alert />
           <ProfileDropdown />

@@ -11,6 +11,31 @@ import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
 
 // jobseeker
 import JobSeekerHomeOverview from "../pages/jobseeker/JobSeekerHomeOverview";
+import JobDetail from "../pages/jobseeker/jobDetail";
+import JobScore from '../components/JobSeeker/jobScore';
+
+//jobprovider
+import JPCompnaySetup1 from "../pages/jobprovider/dashboard/CompanyInfo";
+import JPCompany from "../pages/jobprovider/dashboard/CompanyRegister"
+import JpHome from "../pages/jobprovider/dashboard/Home";
+import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
+import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
+import JpMyJobs from "../pages/jobprovider/dashboard/MyJob";
+import JpApplications from "../pages/jobprovider/dashboard/Applications";
+import JpPlansAndBilling from "../pages/jobprovider/dashboard/PlanAndBilling";
+import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
+import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
+import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
+import JpSettings from "../pages/jobprovider/dashboard/Settings"
+import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
+
+import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
+
+
+import JobDetails from "../pages/jobseeker/jobDetail";
+
+//jobseeker
+import JobSeekerDashboard from "../pages/jobseeker/JobSeekerDashboard";
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
 import Login from "../pages/Auth/Login";
 import ForgotPassword from "../pages/Auth/ForgetPassword";
@@ -25,14 +50,38 @@ import TopNavBar from "../components/JobSeeker/TopNavBar";
 import JobDetails from "../pages/jobseeker/jobDetail";
 
 import Navbar1 from "../components/navbar/Navbar1";
-import EmployerSite from "../pages/landingPage/EmployerSite";
+import Courses from "../pages/jobseeker/courses";
+import Course from "../pages/jobseeker/course";
+import Footer from "../components/landingPage/footer/Footer";
+import Profile from "../pages/jobseeker/profile";
+
+
+
+//Admin
+import AdminHome from "../pages/Admin/AdminHome";
+import AdminCompanies from "../pages/Admin/AdminCompanies";
+import AdminUsers from "../pages/Admin/AdminUsers";
+import AdminJobs from "../pages/Admin/AdminJobs";
+import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
+import AdminEvents from '../pages/Admin/AdminEvents'
+import AdminCourses from '../pages/Admin/AdminCourses';
+import AdminInterviews from '../pages/Admin/AdminInterviews';
+
+
+//landing page
+import CPDcourses from '../pages/landingPage/CPDcourses';
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+import Workshops from "../pages/landingPage/Workshops";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+import EmployerSite from "../pages/landingPage/EmployerSite";
+
+
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Main />,
+    // element: <Main />,
     children: [
       {
         path: "/",
@@ -45,6 +94,18 @@ const router = createBrowserRouter([
       {
         path: "employersite",
         element: <EmployerSite />,
+      },
+      {
+        path: "workshops",
+        element: <Workshops />,
+      },
+      {
+        path: "professionalmemberships",
+        element: <ProfessionalMemberships />,
+      },
+      {
+        path: "cpdcourses",
+        element: <CPDcourses />,
       },
       {
         path: "login",
@@ -70,6 +131,7 @@ const router = createBrowserRouter([
         path: "topnavbar",
         element: <TopNavBar />,
       },
+      
     ],
   },
   {
@@ -83,12 +145,84 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/jobseeker/setup",
+    path: "/jobprovider/plan-and-billing/Paynow",
+    element: <JpCheckout/>,
+    
+  },
+
+  {
+    path: "/jobprovider",
+    element: <DashboardLayout user="jobprovider"/>,
+    children: [
+      {
+        path:"/jobprovider",
+        element: <Navigate to="/jobprovider/home/" replace />
+      },
+      {
+         path:"home",
+         element:<JpHome/>
+         
+      },
+      {
+        path:"CompanyRegister",
+        element:<JPCompany/>
+      },
+      {
+        path:"dashboard",
+        element:<JpDashboard/>
+      },
+      {
+        path:"post-a-job",
+        element:<JpPostAJob/>
+      },
+      {
+        path:"my-jobs",
+        element:<JpMyJobs/>
+      },
+      {
+        path:"my-jobs/applications",
+        element:<JpApplications/>
+      },
+      {
+        path:"my-jobs/shedule-interview",
+        element:<><JpInterviewSchedule/></>
+      },
+      {
+        path:"plans-and-billing",
+        element:<JpPlansAndBilling/>
+      },
+      {
+        path:"plan-and-billing/changePlan",
+        element:<JpChangePlan/>
+      },
+      {
+        path:"plan-and-billing/Paynow",
+        element:<JpCheckout/>
+      },
+      {
+        path:"meet-up",
+        element:<JpMeetUp/>
+      },
+      {
+        path:"meet-up/createEvent",
+        element:<JpCreateEvent/>
+      },
+      {
+        path:"settings",
+        element:<JpSettings/>
+      },
+    ]
+  },
+
+  {
+    path: "/Jobseeker",
     element: (
       <>
+        
         {/* <TopNav /> */}
         <TopNavBar />
         <JobSeekerSetup />
+       
       </>
     ),
   },
@@ -96,9 +230,12 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
+        
+        <Navbar1 />
         {/* <TopNav /> */}
-        <TopNavBar />
+     
         <DashboardLayout user="jobseeker" />
+        
       </>
     ),
     children: [
@@ -111,8 +248,12 @@ const router = createBrowserRouter([
         element: <JobSeekerHome />,
       },
       {
+
         path: "overview",
         element: <JobSeekerHomeOverview />,
+
+        path: "dashboard",
+        element: <JobSeekerDashboard />,
       },
       {
         path: "applied-jobs",
@@ -126,10 +267,84 @@ const router = createBrowserRouter([
         path: "job-alert",
         element: <JsJobAlert />,
       },
+
       {
         path: "JobDetails/:jobId",
         element: <JobDetails />,
-      }
+      },
+
+      {
+        path: "Courses",
+        element: <Courses />,
+      },
+
+      {
+        path: "courses/course",
+        element: <Course />,
+      },
+
+      {
+        path : "profile",
+        element : <Profile/>
+      },
+      {
+        path:"JobScore",
+        element:<JobScore/>
+      },
+
+      
+    ],
+  },
+
+
+  {
+    path: "/admin",
+    element: (
+      <>
+      
+       
+        <DashboardLayout user="admin" />
+      </>
+    ),
+    children: [
+      {
+        path: "/admin",
+        element: <Navigate to="/admin/home" replace />,
+      },
+
+      {
+        path: "home",
+        element: <AdminHome />,
+      },
+      {
+        path: "RegisterdCompanies",
+        element: <AdminCompanies />,
+      },
+      {
+        path: "RegisterdUsers",
+        element: <AdminUsers />,
+      },
+      {
+        path: "RegisterdCompany/info",
+        element: <AdminCompanyInfo />,
+      },
+      {
+        path: "Postedjobs",
+        element: <AdminJobs />,
+      },
+      {
+        path: "Events",
+        element: <AdminEvents />,
+      },
+      {
+        path:"PDC_Courses",
+        element:<AdminCourses/>
+      },
+      {
+        path:"Interviews",
+        element:<AdminInterviews/>
+      },
+
     ],
   },
  

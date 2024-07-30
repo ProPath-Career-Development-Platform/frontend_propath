@@ -27,14 +27,14 @@ const Pagination = ({ currentPage, total ,  callback  }) => {
     arr = [currentPage  , currentPage + 1 , currentPage +2]
   }
   return (
-    <Box sx={{ gap: 4, display: 'flex', marginLeft: '400px' , marginTop: "30px", marginBottom: '15px' }}>
+    <Box sx={{ gap: 4, display: 'flex', marginLeft: {sm:'30%' ,lg: '400px'} , marginTop: "30px", marginBottom: '15px' }}>
       <Box sx={{display : currentPage ===0? 'none' : 'block' , color : currentPage == 0? 'black' : 'blue'}}>
         <Button onClick={left}><KeyboardArrowLeftIcon /></Button>
       </Box>
 
       {arr.map((item,index) => (
             item> 0 && item <= total + 1 &&(
-            <Button sx={{color : currentPage + 1 == item ? 'black' : 'white'}} onClick={()=> {
+            <Button sx={{color : currentPage + 1 == item ? 'black' : 'white' , fontWeight: currentPage+1 == item ? 'bold' : 'none' , border: currentPage+1 == item ? 'solid 3px black' : 'none'}} onClick={()=> {
 
                 const newValue = item - 1
                 callback(newValue)
@@ -46,8 +46,9 @@ const Pagination = ({ currentPage, total ,  callback  }) => {
       ))}
       <Box>
         <Button sx = {{display : currentPage >= total? 'none' : 'block'}}
-        onClick={right}><KeyboardArrowRightIcon /></Button>
-      </Box>
+        onClick={right}><KeyboardArrowRightIcon />
+        </Button>
+        </Box>
     </Box>
   );
 };

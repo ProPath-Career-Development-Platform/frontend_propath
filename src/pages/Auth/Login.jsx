@@ -77,7 +77,12 @@ function Login() {
       console.log(decodedToken);
       const role = decodedToken.role;
       console.log(role);
-  
+      
+      const user_id = decodedToken.user_id;
+
+      
+
+
       // Save the token with expiration time (3 days)
       const expirationTime = new Date();
       expirationTime.setDate(expirationTime.getDate() + 3); // 3 days from now

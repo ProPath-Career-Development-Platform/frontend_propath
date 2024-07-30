@@ -43,6 +43,7 @@ export default function JSCard({
   const handleApplyNowClick = () => {
     console.log("Job ID: ", jobId);
     navigate(`/JobSeeker/JobDetails/${jobId}`, { state: { title } });
+
   };
 
   if (type === 1) {
@@ -173,3 +174,4 @@ export default function JSCard({
     );
   }
 }
+

@@ -35,7 +35,7 @@ const Alert = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white divide-y divide-gray-100 rounded-lg shadow-lg z-20 dark:bg-gray-700">
+        <div className="absolute right-0 mt-2 w-64 bg-white divide-y divide-gray-100 rounded-lg shadow-lg z-20 dark:bg-gray-700 border">
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
               <div className="flex items-center">
