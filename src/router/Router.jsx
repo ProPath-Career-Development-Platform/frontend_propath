@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/Home";
@@ -6,17 +6,14 @@ import Home from "../pages/Home";
 // dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
 
-// jobprovider
-import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
-
 // jobseeker
 import JobSeekerHomeOverview from "../pages/jobseeker/JobSeekerHomeOverview";
 import JobDetail from "../pages/jobseeker/jobDetail";
-import JobScore from '../components/JobSeeker/jobScore';
+import JobScore from "../components/JobSeeker/jobScore";
 
 //jobprovider
 import JPCompnaySetup1 from "../pages/jobprovider/dashboard/CompanyInfo";
-import JPCompany from "../pages/jobprovider/dashboard/CompanyRegister"
+import JPCompany from "../pages/jobprovider/dashboard/CompanyRegister";
 import JpHome from "../pages/jobprovider/dashboard/Home";
 import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
 import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
@@ -24,15 +21,11 @@ import JpMyJobs from "../pages/jobprovider/dashboard/MyJob";
 import JpApplications from "../pages/jobprovider/dashboard/Applications";
 import JpPlansAndBilling from "../pages/jobprovider/dashboard/PlanAndBilling";
 import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
-import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
+import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent";
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
-import JpSettings from "../pages/jobprovider/dashboard/Settings"
+import JpSettings from "../pages/jobprovider/dashboard/Settings";
 import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
-
-import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
-
-
-import JobDetails from "../pages/jobseeker/jobDetail";
+import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout";
 
 //jobseeker
 import JobSeekerDashboard from "../pages/jobseeker/JobSeekerDashboard";
@@ -55,28 +48,22 @@ import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
 
-
-
 //Admin
 import AdminHome from "../pages/Admin/AdminHome";
 import AdminCompanies from "../pages/Admin/AdminCompanies";
 import AdminUsers from "../pages/Admin/AdminUsers";
 import AdminJobs from "../pages/Admin/AdminJobs";
-import AdminCompanyInfo from '../pages/Admin/AdminCompanyInfo';
-import AdminEvents from '../pages/Admin/AdminEvents'
-import AdminCourses from '../pages/Admin/AdminCourses';
-import AdminInterviews from '../pages/Admin/AdminInterviews';
-
+import AdminCompanyInfo from "../pages/Admin/AdminCompanyInfo";
+import AdminEvents from "../pages/Admin/AdminEvents";
+import AdminCourses from "../pages/Admin/AdminCourses";
+import AdminInterviews from "../pages/Admin/AdminInterviews";
 
 //landing page
-import CPDcourses from '../pages/landingPage/CPDcourses';
+import CPDcourses from "../pages/landingPage/CPDcourses";
 import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
 import Workshops from "../pages/landingPage/Workshops";
-import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+import ProfessionalMemberships from "../pages/landingPage/ProfessionalMemberships";
 import EmployerSite from "../pages/landingPage/EmployerSite";
-
-
-
 
 const router = createBrowserRouter([
   {
@@ -131,7 +118,6 @@ const router = createBrowserRouter([
         path: "topnavbar",
         element: <TopNavBar />,
       },
-      
     ],
   },
   {
@@ -144,85 +130,120 @@ const router = createBrowserRouter([
       },
     ],
   },
+
+  {
+    path: "/jobprovider",
+    element: (
+      <>
+        {/* <TopNav /> */}
+        {/* <TopNavBar /> */}
+        <JPCompnaySetup1 />
+      </>
+    ),
+    children: [
+      {
+        path: "Setup",
+        element: <JPCompnaySetup1 />,
+      },
+    ],
+  },
+
   {
     path: "/jobprovider/plan-and-billing/Paynow",
-    element: <JpCheckout/>,
-    
+    element: <JpCheckout />,
   },
 
   {
     path: "/jobprovider",
-    element: <DashboardLayout user="jobprovider"/>,
+    element: <DashboardLayout user="jobprovider" />,
     children: [
       {
-        path:"/jobprovider",
-        element: <Navigate to="/jobprovider/home/" replace />
+        path: "/jobprovider",
+        element: <Navigate to="/jobprovider/home/" replace />,
       },
       {
-         path:"home",
-         element:<JpHome/>
-         
+        path: "home",
+        element: <JpHome />,
       },
       {
-        path:"CompanyRegister",
-        element:<JPCompany/>
+        path: "CompanyRegister",
+        element: <JPCompany />,
       },
       {
-        path:"dashboard",
-        element:<JpDashboard/>
+        path: "dashboard",
+        element: <JpDashboard />,
       },
       {
-        path:"post-a-job",
-        element:<JpPostAJob/>
+        path: "post-a-job",
+        element: <JpPostAJob />,
       },
       {
-        path:"my-jobs",
-        element:<JpMyJobs/>
+        path: "my-jobs",
+        element: <JpMyJobs />,
       },
       {
-        path:"my-jobs/applications",
-        element:<JpApplications/>
+        path: "my-jobs/applications",
+        element: <JpApplications />,
       },
       {
-        path:"my-jobs/shedule-interview",
-        element:<><JpInterviewSchedule/></>
+        path: "my-jobs/shedule-interview",
+        element: (
+          <>
+            <JpInterviewSchedule />
+          </>
+        ),
       },
       {
-        path:"plans-and-billing",
-        element:<JpPlansAndBilling/>
+        path: "plans-and-billing",
+        element: <JpPlansAndBilling />,
       },
       {
-        path:"plan-and-billing/changePlan",
-        element:<JpChangePlan/>
+        path: "plan-and-billing/changePlan",
+        element: <JpChangePlan />,
       },
       {
-        path:"plan-and-billing/Paynow",
-        element:<JpCheckout/>
+        path: "plan-and-billing/Paynow",
+        element: <JpCheckout />,
       },
       {
-        path:"meet-up",
-        element:<JpMeetUp/>
+        path: "meet-up",
+        element: <JpMeetUp />,
       },
       {
-        path:"meet-up/createEvent",
-        element:<JpCreateEvent/>
+        path: "meet-up/createEvent",
+        element: <JpCreateEvent />,
       },
       {
-        path:"settings",
-        element:<JpSettings/>
+        path: "settings",
+        element: <JpSettings />,
       },
-    ]
+    ],
   },
 
   {
     path: "/Jobseeker",
     element: (
       <>
-        
+        {/* <TopNav /> */}
+        {/* <TopNavBar /> */}
+        <JobSeekerSetup />
+      </>
+    ),
+    children: [
+      {
+        path: "Setup",
+        element: <JobSeekerSetup />,
+      },
+    ],
+  },
+
+  {
+    path: "/Jobseeker",
+    element: (
+      <>
         {/* <TopNav /> */}
         <TopNavBar />
         <JobSeekerSetup />
-       
       </>
     ),
   },
@@ -230,12 +251,10 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        
         <Navbar1 />
         {/* <TopNav /> */}
-     
+
         <DashboardLayout user="jobseeker" />
-        
       </>
     ),
     children: [
@@ -248,7 +267,6 @@ const router = createBrowserRouter([
         element: <JobSeekerHome />,
       },
       {
-
         path: "overview",
         element: <JobSeekerHomeOverview />,
 
@@ -269,7 +287,7 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "JobDetails/:jobId",
+        path: "JobDetails",
         element: <JobDetails />,
       },
 
@@ -284,25 +302,20 @@ const router = createBrowserRouter([
       },
 
       {
-        path : "profile",
-        element : <Profile/>
+        path: "profile",
+        element: <Profile />,
       },
       {
-        path:"JobScore",
-        element:<JobScore/>
+        path: "JobScore",
+        element: <JobScore />,
       },
-
-      
     ],
   },
-
 
   {
     path: "/admin",
     element: (
       <>
-      
-       
         <DashboardLayout user="admin" />
       </>
     ),
@@ -337,17 +350,15 @@ const router = createBrowserRouter([
         element: <AdminEvents />,
       },
       {
-        path:"PDC_Courses",
-        element:<AdminCourses/>
+        path: "PDC_Courses",
+        element: <AdminCourses />,
       },
       {
-        path:"Interviews",
-        element:<AdminInterviews/>
+        path: "Interviews",
+        element: <AdminInterviews />,
       },
-
     ],
   },
- 
 ]);
 
 export default router;

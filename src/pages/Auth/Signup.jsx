@@ -102,9 +102,9 @@ function Signup() {
       localStorage.setItem('token', token);
 
       if (role === 'JobSeeker') {
-        navigate("/jobseeker/setup/");
+        navigate("/jobseeker/home/");
       } else if (role === 'JobProvider') {
-        navigate("/jobprovider/setup/");
+        navigate("/jobprovider/home/");
       }
     } catch (error) {
       console.error('Signup failed:', error);

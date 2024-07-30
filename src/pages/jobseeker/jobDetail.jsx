@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@mui/joy/Button";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
@@ -11,45 +11,27 @@ import Alert from "../../components/JobSeeker/alert";
 import JSSearch from "../../components/JobSeeker/search";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import wso2 from "../../assets/wso2.png";
+import wso2 from "/wso2.png";
 import LinkIcon from "@mui/icons-material/Link";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import EmailIcon from "@mui/icons-material/Email";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import TimerIcon from "@mui/icons-material/Timer";
 import SchoolIcon from "@mui/icons-material/School";
 import WalletIcon from "@mui/icons-material/Wallet";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import WorkIcon from "@mui/icons-material/Work";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import Jobcard from "../../components/JobSeeker/jobcard";
 import Companycard from "../../components/JobSeeker/companycard";
+import JSCard from "../../components/JobSeeker/card";
+import { useLocation } from "react-router-dom";
 import ApplyJob from "../../components/JobSeeker/applyJob";
-import axios from "axios";
-import { useParams, useLocation } from "react-router-dom";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import Jobcard from '../../components/JobSeeker/jobcard';
-import JSCard from '../../components/JobSeeker/card';
-
-const JobDetails = ({
-  content,
-  location,
-  company,
-  customQuestion,
-  education,
-  experience,
-  expiryDate,
-  jobType,
-  jobLevel,
-  jobRole,
-  minSalary,
-  maxSalary,
-  salaryType,
-  vacancies,
-  tags,
-  postedIn,
-  type,
-  img,
-}) => {
-
+import AppliedCard from "../../components/JobSeeker/appliedcard";
+const JobDetails = () => {
   const responsibilities = [
     "Quisque semper gravida est et consectetur.",
     "Curabitur blandit lorem velit, vitae pretium leo placerat eget.",
@@ -119,53 +101,16 @@ const JobDetails = ({
       company: "Data Insights",
     },
   ];
-  const [jobDetails, setJobDetails] = useState(null);
+
+  var amount = 6;
+  const location = useLocation();
+  const { title } = location.state || {};
+
   const [Submit, setSubmit] = useState(0);
-  const [jobs, setJobs] = useState([]);
-
-  const { jobId } = useParams();
-  console.log("Job ID2:", jobId);
-
-  const token = localStorage.getItem("token");
-
-  const fetchJobDetails = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/jobseeker/jobDetails/${jobId}`, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setJobDetails(response.data);
-    } catch (error) {
-      console.error("Error fetching job details:", error);
-    }
+  const applyhandleChange = (value) => {
+    setSubmit(value);
+    console.log(Submit);
   };
-
-  useEffect(() => {
-    if (jobId) {
-      fetchJobDetails();
-    }
-  }, [jobId]);
-
-  var amount = 6
-  const location1 = useLocation();
-  const { title } = location1.state || {}
-  
-
-  const applyhandleChange = (value)=> {
-
-    setSubmit(value)
-    console.log(Submit)
-
-  }
-
-  if (!jobDetails) {
-    return <Typography>Loading...</Typography>;
-  }
-
   return (
     <Box
       component="main"
@@ -173,15 +118,12 @@ const JobDetails = ({
       sx={{
         px: { xs: 2, md: 6 },
         pt: {
-
           xs: "calc(12px + var(--Header-height))",
           sm: "calc(12px + var(--Header-height))",
-
           md: 3,
         },
         pb: { xs: 2, sm: 2, md: 3 },
         flex: 1,
-
         display: "flex",
         flexDirection: "column",
         minWidth: 0,
@@ -191,7 +133,6 @@ const JobDetails = ({
         overflow: "auto ",
         "&::-webkit-scrollbar": {
           display: "none",
-
         },
       }}
     >
@@ -235,9 +176,7 @@ const JobDetails = ({
             </Typography>
           </Breadcrumbs>
         </Box>
-
         <Box sx={{ display: "flex" }}>
-
           <JSSearch />
           <Alert />
           <ProfileDropdown />
@@ -255,7 +194,7 @@ const JobDetails = ({
       >
         <Box sx={{ marginTop: "10px" }}>
           <img
-            src={img}
+            src={wso2}
             alt="Logo"
             style={{
               width: "100px", // Adjust the size as needed
@@ -306,7 +245,7 @@ const JobDetails = ({
             </Typography>
             <Typography>
               <EmailIcon />
-              jobapplication@gmail.com
+              maniltenuka@gmail.com
             </Typography>
           </Box>
         </Box>
@@ -341,7 +280,13 @@ const JobDetails = ({
             )}
 
             {Submit == 1 && (
-              <Button sx={{ backgroundColor: "red" }}>
+              <Button
+                sx={{ backgroundColor: "red" }}
+                onClick={() => {
+                  setSubmit(2);
+                  console.log(Submit);
+                }} // Correct capitalization of onClick and proper use of curly braces
+              >
                 <Typography
                   sx={{
                     display: {
@@ -357,6 +302,27 @@ const JobDetails = ({
                 </Typography>
               </Button>
             )}
+
+            {Submit == 2 && (
+              <Button
+                sx={{ backgroundColor: "red" }}
+                onClick={() => setSubmit(2)} // Correct capitalization of onClick
+              >
+                <Typography
+                  sx={{
+                    display: {
+                      xs: "none",
+                      sm: "none",
+                      md: "none",
+                      lg: "block",
+                    },
+                    color: "white",
+                  }}
+                >
+                  PH
+                </Typography>
+              </Button>
+            )}
           </Stack>
           <Typography
             sx={{
@@ -366,7 +332,7 @@ const JobDetails = ({
               flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            Job expires in : <span style={{ color: "red" }}>{expiryDate}</span>
+            Job expires in : <span style={{ color: "red" }}>30 June 2021</span>
           </Typography>
         </Box>
       </Box>
@@ -415,7 +381,8 @@ const JobDetails = ({
           </Stack>
         </Box>
         <Box sx={{ marginLeft: "16px", minWidth: "40%" }}>
-          {Submit == 1 && <AppliedCard></AppliedCard>}
+          {Submit == 1 && <AppliedCard status={"Pending"}></AppliedCard>}
+          {Submit == 2 && <AppliedCard status={"Active"}></AppliedCard>}
           <Jobcard />
           <Companycard />
         </Box>

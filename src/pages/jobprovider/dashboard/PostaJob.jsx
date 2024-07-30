@@ -311,7 +311,7 @@ const Dashboard = () => {
         }
       );
       console.log("Job posted successfully!", response.data);
-      navigate("login");
+      navigate("/login");
 
       if (plan === "basic" && postCount >= 1) {
         setOpen(true);
