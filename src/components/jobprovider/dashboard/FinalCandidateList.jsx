@@ -146,13 +146,14 @@ export default function FinalCandidateList({open , setOpen,count}) {
             spacing={1}
           >
             <Button
+             sx={{fontSize:{xs:'13px',sm:'sm'}}}
               variant="outlined"
               color="neutral"
               onClick={() => setOpen(false)}
             >
               Close
             </Button>
-            <Button component={RouterLink} to="/jobprovider/my-jobs/shedule-interview">Confirm</Button>
+            <Button size='sm' sx={{fontSize:{xs:'13px',sm:'sm'}}} component={RouterLink} to="/jobprovider/my-jobs/shedule-interview">Confirm & Go to Schedule</Button>
           </Stack>
         </Sheet>
       </Drawer>
