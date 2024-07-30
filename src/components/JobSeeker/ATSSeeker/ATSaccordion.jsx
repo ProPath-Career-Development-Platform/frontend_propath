@@ -8,6 +8,7 @@ import { Box } from '@mui/joy';
 import Chip from '@mui/joy/Chip';
 import DoneIcon from '@mui/icons-material/Done';
 import { green } from '@mui/material/colors';
+import CloseIcon from '@mui/icons-material/Close';
 export default function ATSAccordion() {
   return (
     <AccordionGroup
@@ -41,15 +42,16 @@ export default function ATSAccordion() {
         <Box>
         <Typography>Content</Typography>
         </Box>     
-        <Box >
+        <Box sx={{position:'absolute' , right: 45}}>
             <Chip
                 size="sm"
                 variant="outlined"
-                color="danger"
+                
+                sx={{bgcolor:'lightgreen'}}
                 
               
             >
-                <Typography>35%</Typography>
+                <Typography>87%</Typography>
             </Chip>
         </Box>
      
@@ -57,37 +59,39 @@ export default function ATSAccordion() {
 
         </AccordionSummary>
         <AccordionDetails>
-          <Typography></Typography>
-          tempor incididunt ut labore et dolore magna aliqua.
+        <Box sx={{display:'flex'  , marginTop:'12px' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 500, marginRight:'10px'}}/> <Typography >ATS Parse Rate</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Quantifying Impact</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Repetition</Typography></Box>
+          <Box sx={{display:'flex',  marginBottom:'8px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Spelling and Grammar</Typography></Box>
         </AccordionDetails>
       </Accordion>
       <Accordion>
       <AccordionSummary sx={{display:'flex' , justifyContent:'center'}}>
-        
+      
         <Box>
         <Typography>Format</Typography>
         </Box>     
-        <Box >
+        <Box sx={{position:'absolute' , right: 45}} >
             <Chip
                 size="sm"
                 variant="outlined"
-                color="danger"
+                
+                sx={{background:'Yellow'}}
                 
               
             >
-                <Typography>35%</Typography>
+                <Typography>63%</Typography>
             </Chip>
         </Box>
      
         
 
-            </AccordionSummary>
-        <AccordionDetails>
-          <Box sx={{display:'flex'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>ATS Parse Rate</Typography></Box>
-          <Box sx={{display:'flex'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Quantifying Impact</Typography></Box>
-          <Box sx={{display:'flex'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Repetition</Typography></Box>
-          <Box sx={{display:'flex'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Spelling and Grammar</Typography></Box>
-       
+         </AccordionSummary>
+        <AccordionDetails sx={{fontSize: '14px'}}>
+          <Box sx={{display:'flex'  , marginTop:'12px' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 500, marginRight:'10px'}}/> <Typography >File Format & Size</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Resume Length</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Long Bullet Points</Typography></Box>
+          
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -96,15 +100,15 @@ export default function ATSAccordion() {
         <Box>
         <Typography>Skills</Typography>
         </Box>     
-        <Box >
+        <Box sx={{position:'absolute' , right: 45}}>
             <Chip
                 size="sm"
                 variant="outlined"
-                color="danger"
+                sx={{background: 'lightGreen'}}
                 
               
             >
-                <Typography>35%</Typography>
+                <Typography>94%</Typography>
             </Chip>
         </Box>
      
@@ -112,8 +116,9 @@ export default function ATSAccordion() {
 
             </AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua.
+          <Box sx={{display:'flex'  , marginTop:'12px' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 500, marginRight:'10px'}}/> <Typography >Hard Skills</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Soft Skills</Typography></Box>
+         
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -122,24 +127,26 @@ export default function ATSAccordion() {
         <Box>
         <Typography>Section</Typography>
         </Box>     
-        <Box >
+        <Box sx={{position:'absolute' , right: 45}}>
             <Chip
                 size="sm"
                 variant="outlined"
-                color="danger"
+                sx={{background : "lightgreen"}}
                 
               
             >
-                <Typography>35%</Typography>
+                <Typography>76%</Typography>
             </Chip>
         </Box>
      
         
 
             </AccordionSummary>
-        <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua.
+        <AccordionDetails >
+          <Box sx={{display:'flex'  , marginTop:'12px' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 500, marginRight:'10px'}}/> <Typography >Contact Information</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Essential Sections</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Personality</Typography></Box>
+        
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -148,11 +155,11 @@ export default function ATSAccordion() {
         <Box>
         <Typography>Style</Typography>
         </Box>     
-        <Box >
+        <Box sx={{position:'absolute' , right: 45}}>
             <Chip
                 size="sm"
                 variant="outlined"
-                color="danger"
+                sx={{background : '#f38989'}}
                 
               
             >
@@ -164,8 +171,10 @@ export default function ATSAccordion() {
 
             </AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua.
+          <Box sx={{display:'flex'  , marginTop:'12px' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 500, marginRight:'10px'}}/> <Typography >Design</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Email Address</Typography></Box>
+          <Box sx={{display:'flex' ,marginBottom: '7px'}}><DoneIcon sx={{color:'green', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Active Voice</Typography></Box>
+          <Box sx={{display:'flex',  marginBottom:'8px'}}><CloseIcon sx={{color:'red', fontWeight: 'bold', marginRight:'10px'}}/> <Typography>Buzzwords and Clinches</Typography></Box>
         </AccordionDetails>
       </Accordion>
     </AccordionGroup>

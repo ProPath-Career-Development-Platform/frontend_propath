@@ -3,7 +3,6 @@ import bgimage from '/heroLanding1.jpg'
 import { FaBriefcase } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
 import { FaBuilding } from "react-icons/fa";
-import LinearProgressWithLabel from '../linearProgress';
 import {Button, Link} from "@nextui-org/react";
 import ApplyATS from './applyATS';
 
