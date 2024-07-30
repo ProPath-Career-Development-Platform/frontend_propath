@@ -24,7 +24,11 @@ import WorkIcon from "@mui/icons-material/Work";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import JSSearch from "../../components/JobSeeker/search";
+import Alert from "../../components/JobSeeker/alert";
+import ProfileDropdown from "../../components/JobSeeker/ProfileDropDown";
 import TopNavBar from "../../components/JobSeeker/TopNavBar";
+import logo from "/logo.png"
 
 const jobs = [
   {
@@ -120,6 +124,36 @@ const JobSeekerDashboard= () => {
             </Link>
           </Breadcrumbs>
         </Box>
+        <Box
+            sx={{
+                      display: 'flex',
+                      mb: 1,
+                      gap: 1,
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      alignItems: { xs: 'start', sm: 'center' },
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-between',
+                    }}
+                      >
+                        <Box sx={{width : 130}}>
+                        <img src={logo} />
+                        </Box>
+
+                          
+                        
+                      
+                        <Box sx={{ display: 'flex' }}>
+                            <JSSearch/>
+                            <Alert />
+                            <ProfileDropdown />
+                           
+
+
+                        </Box>
+                      
+                      
+                      </Box>
+
         <Box
           sx={{
             display: "flex",

@@ -23,11 +23,14 @@ import Table from '@mui/joy/Table';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Modal from '@mui/joy/Modal';
+import Meetingview from './meetingview';
 
 export default function Interviewcart() {
 
   const [position, setPosition] = React.useState(50);
   return (
+    <Modal  open={open} sx={{display:'flex' , justifyContent: 'center'}}>
     <Card
       variant="outlined"
       sx={{
@@ -39,6 +42,7 @@ export default function Interviewcart() {
         backgroundColor: 'rgb(245 245 245)',
       }}
     >
+    
       <Box
         sx={{
           display: 'flex',
@@ -161,5 +165,6 @@ export default function Interviewcart() {
       </CardContent>
     
     </Card>
+    </Modal>
   );
 }

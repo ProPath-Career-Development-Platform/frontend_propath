@@ -10,8 +10,12 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkIcon from '@mui/icons-material/Work';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import  Button  from '@mui/joy/Button';
+
 import  Chip  from '@mui/joy/Chip';
+import SurveyQuestions from './surveyQuestions';
 import OpenInNew from '@mui/icons-material/OpenInNew';
+import Interviewcart from './interviewcart';
+import Meetingview from './meetingview';
 
 
 const AppliedCard = ({status}) => {
@@ -55,8 +59,11 @@ const AppliedCard = ({status}) => {
                 </Box>
                 <Box sx={{marginTop: '13px' , marginLeft: '13px' , marginBottom: '13px'}}>
                 {companyDetails[1][1] == 'Active' && state == 1 && (
-
+                        <Box>
+               
                         <Button sx={{backgroundColor: 'blue' }}><Typography sx={{color: 'white'}}>Schedule Interview</Typography></Button>
+                        <Meetingview></Meetingview>
+                        </Box>
 
                 )}
 

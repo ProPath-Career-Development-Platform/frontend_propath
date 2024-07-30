@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import JobNav from '../../components/landingPage/navbar/JobNav'
 
 function decodeJWT(token) {
   const base64Url = token.split('.')[1];
@@ -113,6 +114,9 @@ function Signup() {
   
 
   return (
+
+    <>
+    <JobNav/>
     <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200 overflow-hidden">
       <div className="flex items-center justify-center w-full h-full lg:w-3/4">
         <div className="flex w-full max-w-[800px] rounded-3xl  bg-violet-100">
@@ -299,7 +303,7 @@ function Signup() {
                       placeholder="Company Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                    />
+                      />
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
@@ -356,12 +360,12 @@ function Signup() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
+                      />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
                       onClick={toggleConfirmPasswordVisibility}
-                    >
+                      >
                       {showConfirmPassword ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -415,7 +419,7 @@ function Signup() {
             <button
               onClick={handleSignin}
               className="ml-2 font-medium text-base text-[#6756a8]"
-            >
+              >
               Login
             </button>
           </div>
@@ -423,6 +427,7 @@ function Signup() {
       </div>
     </div>
     </div>
+              </>
   );
 }
 

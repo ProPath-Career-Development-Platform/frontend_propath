@@ -31,6 +31,7 @@ import JSCard from '../../components/JobSeeker/card';
 import { useLocation } from 'react-router-dom';
 import ApplyJob from '../../components/JobSeeker/applyJob';
 import AppliedCard from '../../components/JobSeeker/appliedcard';
+import Interviewcart from '../../components/JobSeeker/interviewcart';
 const JobDetails = () => {
 
   const responsibilities = [
@@ -216,7 +217,7 @@ const JobDetails = () => {
             color: 'white'
           }}
         >
-          PH
+         
         </Typography>
       </Button>
     )}
@@ -257,7 +258,12 @@ const JobDetails = () => {
           <AppliedCard status={'Pending'}></AppliedCard>
         )}
         {Submit == 2 && (
+          <Box>
           <AppliedCard status={'Active'}></AppliedCard>
+          
+          </Box>
+         
+
         )}
         <Jobcard/>
         <Companycard/>

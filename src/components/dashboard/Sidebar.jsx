@@ -7,6 +7,8 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import AspectRatio from '@mui/joy/AspectRatio';
+
 
 
 import ColorSchemeToggle from './ColorSchemeToggle';
@@ -102,11 +104,13 @@ export default function Sidebar({actor}) {
         onClick={() => closeSidebar()}
       />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          
         <IconButton variant="soft" color="primary" size="sm">
           
           {/*<BrightnessAutoRoundedIcon />*/} 
 
-          <Avatar sx={{ backgroundColor: 'transparent' }}>PP</Avatar>
+
+          <Avatar size='sm' src='/logoCroped.png' sx={{ backgroundColor: 'transparent',borderRadius:0, p:0.3 }}>PP</Avatar>
           
         </IconButton>
 

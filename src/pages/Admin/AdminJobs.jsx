@@ -114,7 +114,9 @@ const jobs = [
                     >
                         <Typography level="h4" sx={{textAlign:'center'}}>Number of Job Posts by Each Job role</Typography>
                         <br />
-                        <Card>
+                        <Card
+                        
+                        >
                        
                         <ChartComponent/>
                         </Card>
@@ -122,7 +124,9 @@ const jobs = [
                     <Box>
                     <Typography level="h4" sx={{textAlign:'center'}}>Job Posting Subscriptions</Typography>
                     <br />
-                    <Card>
+                    <Card
+                      
+                    >
                     <DoughnutChartComponent data={Subscription} /> 
                     </Card>  
                     </Box>
@@ -161,7 +165,10 @@ const jobs = [
                 <td>{row.company}</td>
                 <td>{row.applicant}</td>
                 <td>{row.postedDate}</td>
-                <td><Button startDecorator={<VisibilityIcon />} size="sm">View</Button></td>
+                <td><Button startDecorator={<VisibilityIcon />} size="sm"
+                component={RouterLink}
+                to="/jobseeker/JobDetails"
+                >View</Button></td>
                 </tr>
         ))}
       </tbody>
