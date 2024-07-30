@@ -233,7 +233,7 @@ function sidebarMenuItems() {
         */}
 
         
-          <ListItem>
+          {/* <ListItem>
             <ListItemButton
               role="menuitem"
               component={RouterLink}
@@ -247,10 +247,10 @@ function sidebarMenuItems() {
                 4
               </Chip>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
 
           
-
+{/* 
           <ListItem nested>
             <Toggler
               renderToggle={({ open, setOpen }) => (
@@ -283,7 +283,7 @@ function sidebarMenuItems() {
                 </ListItem>
               </List>
             </Toggler>
-          </ListItem>
+          </ListItem> */}
 
           <ListItem>
             <ListItemButton
@@ -365,8 +365,8 @@ function sidebarMenuItems() {
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Siriwat K.</Typography>
-          <Typography level="body-xs">siriwatk@test.com</Typography>
+          <Typography level="title-sm">Sysco Labs</Typography>
+          <Typography level="body-xs">syscolabs@org.com</Typography>
         </Box>
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />

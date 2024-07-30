@@ -1,4 +1,4 @@
-import React, { useState, useRef} from 'react';
+import React, { useState, useRef,useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -85,7 +85,13 @@ export default function NavigationPanel() {
   const inputFileRef = useRef(null);
   const inputBannerRef = useRef(null);
 
-  
+  const [maxDate, setMaxDate] = useState('');
+
+  useEffect(() => {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    setMaxDate(today);
+  }, []);
 
   // const handleInputChange = (event) => {
   //   const { name, value } = event.target;
@@ -416,7 +422,7 @@ const [italic, setItalic] = React.useState(false);
     
   
   return (
-    <Box sx={{ width: '100%', typography: 'body1',mt:6}}>
+    <Box sx={{ width: '100%', typography: 'body1'}}>
       <form  onSubmit={handleSubmit4}>
       <TabContext value={activeTab} centered>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
@@ -907,10 +913,11 @@ const [italic, setItalic] = React.useState(false);
           },
         }}
       >
-        <option value="Industry1">Industry 1</option>
-        <option value="Industry2">Industry 2</option>
-        <option value="Industry3">Industry 3</option>
-        <option value="Industry4">Industry 4</option>
+        <option value="Manufacturing">Manufacturing</option>
+        <option value="Software and Technology">Software and Technology</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Education">Education</option>
+        <option value = "Transportation">Transportation</option>
       </select>
       {error.industryType && (
         <FormHelperText>
@@ -929,6 +936,13 @@ const [italic, setItalic] = React.useState(false);
             name="establishedDate"
             value={formData.establishedDate}
             onChange={handleInputChange}
+            slotProps={{
+              input: {
+               
+                max: new Date().toISOString().split('T')[0],
+              },
+            }}
+            
           />
           {error.establishedDate && (
             <FormHelperText>
