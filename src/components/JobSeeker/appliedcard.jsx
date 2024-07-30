@@ -14,11 +14,11 @@ import  Chip  from '@mui/joy/Chip';
 import OpenInNew from '@mui/icons-material/OpenInNew';
 
 
-const AppliedCard = () => {
+const AppliedCard = ({status}) => {
 
     const [state, setState] = useState(1)
 
-    const companyDetails = [['Applied Date:', '06 March 2006'] , ['Status :' , 'Pending'] , 
+    const companyDetails = [['Applied Date:', '06 March 2006'] , ['Status :' , status] , 
     ]
   return (
    

@@ -70,6 +70,7 @@ import EmployerSite from "../pages/landingPage/EmployerSite";
 
 
 
+
 const router = createBrowserRouter([
   {
     path: "/",

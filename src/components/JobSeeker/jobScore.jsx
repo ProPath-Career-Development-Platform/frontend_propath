@@ -14,8 +14,10 @@ import Tooltip from '@mui/joy/Tooltip';
 import Button from '@mui/joy/Button';
 import InfoIcon from '@mui/icons-material/Info';
 import CircularProgress from '@mui/joy/CircularProgress';
+import LoopIcon from '@mui/icons-material/Loop';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { ExitToApp } from '@mui/icons-material';
+import SpellcheckIcon from '@mui/icons-material/Spellcheck';
+import { ExitToApp, Spellcheck } from '@mui/icons-material';
 
 const JobScore = () => {
   const [progress, setProgress] = useState(0)
@@ -166,7 +168,10 @@ const JobScore = () => {
             Repetition
             </Typography>
             <Box sx={{position: 'absolute' , right: 1 , }}>
-              <Button sx={{ background: 'white', ":hover": { backgroundColor: '#f5f5f5' } }}>
+              <Button sx={{ background: 'white', ":hover": { backgroundColor: '#f5f5f5' } }}  onClick={()=> (
+
+                setState('Repetition')
+              )}>
               <NavigateNextIcon color='neutral' sx = {{width: '25px' , height: '25px' }}/>
               </Button>
 
@@ -266,7 +271,7 @@ const JobScore = () => {
         {state == "Spelling" && (
           <Box sx = {{width: '60%' , border: "solid 1px #e3e9f5" , boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '10px' , height: 'fitContent' , margin: '15px'  ,padding: '20px 30px 10px 30px' , background: 'white ' }}>
           <Box sx={{display: 'flex' , flexDirection: 'row' , borderBottom: 'solid 2px #e3e9f5', paddingBottom: '10px' , alignItems: 'center' , position: 'relative'}}>
-            <Typography sx={{fontSize: '26px' , fontWeight: 400}}><RateReviewIcon sx={{color: 'purple' , marginRight: '10px'}}/>Spelling and Grammar</Typography>
+            <Typography sx={{fontSize: '26px' , fontWeight: 400}}><Spellcheck sx={{color: 'purple' , marginRight: '10px'}}/>Spelling and Grammar</Typography>
             <Box sx={{position: 'absolute' , right: 1 , }}>
               <Button sx={{ background: 'white', ":hover": { backgroundColor: '#f5f5f5' } }} onClick={() => (
                   setState("neutral")
@@ -291,9 +296,66 @@ const JobScore = () => {
 
           
          )}
+
+    {state == "Repetition" && (
+          <Box sx = {{width: '60%' , border: "solid 1px #e3e9f5" , boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '10px' , height: 'fitContent' , margin: '15px'  ,padding: '20px 30px 10px 30px' , background: 'white ' }}>
+          <Box sx={{display: 'flex' , flexDirection: 'row' , borderBottom: 'solid 2px #e3e9f5', paddingBottom: '10px' , alignItems: 'center' , position: 'relative'}}>
+            <Typography sx={{fontSize: '26px' , fontWeight: 400}}><LoopIcon sx={{color: 'purple' , marginRight: '10px'}}/>Repetition</Typography>
+            <Box sx={{position: 'absolute' , right: 1 , }}>
+              <Button sx={{ background: 'white', ":hover": { backgroundColor: '#f5f5f5' } }} onClick={() => (
+                  setState("neutral")
+              )}>
+              <NavigateNextIcon color='neutral' sx = {{width: '30px' , height: '30px' }}/>
+              </Button>
+
+            </Box>
+            
+          </Box>
+
+          <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '40px'}}>
+              <WarningAmberIcon color='danger'  sx={{ width: '80px', height: '80px' }} />
+            </Box>
+          <Box sx={{gap: 2,  marginTop: '20px' }}>
+          
+            <Typography sx={{fontSize: '20px' , color: 'red' , fontWeight: 'bold', justifyContent: 'center' ,  textAlign: 'center', display: 'flex'}}>
+            We found that the following words are repeated frequently in your resume:
+            </Typography>
+          <Box sx={{
+
+          display: 'grid', 
+          gridTemplateColumns: {
+            xs: 'repeat(1, 1fr)', // 1 column for extra-small screens (mobile)
+            sm: 'repeat(2, 1fr)', // 2 columns for small screens (tablet)
+            md: 'repeat(3, 1fr)', // 3 columns for medium and larger screens (desktop)
+          }, 
+
+          gap: 2, 
+          marginTop: '20px',
+          marginLeft: '40px'
+
+
+          }}>
+            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Project: 8 times</Typography></Chip>
+            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Design: 5 times</Typography></Chip>
+            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>React: 4 times</Typography></Chip>
+            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Frontend: 4 times</Typography></Chip>
+            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Software: 4 times</Typography></Chip>
+            
+            </Box>
+          </Box>
+                    
+         
+          </Box>
+
+          
+         )}
+        
+
+   
         
 
       </Box>
+
     
     </Box>
   
