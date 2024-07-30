@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Box from '@mui/joy/Box';
+import axios from 'axios';
+
+function decodeJWT(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
 
 function Signup() {
   const navigate = useNavigate();
@@ -8,6 +18,11 @@ function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedRole, setSelectedRole] = useState("Job Seeker");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);
@@ -30,72 +45,153 @@ function Signup() {
     navigate("/login");
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Basic validation
+    if (!name) {
+      setErrorMessage("Name is required.");
+      return;
+    }
+    if (!email) {
+      setErrorMessage("Email is required.");
+      return;
+    }
+    if (!password) {
+      setErrorMessage("Password is required.");
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters long.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+    const userData = selectedRole === "Job Seeker" ? {
+      name,
+      email,
+      password,
+      role: "JobSeeker"
+    } : {
+      name,
+      email,
+      password,
+      role: "JobProvider"
+    };
+    console.log("Submitting userData:", userData); 
+    try {
+      const response = await axios.post('http://localhost:8080/signup', userData);
+      console.log(response.data);
+
+      const token = response.data.jwt;
+
+      // Use the utility function to decode the token
+      const decodedToken = decodeJWT(token);
+      console.log(decodedToken);
+      const role = decodedToken.role;
+      console.log(role);
+
+      // Save the token (optional)
+      localStorage.setItem('token', token);
+
+      if (role === 'JobSeeker') {
+        navigate("/jobseeker/setup/");
+      } else if (role === 'JobProvider') {
+        navigate("/jobprovider/setup/");
+      }
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
+  };
+  
+
   return (
     <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200 overflow-hidden">
       <div className="flex items-center justify-center w-full h-full lg:w-3/4">
         <div className="flex w-full max-w-[800px] rounded-3xl  bg-violet-100">
-          <div className="w-1/2 p-6 ">
+        <div className="w-1/2 p-6 ">
             <img src="signup.jpg" alt="Signup Illustration" className="rounded-3xl h-full " />
           </div>
+
           <div className="w-1/2 px-6 py-12">
-            <div className="flex items-center justify-between">
-              <h1 className="text-4xl font-bold text-black">Register</h1>
-              <div className="relative border-gray-300">
-                <button
-                  onClick={toggleDropdown}
-                  className="flex items-center justify-between w-36 h-10 px-3 border rounded-lg bg-violet-100 border-2 shadow-sm focus:outline-none border-gray-400"
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-bold text-black">Register</h1>
+            <div className="relative border-gray-300">
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center justify-between w-36 h-10 px-3 border rounded-lg bg-violet-100 border-2 shadow-sm focus:outline-none border-gray-400"
+              >
+                <span className="text-gray-700">{selectedRole}</span>
+                <svg
+                  className="w-4 h-4 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <span className="text-gray-700">{selectedRole}</span>
-                  <svg
-                    className="w-4 h-4 text-gray-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
+                  <a
+                    href="#"
+                    onClick={() => handleSelectRole("Job Seeker")}
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-                {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
-                    <a
-                      href="#"
-                      onClick={() => handleSelectRole("Job Seeker")}
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    >
-                      Job Seeker
-                    </a>
-                    <a
-                      href="#"
-                      onClick={() => handleSelectRole("Employee")}
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    >
-                      Employee
-                    </a>
-                  </div>
-                )}
-              </div>
+                    Job Seeker
+                  </a>
+                  <a
+                    href="#"
+                    onClick={() => handleSelectRole("Employee")}
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Employee
+                  </a>
+                </div>
+              )}
             </div>
+          </div>
+          <form onSubmit={handleSubmit}>
             <div className="mt-8">
               {selectedRole === "Job Seeker" ? (
                 <div>
                   <div className="flex flex-col">
                     <input
                       className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      placeholder="Name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col  mt-4 relative">
+                    <input
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Email address"
-                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
-                      className="w-full border-2 rounded-xl p-3 mt-1 bg-transparent text-base border-gray-400"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Password"
                       type={showNewPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -139,9 +235,11 @@ function Signup() {
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base decoration-gray-400"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -191,13 +289,16 @@ function Signup() {
                       className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Company Name"
                       type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col mt-4">
+                  <div className="flex flex-col  mt-4 relative">
                     <input
                       className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
-                      placeholder="Email address"
-                      type="email"
+                      placeholder="Company Email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="flex flex-col mt-4 relative">
@@ -205,6 +306,8 @@ function Signup() {
                       className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Password"
                       type={showNewPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -251,6 +354,8 @@ function Signup() {
                       className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -294,28 +399,29 @@ function Signup() {
                   </div>
                 </div>
               )}
-              <div className="flex flex-col mt-4">
-                <button className="w-full bg-[#6756a8] font-semibold text-white py-2 rounded-xl text-lg transition duration-300 ease-in-out hover:scale-[1.01] hover:bg-[#553e97]">Sign Up</button>
-              </div>
-              <div className="flex justify-center items-center mt-4">
-                <p className="text-gray-700">Already have an account?</p>
-                <button onClick={handleSignin} className="text-[#6756a8] hover:underline ml-1">Register</button>
-              </div>
-              <div className="flex items-center mt-4">
-                <div className="border-t w-full border-gray-300"></div>
-                <p className="text-gray-500 mx-4">or</p>
-                <div className="border-t w-full border-gray-300"></div>
-              </div>
-              <div className="flex justify-center items-center mt-4">
-                <button className="flex items-center font-semibold hover:scale-[1.01] justify-center w-full bg-violet-200 text-black py-2 rounded-xl text-lg transition duration-300 ease-in-out hover:text-[#6756a8]">
-                  <img src="google.png" alt="Google Logo" className="w-6 h-6 mr-2" />
-                  Register with Google
-                </button>
-              </div>
             </div>
+            {errorMessage && <div className="text-red-500 text-center mt-5">{errorMessage}</div>}
+            <div className="mt-8 flex flex-col gap-y-4">
+              <button
+                type="submit"
+                className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 rounded-xl bg-[#6756a8] text-white font-bold text-lg"
+              >
+                Register
+              </button>
+            </div>
+          </form>
+          <div className="mt-8 flex justify-center items-center">
+            <p className="font-medium text-base text-gray-400">Already have an account?</p>
+            <button
+              onClick={handleSignin}
+              className="ml-2 font-medium text-base text-[#6756a8]"
+            >
+              Login
+            </button>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
