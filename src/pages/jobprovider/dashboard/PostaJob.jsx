@@ -311,7 +311,7 @@ const Dashboard = () => {
         }
       );
       console.log("Job posted successfully!", response.data);
-      navigate("/login");
+      navigate("/jobprovider/my-jobs");
 
       if (plan === "basic" && postCount >= 1) {
         setOpen(true);
@@ -321,7 +321,7 @@ const Dashboard = () => {
         setOpen(true);
       } else {
         const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length > 0) {
+        if (Object.keys(validationErrors).length == 0) {
           setErrors(validationErrors);
         }
       }

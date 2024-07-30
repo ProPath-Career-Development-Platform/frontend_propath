@@ -177,7 +177,7 @@ function JobSeekerSideBar() {
             >
               <SettingsRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Settings</Typography>
+                <Typography level="title-sm">Set Up</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
@@ -214,11 +214,11 @@ function JobSeekerSideBar() {
         <Avatar
           variant="outlined"
           size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+          src="/seba.jpg"
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Siriwat K.</Typography>
-          <Typography level="body-xs">siriwatk@test.com</Typography>
+          <Typography level="title-sm">Santhush Fernando</Typography>
+          <Typography level="body-xs">SFernando@gmail.com</Typography>
         </Box>
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />

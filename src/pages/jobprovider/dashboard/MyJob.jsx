@@ -35,7 +35,7 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-  createData('UI/UX Designer', 'Active', 200, 24),
+  createData('Software Engineer', 'Active', 0, 24),
   createData('Senior UI/UX Designer', 'Expire', 100, 37),
   createData('Techical Support Specialist', 'Active', 50, 24),
   createData('Junior Graphic Designer', 'Expire', 1000, 67),

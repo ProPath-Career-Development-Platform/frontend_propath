@@ -332,7 +332,7 @@ export default function NavigationPanel() {
         // Submit the form data
         const response = await RegisterCompany(companyData,token);
         console.log(response.data);
-        navigate('/jobprovider/home/');
+        navigate('/jobprovider/dashboard/');
       } catch (error) {
         console.error('Error submitting form:', error);
         if (error.response) {

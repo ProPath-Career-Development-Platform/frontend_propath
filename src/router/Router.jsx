@@ -41,7 +41,7 @@ import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 import JobDetails from "../pages/jobseeker/jobDetail";
-
+import JSNavbar from "../components/JobSeeker/topNavbar1";
 import Navbar1 from "../components/navbar/Navbar1";
 import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
@@ -135,8 +135,6 @@ const router = createBrowserRouter([
     path: "/jobprovider",
     element: (
       <>
-        {/* <TopNav /> */}
-        {/* <TopNavBar /> */}
         <JPCompnaySetup1 />
       </>
     ),
@@ -224,8 +222,7 @@ const router = createBrowserRouter([
     path: "/Jobseeker",
     element: (
       <>
-        {/* <TopNav /> */}
-        {/* <TopNavBar /> */}
+        <JSNavbar />
         <JobSeekerSetup />
       </>
     ),
