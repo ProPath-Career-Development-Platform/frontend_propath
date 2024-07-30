@@ -242,15 +242,31 @@ const Dashboard = () => {
   const handleChange = (e) => {
     console.log("Event:", e);
     if (e && e.target) {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      const { name, value } = e.target;
+      setFormData({ ...formData, [name]: value });
+  
+      if (errors[name]) {
+        setErrors((prevState) => {
+          const newErrors = { ...prevState };
+          delete newErrors[name];
+          return newErrors;
+        });
+      }
     } else {
       console.log("Event or event.target is null");
     }
   };
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     const userId = getUserIdFromToken();
     if (!userId) {
@@ -319,11 +335,6 @@ const Dashboard = () => {
         setOpen(true);
       } else if (plan === "premium" && postCount >= 6) {
         setOpen(true);
-      } else {
-        const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length == 0) {
-          setErrors(validationErrors);
-        }
       }
     } catch (error) {
       console.error("There was an error posting the job!", error);
