@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar1 from '../../../components/navbar/Navbar1'
+import Navbar from '../../../components/jobprovider/CompanySetup1/Navbar'
 import NavigationPanel from '../../../components/jobprovider/CompanySetup1/NavigationPanel'
 
 import '../../../index.css'
@@ -24,7 +24,7 @@ const CompanyInfo = () => {
       >
        
       <Box sx={{ width: '100%', height:'100'}} >
-      <Navbar1/> 
+      <Navbar/> 
       {/* <DashboardLayout/> */}
       <NavigationPanel/>
       </Box>

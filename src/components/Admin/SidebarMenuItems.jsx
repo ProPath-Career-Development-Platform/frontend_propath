@@ -144,6 +144,9 @@ function SidebarMenuItems() {
             <ListItemContent>
               <Typography level="title-sm">companies</Typography>
             </ListItemContent>
+            <Chip size="sm" color="primary" variant="solid">
+                1
+              </Chip>
           </ListItemButton>
         </ListItem>
 
@@ -283,8 +286,8 @@ function SidebarMenuItems() {
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Siriwat K.</Typography>
-          <Typography level="body-xs">siriwatk@test.com</Typography>
+          <Typography level="title-sm">Admin</Typography>
+          <Typography level="body-xs">admin@gmail.com</Typography>
         </Box>
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />

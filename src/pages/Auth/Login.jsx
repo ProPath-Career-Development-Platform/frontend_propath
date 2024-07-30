@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import JobNav from '../../components/landingPage/navbar/JobNav'
 
 
  function decodeJWT(token) {
@@ -119,9 +120,11 @@ function Login() {
   
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-white overflow-hidden">
+    <>
+    <JobNav/>
+    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200  overflow-hidden">
       <div className="flex items-center justify-center w-full h-full lg:w-1/2">
-        <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-white border-2 border-gray-300">
+        <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-violet-100 ">
           <h1 className="text-4xl font-bold flex justify-center items-center text-black w-full">
             Log in
           </h1>
@@ -130,7 +133,7 @@ function Login() {
             <div className="mt-8">
               <div className="flex flex-col">
                 <input
-                  className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                  className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                   placeholder="Email address"
                   
                   value={email}
@@ -139,7 +142,7 @@ function Login() {
               </div>
               <div className="flex flex-col mt-4 relative">
                 <input
-                  className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                  className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                   placeholder="Password"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -210,13 +213,13 @@ function Login() {
               </div>
               {errorMessage && <div className="text-red-500 text-center mt-5">{errorMessage}</div>}
               <div className="mt-5 flex flex-col gap-y-4">
-                <button type="submit" className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#9a80d4] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]">
+                <button type="submit" className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#6756a8] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]">
                   Sign in
                 </button>
                 <button
                   type="button"
                   onClick={handlesignup}
-                  className="flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-2 px-4 rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 hover:border-[#6756a8] hover:text-[#6756a8]"
+                  className="flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-2 px-4 rounded-xl text-gray-700 font-semibold text-lg border-2 bg-violet-200  hover:text-[#6756a8]"
                 >
                   <svg
                     width="24"
@@ -259,6 +262,7 @@ function Login() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

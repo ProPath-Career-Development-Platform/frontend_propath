@@ -17,6 +17,7 @@ import { typographyClasses } from '@mui/joy/Typography';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 
 import Dropdown from '@mui/joy/Dropdown';
 import Menu from '@mui/joy/Menu';
@@ -34,6 +35,9 @@ import WorkIcon from '@mui/icons-material/Work';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import InsertInvitationTwoToneIcon from '@mui/icons-material/InsertInvitationTwoTone';
 import {getUserIdFromToken} from '../../../utils/tokenUtils';
+import ChartComponent, { jobData } from '../../../components/jobprovider/dashboard/BarChart';
+import DoughnutChartComponent from '../../../components/Admin/doughnutchart';
+import {Link as RouterLink} from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -52,17 +56,25 @@ const rows = [
 
 
 const cardData = [
-  { icon: HomeIcon, heading: 'Registered Companies', count: 560},
-  { icon: WorkIcon, heading: 'Jobs Posts', count: 120},
-  { icon: PeopleAltIcon, heading: 'Job Seekers', count: 3000},
-  { icon: InsertInvitationTwoToneIcon, heading: 'Registered Events', count: 75},
+  
+  { icon: WorkIcon, heading: 'Jobs Posts', count: 10},
+  { icon: PeopleAltIcon, heading: 'Applicants', count: 150},
+  { icon: InsertInvitationTwoToneIcon, heading: 'Upcoming Events', count: 5},
+];
+
+const Subscription =[
+  
+  { id: 1, jobtitle: "Premium", count: 20 },
+  { id: 2, jobtitle: "Basic", count: 80 },
+  { id: 3, jobtitle: "Standard", count: 60 },
+  
+
 ];
 
 
 
-
 export const GetCompany = (id) => {
-  return axios.get(`http://localhost:8080/company/details?userId=${id}`);
+  return axios.get(`http://localhost:8080/jobprovider/home?userId=${id}`);
 }
   
 
@@ -134,7 +146,7 @@ const Home = () => {
                   Dashboard
                 </Link>
                 <Typography color="primary" fontWeight={500} fontSize={12}>
-                  Home
+                  
                 </Typography>
               </Breadcrumbs>
             </Box>
@@ -161,7 +173,7 @@ const Home = () => {
             <Box sx={{  alignItems: 'center', marginTop:'20px' }}>
 
               <Typography color="primary" fontSize="lg" fontWeight="lg">
-                Hello, IFS
+                Hello, Sysco Labs
               </Typography>
 
               <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
@@ -180,7 +192,7 @@ const Home = () => {
                         mt:4
                    
             }}>
-                 {cardData.map((card, index) => (
+                 {/* {cardData.map((card, index) => (
                     <SmallCard 
                         key={index}
                         icon={card.icon}
@@ -188,8 +200,8 @@ const Home = () => {
                         count={card.count}
             
                         />
-                        ))}
-            {/* <Card variant="soft" color="primary"  invertedColors>
+                        ))} */}
+            <Card variant="soft" color="primary"  invertedColors>
               <CardContent orientation="horizontal">
                 <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
@@ -204,33 +216,99 @@ const Home = () => {
               </CardContent>
               <CardActions>
                 
-                <Button variant="solid" size="sm">
-                  See Jobs
+                <Button variant="solid" size="sm"
+                 component= {RouterLink}
+                 to = "/jobprovider/my-jobs">
+                
+                  Job Posts
                 </Button>
               </CardActions>
             </Card>
 
-            <Card variant="soft" color="warning"  invertedColors>
+            <Card variant="soft" color="primary"  invertedColors>
               <CardContent orientation="horizontal">
                 <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
-                  <WorkOutlineIcon sx ={{fontSize: 50}}/>
+                  <PeopleAltOutlinedIcon sx ={{fontSize: 50}}/>
 
                 </IconButton>
 
                 <CardContent>
-                  <Typography level="body-md">Open Jobs</Typography>
+                  <Typography level="body-md">Applicants</Typography>
                   <Typography level="h2">560</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
                 
-                <Button variant="solid" size="sm">
-                  See Jobs
+                <Button variant="solid" size="sm"
+                 component= {RouterLink}
+                 to = "/jobprovider/my-jobs/applications">
+                
+                  Applicants
                 </Button>
               </CardActions>
-            </Card> */}
+            </Card>
+            <Card variant="soft" color="primary"  invertedColors>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
+
+                  <EventOutlinedIcon sx ={{fontSize: 50}}/>
+
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Events</Typography>
+                  <Typography level="h2">560</Typography>
+                </CardContent>
+              </CardContent>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+                component= {RouterLink}
+                to = "/jobprovider/meet-up">
+                
+                  Registered Events
+                </Button>
+              </CardActions>
+            </Card>
             </Box>
+
+            <Box
+                sx={{
+                    width:'100%',
+                    display:'flex',
+                    flexDirection:'row',
+                    justifyContent:'space-between',
+                    marginTop:5
+                    
+                }}
+                >
+                    <Box
+                    sx={{
+                        width:'700px',
+                        
+                    }}
+                    >
+                        {/* <Typography level="h4" sx={{textAlign:'center'}}>Number of Job Posts by Each Job role</Typography>
+                        <br /> */}
+                        <Card
+                        
+                        >
+                       
+                        <ChartComponent/>
+                        </Card>
+                    </Box>
+                    <Box>
+                    {/* <Typography level="h4" sx={{textAlign:'center'}}>Events With Number of participants</Typography>
+                    <br /> */}
+                    <Card
+                      
+                    >
+                    <DoughnutChartComponent data={Subscription} /> 
+                    </Card>  
+                    </Box>
+                
+                </Box>
 
 
             {/* insights over, Table */}

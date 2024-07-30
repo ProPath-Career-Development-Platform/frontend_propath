@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import JobNav from '../../components/landingPage/navbar/JobNav'
 
 function decodeJWT(token) {
   const base64Url = token.split('.')[1];
@@ -113,15 +114,23 @@ function Signup() {
   
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-white overflow-hidden">
-      <div className="flex items-center justify-center w-full h-full lg:w-1/2">
-        <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-white border-2 border-gray-300">
+
+    <>
+    <JobNav/>
+    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200 overflow-hidden">
+      <div className="flex items-center justify-center w-full h-full lg:w-3/4">
+        <div className="flex w-full max-w-[800px] rounded-3xl  bg-violet-100">
+        <div className="w-1/2 p-6 ">
+            <img src="signup.jpg" alt="Signup Illustration" className="rounded-3xl h-full " />
+          </div>
+
+          <div className="w-1/2 px-6 py-12">
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold text-black">Register</h1>
             <div className="relative border-gray-300">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center justify-between w-36 h-10 px-3 border rounded-lg bg-white shadow-sm focus:outline-none border-gray-500"
+                className="flex items-center justify-between w-36 h-10 px-3 border rounded-lg bg-violet-100 border-2 shadow-sm focus:outline-none border-gray-400"
               >
                 <span className="text-gray-700">{selectedRole}</span>
                 <svg
@@ -165,7 +174,7 @@ function Signup() {
                 <div>
                   <div className="flex flex-col">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Name"
                       type="text"
                       value={name}
@@ -174,7 +183,7 @@ function Signup() {
                   </div>
                   <div className="flex flex-col  mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -182,7 +191,7 @@ function Signup() {
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Password"
                       type={showNewPassword ? "text" : "password"}
                       value={password}
@@ -230,7 +239,7 @@ function Signup() {
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
@@ -281,7 +290,7 @@ function Signup() {
                 <div>
                   <div className="flex flex-col">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Company Name"
                       type="text"
                       value={name}
@@ -290,15 +299,15 @@ function Signup() {
                   </div>
                   <div className="flex flex-col  mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Company Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                    />
+                      />
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Password"
                       type={showNewPassword ? "text" : "password"}
                       value={password}
@@ -346,17 +355,17 @@ function Signup() {
                   </div>
                   <div className="flex flex-col mt-4 relative">
                     <input
-                      className="w-full border-2 border-gray-100 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
+                      />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
                       onClick={toggleConfirmPasswordVisibility}
-                    >
+                      >
                       {showConfirmPassword ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -410,13 +419,15 @@ function Signup() {
             <button
               onClick={handleSignin}
               className="ml-2 font-medium text-base text-[#6756a8]"
-            >
+              >
               Login
             </button>
           </div>
         </div>
       </div>
     </div>
+    </div>
+              </>
   );
 }
 
