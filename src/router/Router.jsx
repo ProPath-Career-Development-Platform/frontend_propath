@@ -47,7 +47,7 @@ import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
-
+import Event from "../pages/jobseeker/Event";
 
 
 //Admin
@@ -289,6 +289,10 @@ const router = createBrowserRouter([
       {
         path:"JobScore",
         element:<JobScore/>
+      },
+      {
+        path:"Event",
+        element:<Event/>
       },
 
       
