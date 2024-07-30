@@ -35,6 +35,8 @@ import "survey-creator-core/survey-creator-core.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
+
 function decodeJWT(token) {
   const base64Url = token.split(".")[1];
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -99,6 +101,7 @@ const Dashboard = () => {
 
   const [formData, setFormData] = useState({
     jobProviderId: getUserIdFromToken(),
+    companyName: "",
     jobTitle: "",
     tags: [],
     jobRole: "",
@@ -231,6 +234,8 @@ const Dashboard = () => {
       newErrors.jobDescription = "jobDescription is required";
     if (checked && !formData.customizedForm)
       newErrors.customizedForm = "Customized form is required";
+    if (!formData.companyName)
+      newErrors.companyName = "Company Name is required";
     return newErrors;
   };
 
@@ -268,7 +273,10 @@ const Dashboard = () => {
       try {
         parsedCustomQuestions = JSON.parse(formData.customQuestions);
       } catch (error) {
-        console.error("Invalid JSON in customQuestions:", formData.customQuestions);
+        console.error(
+          "Invalid JSON in customQuestions:",
+          formData.customQuestions
+        );
         return;
       }
     } else {
@@ -276,9 +284,11 @@ const Dashboard = () => {
     }
 
     // Transform customQuestions to match the expected DTO format
-    const transformedCustomQuestions = parsedCustomQuestions.map((question) => ({
-      questionText: question.name,
-    }));
+    const transformedCustomQuestions = parsedCustomQuestions.map(
+      (question) => ({
+        questionText: question.name,
+      })
+    );
 
     const jobData = {
       ...formData,
@@ -313,13 +323,12 @@ const Dashboard = () => {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
           setErrors(validationErrors);
-        } 
+        }
       }
     } catch (error) {
       console.error("There was an error posting the job!", error);
     }
   };
-
 
   const renderValue = (selected) => (
     <Box sx={{ display: "flex", gap: "0.25rem" }}>
@@ -421,6 +430,24 @@ const Dashboard = () => {
             <Typography level="title-lg" sx={{ marginBottom: "1rem" }}>
               Job Informations
             </Typography>
+            <FormControl
+              sx={{ gridColumn: "1/-1", marginBottom: 1 }}
+              error={Boolean(errors.companyName)}
+            >
+              <FormLabel>Company Name</FormLabel>
+              <Input
+                placeholder="Company Name"
+                type="text"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+              />
+              {errors.companyName && (
+                <FormHelperText>
+                  <InfoOutlined /> {errors.companyName}
+                </FormHelperText>
+              )}
+            </FormControl>
 
             <FormControl
               sx={{ gridColumn: "1/-1", marginBottom: 1 }}
@@ -469,10 +496,22 @@ const Dashboard = () => {
                     },
                   }}
                 >
-                  <Option value="dog">Dog</Option>
-                  <Option value="cat">Cat</Option>
-                  <Option value="fish">Fish</Option>
-                  <Option value="bird">Bird</Option>
+                  <Option value="technology">Technology</Option>
+                  <Option value="healthcare">Healthcare</Option>
+                  <Option value="finance">Finance</Option>
+                  <Option value="education">Education</Option>
+                  <Option value="engineering">Engineering</Option>
+                  <Option value="marketing">Marketing</Option>
+                  <Option value="sales">Sales</Option>
+                  <Option value="customer-service">Customer Service</Option>
+                  <Option value="administration">Administration</Option>
+                  <Option value="human-resources">Human Resources</Option>
+                  <Option value="construction">Construction</Option>
+                  <Option value="transportation">Transportation</Option>
+                  <Option value="hospitality">Hospitality</Option>
+                  <Option value="retail">Retail</Option>
+                  <Option value="legal">Legal</Option>
+                  <Option value="creative-arts">Creative Arts</Option>
                 </Select>
 
                 {errors.tags && (
@@ -509,10 +548,30 @@ const Dashboard = () => {
                     });
                   }}
                 >
-                  <Option value="dog">Dog</Option>
-                  <Option value="cat">Cat</Option>
-                  <Option value="fish">Fish</Option>
-                  <Option value="bird">Bird</Option>
+                  <Option value="software-developer">Software Developer</Option>
+                  <Option value="data-scientist">Data Scientist</Option>
+                  <Option value="nurse">Nurse</Option>
+                  <Option value="teacher">Teacher</Option>
+                  <Option value="civil-engineer">Civil Engineer</Option>
+                  <Option value="marketing-specialist">
+                    Marketing Specialist
+                  </Option>
+                  <Option value="sales-representative">
+                    Sales Representative
+                  </Option>
+                  <Option value="customer-support">Customer Support</Option>
+                  <Option value="administrative-assistant">
+                    Administrative Assistant
+                  </Option>
+                  <Option value="hr-manager">HR Manager</Option>
+                  <Option value="construction-worker">
+                    Construction Worker
+                  </Option>
+                  <Option value="truck-driver">Truck Driver</Option>
+                  <Option value="hotel-manager">Hotel Manager</Option>
+                  <Option value="retail-salesperson">Retail Salesperson</Option>
+                  <Option value="lawyer">Lawyer</Option>
+                  <Option value="graphic-designer">Graphic Designer</Option>
                 </Select>
 
                 {errors.jobRole && (
@@ -521,22 +580,21 @@ const Dashboard = () => {
                   </FormHelperText>
                 )}
               </FormControl>
-
-              <FormControl error={Boolean(errors.jobLocation)}>
-                <FormLabel>Location</FormLabel>
-                <Input
-                  name="jobLocation"
-                  value={formData.jobLocation}
-                  placeholder="Enter number of vacancies"
-                  onChange={handleInputChange}
-                />
-                {errors.jobLocation && (
-                  <FormHelperText>
-                    <InfoOutlined /> {errors.jobLocation}
-                  </FormHelperText>
-                )}
-              </FormControl>
             </Box>
+            <FormControl error={Boolean(errors.jobLocation)}>
+              <FormLabel>Location</FormLabel>
+              <Input
+                name="jobLocation"
+                value={formData.jobLocation}
+                placeholder="Enter number of vacancies"
+                onChange={handleInputChange}
+              />
+              {errors.jobLocation && (
+                <FormHelperText>
+                  <InfoOutlined /> {errors.jobLocation}
+                </FormHelperText>
+              )}
+            </FormControl>
 
             <Typography level="title-lg" sx={{ marginBottom: "1rem" }}>
               Salery
@@ -670,10 +728,36 @@ const Dashboard = () => {
                     setFormData({ ...formData, education: value });
                   }}
                 >
-                  <Option value="dog">Dog</Option>
-                  <Option value="cat">Cat</Option>
-                  <Option value="fish">Fish</Option>
-                  <Option value="bird">Bird</Option>
+                  <Option value="high-school-diploma">
+                    High School Diploma
+                  </Option>
+                  <Option value="associate-degree">Associate Degree</Option>
+                  <Option value="bachelors-degree">Bachelor's Degree</Option>
+                  <Option value="masters-degree">Master's Degree</Option>
+                  <Option value="doctoral-degree">Doctoral Degree</Option>
+                  <Option value="professional-certificate">
+                    Professional Certificate
+                  </Option>
+                  <Option value="diploma">Diploma</Option>
+                  <Option value="postdoctoral-fellowship">
+                    Postdoctoral Fellowship
+                  </Option>
+                  <Option value="vocational-training">
+                    Vocational Training
+                  </Option>
+                  <Option value="technical-certification">
+                    Technical Certification
+                  </Option>
+                  <Option value="online-course">Online Course</Option>
+                  <Option value="apprenticeship">Apprenticeship</Option>
+                  <Option value="bootcamp">Bootcamp</Option>
+                  <Option value="continuing-education">
+                    Continuing Education
+                  </Option>
+                  <Option value="self-taught">Self-Taught</Option>
+                  <Option value="industry-specific-training">
+                    Industry-Specific Training
+                  </Option>
                 </Select>
 
                 {errors.education && (
@@ -701,10 +785,42 @@ const Dashboard = () => {
                     setFormData({ ...formData, experience: value });
                   }}
                 >
-                  <Option value="dog">Dog</Option>
-                  <Option value="cat">Cat</Option>
-                  <Option value="fish">Fish</Option>
-                  <Option value="bird">Bird</Option>
+                  <Option value="no-experience">No Experience</Option>
+                  <Option value="internship">Internship</Option>
+                  <Option value="entry-level">Entry Level (0-1 years)</Option>
+                  <Option value="junior-level">Junior Level (1-3 years)</Option>
+                  <Option value="mid-level">Mid Level (3-5 years)</Option>
+                  <Option value="senior-level">
+                    Senior Level (5-10 years)
+                  </Option>
+                  <Option value="expert-level">Expert Level (10+ years)</Option>
+                  <Option value="managerial-experience">
+                    Managerial Experience
+                  </Option>
+                  <Option value="executive-experience">
+                    Executive Experience
+                  </Option>
+                  <Option value="volunteer-experience">
+                    Volunteer Experience
+                  </Option>
+                  <Option value="freelance-experience">
+                    Freelance Experience
+                  </Option>
+                  <Option value="part-time-experience">
+                    Part-Time Experience
+                  </Option>
+                  <Option value="full-time-experience">
+                    Full-Time Experience
+                  </Option>
+                  <Option value="project-based-experience">
+                    Project-Based Experience
+                  </Option>
+                  <Option value="consulting-experience">
+                    Consulting Experience
+                  </Option>
+                  <Option value="industry-specific-experience">
+                    Industry-Specific Experience
+                  </Option>
                 </Select>
 
                 {errors.experience && (
@@ -737,10 +853,10 @@ const Dashboard = () => {
                     }));
                   }}
                 >
-                  <Option value="dog">Dog</Option>
-                  <Option value="cat">Cat</Option>
-                  <Option value="fish">Fish</Option>
-                  <Option value="bird">Bird</Option>
+                  <Option value="full-time">Full-Time</Option>
+                  <Option value="part-time">Part-Time</Option>
+                  <Option value="contract">Contract</Option>
+                  <Option value="temporary">Temporary</Option>
                 </Select>
 
                 {errors.jobType && (
@@ -805,10 +921,22 @@ const Dashboard = () => {
                     setFormData({ ...formData, jobLevel: value });
                   }}
                 >
-                  <Option value="dog">Dog</Option>
-                  <Option value="cat">Cat</Option>
-                  <Option value="fish">Fish</Option>
-                  <Option value="bird">Bird</Option>
+                  <Option value="internship">Internship</Option>
+                  <Option value="entry-level">Entry Level</Option>
+                  <Option value="junior">Junior</Option>
+                  <Option value="mid-level">Mid Level</Option>
+                  <Option value="senior">Senior</Option>
+                  <Option value="lead">Lead</Option>
+                  <Option value="manager">Manager</Option>
+                  <Option value="director">Director</Option>
+                  <Option value="vice-president">Vice President</Option>
+                  <Option value="executive">Executive</Option>
+                  <Option value="c-level">C-Level</Option>
+                  <Option value="partner">Partner</Option>
+                  <Option value="founder">Founder</Option>
+                  <Option value="board-member">Board Member</Option>
+                  <Option value="consultant">Consultant</Option>
+                  <Option value="freelancer">Freelancer</Option>
                 </Select>
                 {errors.jobLevel && (
                   <FormHelperText>

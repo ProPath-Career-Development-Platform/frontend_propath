@@ -22,6 +22,7 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
+import JobDetails from "../pages/jobseeker/jobDetail";
 
 import Navbar1 from "../components/navbar/Navbar1";
 import EmployerSite from "../pages/landingPage/EmployerSite";
@@ -125,6 +126,10 @@ const router = createBrowserRouter([
         path: "job-alert",
         element: <JsJobAlert />,
       },
+      {
+        path: "JobDetails/:jobId",
+        element: <JobDetails />,
+      }
     ],
   },
  

@@ -2,7 +2,7 @@ import React from 'react';
 import { IoMdSearch } from 'react-icons/io';
 import logo from '/logo.png'; // Adjust the import path as needed
 import Alert from './alert'; // Ensure the import path is correct
-import ProfileDropdown from './ProfileDropdown';
+// import ProfileDropdown from './ProfileDropdown';
 
 const JobSeekerTopbar = () => {
   return (
