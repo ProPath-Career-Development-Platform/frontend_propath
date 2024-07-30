@@ -193,15 +193,33 @@ const JobDetails = () => {
       )}
 
       {Submit == 1 && (
-         <Button
-        
-         sx={{backgroundColor:'red'}}
-
-       >
+           <Button
+           sx={{ backgroundColor: 'red' }}
+           onClick={() => {
+             setSubmit(2);
+             console.log(Submit);
+           }} // Correct capitalization of onClick and proper use of curly braces
+         >
          <Typography sx = {{display : {xs:'none' , sm:'none' , md: 'none' , lg: 'block'}, color: 'white'}}>Pending</Typography> 
        </Button>
       )
       }
+
+    {Submit ==2 && (
+      <Button
+        sx={{ backgroundColor: 'red' }}
+        onClick={() => setSubmit(2)} // Correct capitalization of onClick
+      >
+        <Typography
+          sx={{
+            display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+            color: 'white'
+          }}
+        >
+          PH
+        </Typography>
+      </Button>
+    )}
      
      
       
@@ -236,7 +254,10 @@ const JobDetails = () => {
         </Box>
         <Box sx = {{marginLeft : '16px' , minWidth : '40%'}}>
         {Submit == 1 && (
-          <AppliedCard></AppliedCard>
+          <AppliedCard status={'Pending'}></AppliedCard>
+        )}
+        {Submit == 2 && (
+          <AppliedCard status={'Active'}></AppliedCard>
         )}
         <Jobcard/>
         <Companycard/>
