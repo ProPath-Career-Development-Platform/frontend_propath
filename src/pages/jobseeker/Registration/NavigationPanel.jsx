@@ -38,9 +38,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import InputAdornment from "@mui/material/InputAdornment";
-// import FormControl from "@mui/joy/FormControl";
-// import FormLabel from "@mui/joy/FormLabel";
-// import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Input from "@mui/joy/Input";
 import LocationOn from "@mui/icons-material/LocationOn";
@@ -57,7 +54,6 @@ import IconButton from "@mui/joy/IconButton";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import FormatBold from "@mui/icons-material/FormatBold";
 import Menu from "@mui/joy/Menu";
-// import MenuItem from "@mui/joy/MenuItem";
 import FormatItalic from "@mui/icons-material/FormatItalic";
 import FormatUnderlined from "@mui/icons-material/FormatUnderlined";
 import FormatListBulleted from "@mui/icons-material/FormatListBulleted";
@@ -69,9 +65,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import sidebarMenuItems from "../../../components/jobprovider/dashboard/sidebarMenuItems";
-import Sidebar from "../../../components/dashboard/Sidebar";
-import JobSeekerSideBar from "../../../components/JobSeeker/JobSeekerSideBar";
+
 
 export default function NavigationPanel() {
   const [value, setValue] = React.useState("1");
@@ -311,7 +305,7 @@ export default function NavigationPanel() {
               >
                 <div>
                   <img
-                    src="../../public/logo.png"
+                    src="../../../src/assets/logo.png"
                     alt=""
                     style={{ height: "40px" }}
                   />
@@ -328,7 +322,7 @@ export default function NavigationPanel() {
                 }}
               >
                 <img
-                  src="../../public/founding_info.jpg"
+                  src="../../../src/assets/founding_info.jpg"
                   alt=""
                   style={{
                     borderRadius: "20px",
@@ -816,7 +810,7 @@ export default function NavigationPanel() {
               >
                 <div>
                   <img
-                    src="../../public/logo.png"
+                    src="../../../src/assets/logo.png"
                     alt=""
                     style={{ height: "40px" }}
                   />
@@ -833,7 +827,7 @@ export default function NavigationPanel() {
                 }}
               >
                 <img
-                  src="../../public/company_info.jpg"
+                  src="../../../src/assets/company_info.jpg"
                   alt=""
                   style={{
                     borderRadius: "20px",
@@ -1278,7 +1272,7 @@ export default function NavigationPanel() {
               >
                 <div>
                   <img
-                    src="../../public/logo.png"
+                    src="../../../src/assets/logo.png"
                     alt=""
                     style={{ height: "40px" }}
                   />
@@ -1295,7 +1289,7 @@ export default function NavigationPanel() {
                 }}
               >
                 <img
-                  src="../../public/Social_media.jpg"
+                  src="../../../src/assets/Social_media.jpg"
                   alt=""
                   style={{
                     borderRadius: "20px",
@@ -1475,7 +1469,7 @@ export default function NavigationPanel() {
               >
                 <div>
                   <img
-                    src="../../public/logo.png"
+                    src="../../../src/assets/logo.png"
                     alt=""
                     style={{ height: "40px" }}
                   />
@@ -1492,7 +1486,7 @@ export default function NavigationPanel() {
                 }}
               >
                 <img
-                  src="../../public/2.webp"
+                  src="../../../src/assets/2.webp"
                   alt=""
                   style={{
                     borderRadius: "20px",
@@ -1550,7 +1544,7 @@ export default function NavigationPanel() {
                       color="neutral"
                       startDecorator={
                         <Avatar
-                          src="../../public/sri-lanka.png"
+                          src="../../../src/assets/sri-lanka.png"
                           size="lg"
                           sx={{ width: 24, height: 24 }}
                         />

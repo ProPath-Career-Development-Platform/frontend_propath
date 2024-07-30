@@ -11,7 +11,7 @@ const EmployerBanner = () => {
           <p className="mb-5 text-grey1 text-lg mt-8 font-light">
             We make it quicker and easier to find the right people for your company. Post jobs in the leading job marketplace in Sri Lanka.
           </p>
-          <Button as={Link} className='bg-purple2 text-white font-semibold py-6 mt-2' href="#" variant="flat">
+          <Button as={Link} className='bg-purple2 text-white font-semibold mt-2' href="#" variant="flat">
             Post a Job
           </Button>
         </div>

@@ -12,7 +12,7 @@ const EmployerHero = () => {
             <p className="mb-5 text-[#403f3f] text-xl mt-6">
               We make it quicker and easier to find the right people for your company. Get access to the leading job marketplace in Sri Lanka.
             </p>
-            <Button as={Link} className='bg-purple4 text-white font-semibold py-6 mt-2' href="#" variant="flat">
+            <Button as={Link} className='bg-purple4 text-white font-semibold mt-2' href="#" variant="flat">
               Post a Job
             </Button>
             <div className='pt-12'>
