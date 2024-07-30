@@ -65,6 +65,7 @@ function JobSeekerSideBar() {
         sx={{
           minHeight: 0,
           overflow: "hidden auto",
+          flexGrow:1,
           display: "flex",
           flexDirection: "column",
           [`& .${listItemButtonClasses.root}`]: {
@@ -207,8 +208,9 @@ function JobSeekerSideBar() {
             Upgrade plan
           </Button>
         </Card> */}
-
-    <Box sx={{ display: "flex", gap: 1, alignItems: "center" , marginTop: "230px" }}>
+    </Box>
+    <Divider />
+    <Box sx={{ display: "flex", gap: 1, alignItems: "center"}}>
         <Avatar
           variant="outlined"
           size="sm"
@@ -221,8 +223,8 @@ function JobSeekerSideBar() {
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />
         </IconButton>
-      </Box>
-      </Box>
+    </Box>
+     
       
      
      

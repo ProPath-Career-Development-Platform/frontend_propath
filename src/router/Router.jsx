@@ -215,7 +215,7 @@ const router = createBrowserRouter([
       <>
         
         {/* <TopNav /> */}
-        <TopNavBar />
+        
         <JobSeekerSetup />
        
       </>
@@ -233,7 +233,7 @@ const router = createBrowserRouter([
     element: (
       <>
         
-        <Navbar1 />
+        
         {/* <TopNav /> */}
      
         <DashboardLayout user="jobseeker" />
