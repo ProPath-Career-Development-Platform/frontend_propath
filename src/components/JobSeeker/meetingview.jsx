@@ -20,6 +20,7 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import Grid from '@mui/joy/Grid';
 import GroupsSharpIcon from '@mui/icons-material/GroupsSharp';
+import Modal from '@mui/joy/Modal';
 
 export default function Meetingview() {
     const time =["7.30am","8.30am","9.30am","10.30am","11.30am"]
@@ -29,12 +30,13 @@ export default function Meetingview() {
     const [datenum, setDatenum] = useState(0);
 
   return (
+    <Modal open={open} sx={{display:'flex' , justifyContent: 'center' , alignItems: 'center'}}>
     <Card
       variant="outlined"
       sx={{
         width: '480px',
         margin: '10px',
-        height: '650px',
+        height: 'auto',
         // to make the card resizable
         overflow: 'auto'
       }}
@@ -136,5 +138,6 @@ export default function Meetingview() {
 
      
     </Card>
+    </Modal>
   );
 }
