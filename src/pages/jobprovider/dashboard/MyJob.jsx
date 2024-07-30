@@ -27,6 +27,8 @@ import Avatar from '@mui/joy/Avatar';
 
 import Divider from '@mui/joy/Divider';
 
+import { Link as RouterLink } from 'react-router-dom';
+
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -266,7 +268,7 @@ function MyJob() {
                                     },
                         }
                         )}>
-                        <a href="/jobprovider/my-jobs/applications"><Button color="primary" variant='solid' size="sm">View Applications</Button></a>
+                        <Button component={RouterLink} to="/jobprovider/my-jobs/applications" color="primary" variant='solid' size="sm">View Applications</Button>
 
                         <Dropdown>
                             <MenuButton

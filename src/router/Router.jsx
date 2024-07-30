@@ -6,7 +6,7 @@ import Home from "../pages/Home";
 //dashboard Layout
 import DashboardLayout from "../layout/Dashboard";
 import JobDetail from "../pages/jobseeker/jobDetail";
-
+import JobScore from '../components/JobSeeker/jobScore';
 
 //jobprovider
 import JPCompnaySetup1 from "../pages/jobprovider/dashboard/CompanyInfo";
@@ -21,6 +21,7 @@ import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
 import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
+import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
 
 import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
 
@@ -42,16 +43,10 @@ import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 
 import Navbar1 from "../components/navbar/Navbar1";
-import EmployerSite from "../pages/landingPage/EmployerSite";
-import Interview from "../pages/jobseeker/interview";
-import Meetingview from "../components/JobSeeker/meetingview";
 import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
-import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
-import Workshops from "../pages/landingPage/Workshops";
-import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 
 
 
@@ -66,10 +61,20 @@ import AdminCourses from '../pages/Admin/AdminCourses';
 import AdminInterviews from '../pages/Admin/AdminInterviews';
 
 
+//landing page
+import CPDcourses from '../pages/landingPage/CPDcourses';
+import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+import Workshops from "../pages/landingPage/Workshops";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+import EmployerSite from "../pages/landingPage/EmployerSite";
+
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Main />,
+    // element: <Main />,
     children: [
       {
         path: "/",
@@ -90,6 +95,10 @@ const router = createBrowserRouter([
       {
         path: "professionalmemberships",
         element: <ProfessionalMemberships />,
+      },
+      {
+        path: "cpdcourses",
+        element: <CPDcourses />,
       },
       {
         path: "login",
@@ -170,6 +179,10 @@ const router = createBrowserRouter([
         element:<JpApplications/>
       },
       {
+        path:"my-jobs/shedule-interview",
+        element:<><JpInterviewSchedule/></>
+      },
+      {
         path:"plans-and-billing",
         element:<JpPlansAndBilling/>
       },
@@ -222,7 +235,7 @@ const router = createBrowserRouter([
         
         <Navbar1 />
         {/* <TopNav /> */}
-        <TopNavBar />
+     
         <DashboardLayout user="jobseeker" />
         
       </>
@@ -253,15 +266,6 @@ const router = createBrowserRouter([
         path: "job-alert",
         element: <JsJobAlert />,
       },
-      {
-        path: "interview",
-        element: <Interview/>,
-      },
-      {
-        path: "meetingview",
-        element: <Meetingview/>,
-      },
-      
       
       {
         path: "JobDetails",
@@ -281,7 +285,11 @@ const router = createBrowserRouter([
       {
         path : "profile",
         element : <Profile/>
-      }
+      },
+      {
+        path:"JobScore",
+        element:<JobScore/>
+      },
 
       
     ],
@@ -292,8 +300,8 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <>
-        {/* <TopNav /> */}
-        <TopNavBar /> {/* insert correct navbar for admin */}
+      
+       
         <DashboardLayout user="admin" />
       </>
     ),
@@ -335,6 +343,7 @@ const router = createBrowserRouter([
         path:"Interviews",
         element:<AdminInterviews/>
       },
+      
     ],
   },
  

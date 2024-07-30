@@ -75,6 +75,7 @@ export default function NavigationPanel() {
     location:'',
     contactNumber:'',
     email:'',
+    
   });
 
   const [error, setError] = useState({});
@@ -308,6 +309,7 @@ export default function NavigationPanel() {
           location: formData.location,
           contactNumber: formData.contactNumber,
           email: formData.email,
+          status:"pending"
         };
 
         const token = getToken();
@@ -583,7 +585,7 @@ const [italic, setItalic] = React.useState(false);
                 sx={{
                   position: 'relative',
                   width: '100%',
-                  height: '180px',
+                  height: '140px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -652,7 +654,7 @@ const [italic, setItalic] = React.useState(false);
                 sx={{
                   position: 'relative',
                   width: '100%',
-                  height: '180px',
+                  height: '140px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',

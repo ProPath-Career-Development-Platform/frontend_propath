@@ -195,7 +195,11 @@ const AdminHome =() => {
                     >
                         <Typography level="h4">Revenue Earned by Subscription</Typography>
                         <br />
-                        <Card>
+                        <Card
+                          sx={{
+                            height:'333px'
+                          }}
+                        >
                         <LineChart data={revenueData} />
                         
                         </Card>

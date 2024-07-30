@@ -472,7 +472,7 @@ function CreateAnEvent() {
                 <Card
                     sx={{
                         display: 'flex',
-                        width: {xs: '100%',sm: '100%' ,md: '1000px'},
+                        width: {xs: '100%',sm: '100%' ,md: '100%',lg:'1000px'},
                         mx: 'auto',
                         px: { xs: 2, md: 6 },
                         py: { xs: 2, md: 3 },
@@ -717,22 +717,22 @@ function CreateAnEvent() {
 
                         <Typography level="title-md">Event Banner</Typography>
 
-                        <AspectRatio color={error.bannerImg ? 'danger' : 'neutral'} variant='outlined'  ratio="21/9" objectFit='fill'  sx={{  bgcolor: 'background.level1', borderRadius: 'md', position:'relative'  }}>
+                        <AspectRatio color={error.bannerImg ? 'danger' : 'neutral'} variant='outlined'  ratio="21/9" objectFit='fill'  sx={{  bgcolor: 'background.level1', borderRadius: 'md', position:'relative', mt:1  }}>
 
                           <div>
 
                          {!formData.bannerImg ? (
 
 
-                          <Box sx={{ display: 'flex', flexDirection:'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%',  }}>
+                         
 
-                            <Box component="label" sx={{cursor:'pointer'}}>
-                              <InsertPhotoOutlinedIcon sx={{fontSize:100}} />
+                            <Box component="label" sx={{cursor:'pointer' ,display: 'flex', flexDirection:'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%',}}>
+                              <InsertPhotoOutlinedIcon sx={{fontSize:{xs:80, sm:100}}} />
                               <Typography level="title-sm">Upload Image</Typography>
                               <VisuallyHiddenInput name="bannerImg" type="file" onChange={imgInputHandle}  />
                             </Box>
 
-                          </Box>
+                         
 
                          ):
 

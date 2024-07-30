@@ -107,7 +107,7 @@ const Settings = () => {
         >
           <TabList
            
-            tabFlex={1}
+            tabFlex="auto"
             size="sm"
             sx={{
              
