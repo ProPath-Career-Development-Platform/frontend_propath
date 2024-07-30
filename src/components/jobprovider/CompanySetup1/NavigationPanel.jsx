@@ -40,11 +40,27 @@ import FormatListBulleted from '@mui/icons-material/FormatListBulleted';
 import Link from '@mui/icons-material/Link';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Check from '@mui/icons-material/Check';
+import { useNavigate } from 'react-router-dom';
+import { getToken } from '../../../pages/Auth/Auth';
 
 
+import axios from 'axios';
 
+
+export const RegisterCompany = (companyData, token) => {
+  return axios.post('http://localhost:8080/jobprovider/Setup', companyData, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export default function NavigationPanel() {
+
+  
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     companyName: '',
@@ -58,7 +74,8 @@ export default function NavigationPanel() {
     companyVision: '',
     location:'',
     contactNumber:'',
-    Email:'',
+    email:'',
+    
   });
 
   const [error, setError] = useState({});
@@ -82,6 +99,32 @@ export default function NavigationPanel() {
   //   setFormData({ ...formData, [name]: value });
   // };
 
+//   const handleInputChange = (event) => {
+//   const { name, value } = event.target;
+//   setFormData((prevData) => ({
+//     ...prevData,
+//     [name]: value,
+//   }));
+// };
+
+  // const handleInputChange = (event) => {
+  //   if (event && event.target) {
+  //     const { name, value } = event.target;
+  //     console.log(`Name: ${name}, Value: ${value}`); // Debug log
+  
+  //     if (error[name]) {
+  //       setError((prevState) => {
+  //         const newErrors = { ...prevState };
+  //         delete newErrors[name];
+  //         return newErrors;
+  //       });
+  //     }
+  //     setFormData({ ...formData, [name]: value });
+  //   } else {
+  //     console.error('handleInputChange received an invalid event:', event);
+  //   }
+  // };
+
   const handleInputChange = (event) => {
     if (event && event.target) {
       const { name, value } = event.target;
@@ -94,11 +137,36 @@ export default function NavigationPanel() {
           return newErrors;
         });
       }
-      setFormData({ ...formData, [name]: value });
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value
+      }));
     } else {
       console.error('handleInputChange received an invalid event:', event);
     }
   };
+
+  const handleChangeOrgType = (event) => {
+    const selectedValue = event.target.value;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      organizationType: selectedValue,
+    }));
+    console.log(formData.organizationType);
+  };
+
+  
+
+  const handleChangeIndType = (event) => {
+    const selectedValue = event.target.value;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      industryType: selectedValue,
+    }));
+    
+  };
+
+
   
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -163,6 +231,8 @@ export default function NavigationPanel() {
     let hasError = false;
     const newErrors = {};
 
+    // console.log("Form Data:", formData);
+
     if (!formData.organizationType) {
       newErrors.organizationType = 'Organization Type is required';
       hasError = true;
@@ -195,33 +265,78 @@ export default function NavigationPanel() {
   };
 
   const haddlesubmit3 =()=>{
+    
     setActiveTab("4");
   };
 
-  const handleSubmit4 = () => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleSubmit4 = async (event) => {
+    event.preventDefault();
     let hasError = false;
     const newErrors = {};
-
+  
     if (!formData.location) {
-      newErrors.location = 'Organization Location is Required';
+      newErrors.location = 'Organization Location is required';
       hasError = true;
     }
     if (!formData.contactNumber) {
-      newErrors.contactNumber = 'contactNumber is Required';
+      newErrors.contactNumber = 'Contact Number is required';
       hasError = true;
-
     }
-    if (!formData.Email) {
-      newErrors.Email = 'Email is required';
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+      hasError = true;
+    }
+    if(!emailPattern.test(formData.email)){
+      newErrors.email = 'Enter a valid Email Address!';
       hasError = true;
     }
     if (hasError) {
       setError(newErrors);
     } else {
-      
-      setActiveTab("4"); 
+      try {
+        const companyData = {
+          companyName: formData.companyName,
+          aboutUs: formData.aboutUs,
+          logoImg: formData.logoImg, // Assuming this is a URL or base64 string
+          bannerImg: formData.bannerImg, // Assuming this is a URL or base64 string
+          organizationType: formData.organizationType,
+          industryType: formData.industryType,
+          establishedDate: formData.establishedDate,
+          companyWebsite: formData.companyWebsite,
+          companyVision: formData.companyVision,
+          location: formData.location,
+          contactNumber: formData.contactNumber,
+          email: formData.email,
+          status:"pending"
+        };
+
+        const token = getToken();
+        console.log(token);
+        if (!token) {
+          console.error('No valid token found');
+          return;
+        }
+
+  
+        // Submit the form data
+        const response = await RegisterCompany(companyData,token);
+        console.log(response.data);
+        navigate('/jobprovider/home/');
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+          console.error('Response headers:', error.response.headers);
+        }
+      }
     }
   };
+  
+
+  
 
 
 
@@ -302,7 +417,7 @@ const [italic, setItalic] = React.useState(false);
   
   return (
     <Box sx={{ width: '100%', typography: 'body1',mt:6}}>
-      <form></form>
+      <form  onSubmit={handleSubmit4}>
       <TabContext value={activeTab} centered>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
           <TabList  onChange={handleChange} aria-label="lab API tabs example" centered>
@@ -314,13 +429,16 @@ const [italic, setItalic] = React.useState(false);
         </Box>
 
         <TabPanel value="1">
-        <Card>
+        
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: '40% 60%',
           gap: 3,
           pb: 2,
+          border:'2px solid #814DDE',
+          borderRadius:3,
+          boxShadow:3,
         }}
       >
         <Box
@@ -340,7 +458,7 @@ const [italic, setItalic] = React.useState(false);
             }}
           >
             <div>
-              <img src="../../public/logo.png" alt="" style={{ height: '40px' }} />
+              <img src="/logo.png" alt="" style={{ height: '40px' }} />
             </div>
             <div>
               <p>Where Talents meets Opportunity</p>
@@ -350,10 +468,10 @@ const [italic, setItalic] = React.useState(false);
             sx={{
               display: 'flex',
               mt: 2,
-              flexGrow: 1,
+              
             }}
           >
-            <img src="../../public/founding_info.jpg" alt="" style={{ borderRadius: '20px', height: '100%', objectFit: 'cover' }} />
+            <img src="/founding_info3.jpg" alt="" style={{ borderRadius: '20px', height: '555px', objectFit: 'cover' }} />
           </Box>
         </Box>
         <Box
@@ -444,6 +562,7 @@ const [italic, setItalic] = React.useState(false);
               sx={{
                 maxWidth: '400px',
                 width:'40%',
+                height:'200px',
                 background: '#fff',
                 padding: '30px',
                 borderRadius: '30px',
@@ -466,7 +585,7 @@ const [italic, setItalic] = React.useState(false);
                 sx={{
                   position: 'relative',
                   width: '100%',
-                  height: '240px',
+                  height: '140px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -512,6 +631,7 @@ const [italic, setItalic] = React.useState(false);
               sx={{
                 maxWidth: '400px',
                 width: '60%',
+                height:'200px',
                 background: '#fff',
                 padding: '30px',
                 borderRadius: '30px',
@@ -534,7 +654,7 @@ const [italic, setItalic] = React.useState(false);
                 sx={{
                   position: 'relative',
                   width: '100%',
-                  height: '240px',
+                  height: '140px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -578,13 +698,34 @@ const [italic, setItalic] = React.useState(false);
           </Box>
 
           <Box sx={{ display: 'flex', mt: 4,justifyContent:'flex-end',pr:9}}> 
-            <Button onClick={handleSubmit1}  endDecorator={<ArrowCircleRightIcon />} sx={{color:''}}>
+            {/* <Button onClick={handleSubmit1}  endDecorator={<ArrowCircleRightIcon />} sx={{background:'#814DDE',}}>
               Save and Next
-            </Button>
+            </Button> */}
+             <Button
+          variant="solid"
+          sx={{
+            display: 'block',
+            width: '200px',
+            padding: '10px 0',
+            borderRadius: '15px',
+            backgroundColor: '#814DDE',
+            color: '#fff',
+            fontWeight: 500,
+            fontSize: '15px',
+            cursor: 'pointer',
+            transition: 'all .3s ease',
+            '&:hover': {
+              backgroundColor: '#005DD1',
+            },
+          }}
+          onClick={handleSubmit1}
+        >
+          Save and Next <FontAwesomeIcon icon={faCircleArrowRight} size="lg"  />
+        </Button>
           </Box>
         </Box>
       </Box>
-    </Card>
+    
      
     </TabPanel>
         
@@ -597,7 +738,7 @@ const [italic, setItalic] = React.useState(false);
             display:'grid',
             gridTemplateColumns:'40% 60%',
             gap:'3',
-            border:2,
+            border:'2px solid #814DDE',
             borderRadius:3,
             boxShadow:3,
             pb:6,
@@ -624,7 +765,7 @@ const [italic, setItalic] = React.useState(false);
              }}
             >
               <div>
-              <img src="../../public/logo.png" alt="" style={{height:'40px'}}/>
+              <img src="/logo.png" alt="" style={{height:'40px'}}/>
               </div>
               <div>
               <p>Where Talents meets Opportunity</p>
@@ -635,10 +776,10 @@ const [italic, setItalic] = React.useState(false);
                 display:'flex',
                 mt:2,
                 flexGrow: 1,
-                
+                ml:4
                 }}
             >
-            <img src="../../public/company_info.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
+            <img src="/company_info3.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
             </Box>
             </Box>
           <Box
@@ -663,31 +804,56 @@ const [italic, setItalic] = React.useState(false);
             >
             <Box>
             <FormControl sx={{ width: 270 }} error={Boolean(error.organizationType)}>
-  <FormLabel id="select-field-demo-label" htmlFor="select-field-demo-button">
+  <FormLabel>
     Organization Type
   </FormLabel>
-  <Select
-    value={formData.organizationType}
-    onChange={(event) => {
-      // Ensure event is valid and log it for debugging
-      if (event && event.target) {
-        handleInputChange(event);
-      } else {
-        console.error('Invalid event:', event);
-      }
+  <select
+    name="organizationType"
+    value={formData.organizationType || ''}
+    placeholder="Select organization type"
+    onChange={handleChangeOrgType}
+    style={{
+      border:'1px solid #CCCCCC',
+      borderRadius:'5px',
+      height:'37px'
+      
     }}
-    slotProps={{
-      button: {
-        id: 'select-field-demo-button',
-        'aria-labelledby': 'select-field-demo-label select-field-demo-button',
-      },
+    onFocus={(e) => {
+      e.target.style.border = '2px solid #814DDE'; // Change border on focus
     }}
+    onBlur={(e) => {
+      e.target.style.border = '1px solid #CCCCCC'; // Reset border on blur
+    }}
+    // // onChange={handleInputChange}
+    // onChange={(event) => {
+    //   // Ensure event is valid and log it for debugging
+    //   if (event && event.target) {
+    //     handleInputChange(event);
+    //   } else {
+    //     console.error('Invalid event:', event);
+    //   }
+    // }}
+    // value={formData.organizationType || ''}
+    // onChange={(event) => {
+    //   // Ensure event is valid and log it for debugging
+    //   if (event && event.target) {
+    //     handleInputChange(event);
+    //   } else {
+    //     console.error('Invalid event:', event);
+    //   }
+    // }}
+    // slotProps={{
+    //   button: {
+    //     id: 'select-field-demo-button',
+    //     'aria-labelledby': 'select-field-demo-label select-field-demo-button',
+    //   },
+    // }}
   >
-    <Option value="PLC">Public Limited Company (PLC)</Option>
-    <Option value="PVT">Private Limited Company (PVT)</Option>
-    <Option value="GovAgency">Government Agency</Option>
-    <Option value="Partnership">Partnership</Option>
-  </Select>
+    <option value="Public Limited Company (PLC)">Public Limited Company (PLC)</option>
+    <option value="Private Limited Company (PVT)">Private Limited Company (PVT)</option>
+    <option value="Government Agency">Government Agency</option>
+    <option value="Partnership">Partnership</option>
+  </select>
   {error.organizationType && (
     <FormHelperText>
       <InfoOutlined /> {error.organizationType}
@@ -700,16 +866,40 @@ const [italic, setItalic] = React.useState(false);
       <FormLabel id="select-field-demo-label" htmlFor="select-field-demo-button">
         Industry Type
       </FormLabel>
-      <Select
-        value={formData.industryType}
-        onChange={(event) => {
-          // Ensure event is valid and log it for debugging
-          if (event && event.target) {
-            handleInputChange(event);
-          } else {
-            console.error('Invalid event:', event);
-          }
+      <select
+        name="industryType"
+        placeholder="Select Industry"
+        onChange={handleChangeIndType}
+        style={{
+          border:'1px solid #CCCCCC',
+          borderRadius:'5px',
+          height:'37px'
+          
         }}
+        onFocus={(e) => {
+          e.target.style.border = '2px solid #814DDE'; // Change border on focus
+        }}
+        onBlur={(e) => {
+          e.target.style.border = '1px solid #CCCCCC'; // Reset border on blur
+        }}
+        // // onChange={handleInputChange}
+        // onChange={(event) => {
+        //   // Ensure event is valid and log it for debugging
+        //   if (event && event.target) {
+        //     handleInputChange(event);
+        //   } else {
+        //     console.error('Invalid event:', event);
+        //   }
+        // }}
+        // value={formData.industryType || ''}
+    // onChange={(event) => {
+    //   // Ensure event is valid and log it for debugging
+    //   if (event && event.target) {
+    //     handleInputChange(event);
+    //   } else {
+    //     console.error('Invalid event:', event);
+    //   }
+    // }}
         slotProps={{
           button: {
             id: 'select-field-demo-button',
@@ -717,11 +907,11 @@ const [italic, setItalic] = React.useState(false);
           },
         }}
       >
-        <Option value="Industry1">Industry 1</Option>
-        <Option value="Industry2">Industry 2</Option>
-        <Option value="Industry3">Industry 3</Option>
-        <Option value="Industry4">Industry 4</Option>
-      </Select>
+        <option value="Industry1">Industry 1</option>
+        <option value="Industry2">Industry 2</option>
+        <option value="Industry3">Industry 3</option>
+        <option value="Industry4">Industry 4</option>
+      </select>
       {error.industryType && (
         <FormHelperText>
           <InfoOutlined /> {error.industryType}
@@ -889,7 +1079,7 @@ const [italic, setItalic] = React.useState(false);
             padding: '10px 0',
             borderRadius: '15px',
             backgroundColor: '#FFFFFF',
-            color: '#0071FF',
+            color: '#814DDE',
             border: '1px solid #A9A9A9',
             fontWeight: 500,
             fontSize: '15px',
@@ -911,7 +1101,7 @@ const [italic, setItalic] = React.useState(false);
             width: '200px',
             padding: '10px 0',
             borderRadius: '15px',
-            backgroundColor: '#0071FF',
+            backgroundColor: '#814DDE',
             color: '#fff',
             fontWeight: 500,
             fontSize: '15px',
@@ -923,7 +1113,7 @@ const [italic, setItalic] = React.useState(false);
           }}
           onClick={handleSubmit2}
         >
-          Save and Next <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
+          Save and Next <FontAwesomeIcon icon={faCircleArrowRight} size="lg"  />
         </Button>
         </Box>
     </Box>
@@ -939,7 +1129,7 @@ const [italic, setItalic] = React.useState(false);
             display:'grid',
             gridTemplateColumns:'40% 60%',
             gap:'3',
-            border:2,
+            border:'2px solid #814DDE',
             borderRadius:3,
             boxShadow:3,
             pb:6,
@@ -964,7 +1154,7 @@ const [italic, setItalic] = React.useState(false);
              }}
             >
               <div>
-              <img src="../../public/logo.png" alt="" style={{height:'40px'}}/>
+              <img src="/logo.png" alt="" style={{height:'40px'}}/>
               </div>
               <div>
               <p>Where Talents meets Opportunity</p>
@@ -978,7 +1168,7 @@ const [italic, setItalic] = React.useState(false);
                 
                 }}
             >
-            <img src="../../public/Social_media.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
+            <img src="/social_media.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
             </Box> 
             </Box>
            
@@ -1037,7 +1227,28 @@ const [italic, setItalic] = React.useState(false);
         </Box>
          </Box>
       ))}
-      <Button variant="solid" onClick={handleAddLink}>Add Another Link</Button>
+      <Button  
+      variant="contained"
+      sx={{
+      
+        display: 'block',
+        width: '180px',
+        padding: '10px 0',
+        borderRadius: '15px',
+        backgroundColor: '#814DDE',
+        color: '#fff',
+        fontWeight: 500,
+        fontSize: '15px',
+        cursor: 'pointer',
+        transition: 'all .3s ease',
+        '&:hover': {
+          backgroundColor: '#005DD1',
+        },
+      }}
+      onClick={handleAddLink}
+    >
+      
+      Add Another Link</Button>
         
       <Box
               sx={{
@@ -1057,7 +1268,7 @@ const [italic, setItalic] = React.useState(false);
           padding: '10px 0',
           borderRadius: '15px',
           backgroundColor: '#FFFFFF',
-          color:'#0071FF',
+          color:'#814DDE',
           border:'1px solid #A9A9A9',
           // color: '#fff',
           fontWeight: 500,
@@ -1082,7 +1293,7 @@ const [italic, setItalic] = React.useState(false);
           width: '200px',
           padding: '10px 0',
           borderRadius: '15px',
-          backgroundColor: '#0071FF',
+          backgroundColor: '#814DDE',
           color: '#fff',
           fontWeight: 500,
           fontSize: '15px',
@@ -1112,7 +1323,7 @@ const [italic, setItalic] = React.useState(false);
             display:'grid',
             gridTemplateColumns:'40% 60%',
             gap:'3',
-            border:2,
+            border:'2px solid #814DDE',
             borderRadius:3,
             boxShadow:3,
             pb:7,
@@ -1149,10 +1360,10 @@ const [italic, setItalic] = React.useState(false);
                 display:'flex',
                 mt:2,
                 flexGrow: 1,
-                
+               
                 }}
             >
-            <img src="../../public/contactus.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
+            <img src="/contact_info2.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
             </Box> 
             
             </Box>
@@ -1180,6 +1391,7 @@ const [italic, setItalic] = React.useState(false);
               Location
               </FormLabel>
               <Input
+              name="location"
               placeholder="Company Location"
               value={formData.location}
               onChange={handleInputChange}
@@ -1214,6 +1426,7 @@ const [italic, setItalic] = React.useState(false);
               Contact Number
               </FormLabel>
               <Input
+              name="contactNumber"
               placeholder="Company Contact Number"
               value={formData.contactNumber}
               onChange={handleInputChange}
@@ -1252,8 +1465,9 @@ const [italic, setItalic] = React.useState(false);
                 Email
               </FormLabel>
               <Input
+              name="email"
               placeholder="Company Email"
-              value={formData.Email}
+              value={formData.email}
               onChange={handleInputChange}
               startDecorator={
               <Button variant="soft" color="neutral"
@@ -1263,9 +1477,9 @@ const [italic, setItalic] = React.useState(false);
                 }
               sx={{ width:'100%' }}
               />
-               {error.Email && (
+               {error.email && (
                 <FormHelperText>
-                  <InfoOutlined /> {error.Email}
+                  <InfoOutlined /> {error.email}
                 </FormHelperText>
               )}
               </FormControl>
@@ -1293,7 +1507,7 @@ const [italic, setItalic] = React.useState(false);
           padding: '10px 0',
           borderRadius: '15px',
           backgroundColor: '#fff',
-          color:'#0071FF',
+          color:'#814DDE',
           border:'1px solid #A9A9A9',
           // color: '#fff',
           fontWeight: 500,
@@ -1312,13 +1526,14 @@ const [italic, setItalic] = React.useState(false);
               <Box>
               <Button
         variant="contained"
+        type="submit"
         sx={{
-        
+          
           display: 'block',
           width: '200px',
           padding: '10px 0',
           borderRadius: '15px',
-          backgroundColor: '#0071FF',
+          backgroundColor: '#814DDE',
           color: '#fff',
           fontWeight: 500,
           fontSize: '15px',
@@ -1328,9 +1543,9 @@ const [italic, setItalic] = React.useState(false);
             backgroundColor: '#005DD1',
           },
         }}
-        onClick={handleSubmit4}
+       
       >
-       Save and Next   <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
+       Save and Submit   <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
       </Button>
               </Box>
            
@@ -1342,6 +1557,7 @@ const [italic, setItalic] = React.useState(false);
         
         </TabPanel>
       </TabContext>
+      </form>
     </Box>
     
   );

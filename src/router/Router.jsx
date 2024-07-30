@@ -9,8 +9,8 @@ import JobDetail from "../pages/jobseeker/jobDetail";
 import JobScore from '../components/JobSeeker/jobScore';
 
 //jobprovider
-import JPCompnaySetup1 from "../pages/jobprovider/CompanySetup/CompanyInfo";
-
+import JPCompnaySetup1 from "../pages/jobprovider/dashboard/CompanyInfo";
+import JPCompany from "../pages/jobprovider/dashboard/CompanyRegister"
 import JpHome from "../pages/jobprovider/dashboard/Home";
 import JpDashboard from "../pages/jobprovider/dashboard/Dashboard";
 import JpPostAJob from "../pages/jobprovider/dashboard/PostaJob";
@@ -21,7 +21,13 @@ import JpMeetUp from "../pages/jobprovider/dashboard/MeetUp";
 import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
+import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
+
+import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
+
+
 import JobDetails from "../pages/jobseeker/jobDetail";
+
 //jobseeker
 import JobSeekerDashboard from "../pages/jobseeker/JobSeekerDashboard";
 import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
@@ -37,14 +43,11 @@ import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
 
 import Navbar1 from "../components/navbar/Navbar1";
-import EmployerSite from "../pages/landingPage/EmployerSite";
 import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
-import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
-import Workshops from "../pages/landingPage/Workshops";
-import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+
 
 
 //Admin
@@ -58,10 +61,19 @@ import AdminCourses from '../pages/Admin/AdminCourses';
 import AdminInterviews from '../pages/Admin/AdminInterviews';
 
 
+//landing page
+import CPDcourses from '../pages/landingPage/CPDcourses';
+import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
+import Workshops from "../pages/landingPage/Workshops";
+import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
+import EmployerSite from "../pages/landingPage/EmployerSite";
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Main />,
+    // element: <Main />,
     children: [
       {
         path: "/",
@@ -82,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "professionalmemberships",
         element: <ProfessionalMemberships />,
+      },
+      {
+        path: "cpdcourses",
+        element: <CPDcourses />,
       },
       {
         path: "login",
@@ -122,6 +138,11 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: "/jobprovider/plan-and-billing/Paynow",
+    element: <JpCheckout/>,
+    
+  },
 
   {
     path: "/jobprovider",
@@ -135,6 +156,10 @@ const router = createBrowserRouter([
          path:"home",
          element:<JpHome/>
          
+      },
+      {
+        path:"CompanyRegister",
+        element:<JPCompany/>
       },
       {
         path:"dashboard",
@@ -153,12 +178,20 @@ const router = createBrowserRouter([
         element:<JpApplications/>
       },
       {
+        path:"my-jobs/shedule-interview",
+        element:<><JpInterviewSchedule/></>
+      },
+      {
         path:"plans-and-billing",
         element:<JpPlansAndBilling/>
       },
       {
         path:"plan-and-billing/changePlan",
         element:<JpChangePlan/>
+      },
+      {
+        path:"plan-and-billing/Paynow",
+        element:<JpCheckout/>
       },
       {
         path:"meet-up",
@@ -266,8 +299,8 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <>
-        {/* <TopNav /> */}
-        <TopNavBar /> {/* insert correct navbar for admin */}
+      
+       
         <DashboardLayout user="admin" />
       </>
     ),
