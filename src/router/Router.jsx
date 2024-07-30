@@ -33,7 +33,7 @@ import JobSeekerHome from "../pages/jobseeker/JobSeekerHome";
 import Login from "../pages/Auth/Login";
 import ForgotPassword from "../pages/Auth/ForgetPassword";
 import Signup from "../pages/Auth/Signup";
-import PasswordReset from "../pages/Auth/PasswordResenpmt";
+import PasswordReset from "../pages/Auth/PasswordReset";
 import EmailVerification from "../pages/Auth/Emailverification";
 import JobSeekerSetup from "../pages/jobseeker/Registration/JobSeekerSetup";
 import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
