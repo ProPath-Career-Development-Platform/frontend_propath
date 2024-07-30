@@ -11,6 +11,7 @@ import Box from '@mui/joy/Box';
 import { Container } from '@mui/material';
 import { typographyClasses } from '@mui/joy/Typography';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import AspectRatio from '@mui/joy/AspectRatio';
 
 
 
@@ -172,15 +173,19 @@ const Dashboard = () => {
   
       </Box>
 
-                <Box
+                <AspectRatio
+                ratio="16/9"
+                objectFit="cover"
+                variant="soft"
                 sx={{
-                  
-                  height:'100%'
+                  width: '550px',
+                  borderRadius: 'md',
+                 
                 }}
                 
                 >
-              <img src="/new.jpg" alt="" style ={{borderRadius:'5px',height:'370px',width:'550px'}} />
-              </Box>
+              <img loading="lazy" src="/new.jpg" alt=""  />
+              </AspectRatio>
 
             </Container>
 
