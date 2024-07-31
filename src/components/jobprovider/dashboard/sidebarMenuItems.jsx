@@ -24,6 +24,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';
 import Chip from '@mui/joy/Chip';
+import SchoolIcon from '@mui/icons-material/School';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import WorkIcon from '@mui/icons-material/Work';
@@ -198,6 +199,19 @@ function sidebarMenuItems() {
             </ListItemContent>
           </ListItemButton>
         </ListItem>
+
+        <ListItem>
+          <ListItemButton
+            component={RouterLink}
+            to="/jobprovider/home/"
+          
+          >
+            <SchoolIcon />
+            <ListItemContent>
+              <Typography level="title-sm">Courses</Typography>
+            </ListItemContent>
+          </ListItemButton>
+        </ListItem>
           
 
         {/*   <ListItem nested>
@@ -360,13 +374,14 @@ function sidebarMenuItems() {
       <Divider />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <Avatar
+          sx={{p:0.6}}
           variant="outlined"
           size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+          src="https://th.bing.com/th?id=ODLS.e5d29df1-d2c0-4009-9bf3-ea57b472ec83&w=32&h=32&qlt=90&pcl=fffffa&o=6&pid=1.2"
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Sysco Labs</Typography>
-          <Typography level="body-xs">syscolabs@org.com</Typography>
+          <Typography level="title-sm">WSO2</Typography>
+          <Typography level="body-xs">hire@wso2.org</Typography>
         </Box>
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />

@@ -184,6 +184,9 @@ function MeetUp() {
               </Box>
               <Box
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap:3,
         width: '100%',
         position: 'relative',
         overflow: { xs: 'auto', sm: 'initial' },
@@ -201,11 +204,12 @@ function MeetUp() {
           flexDirection:{sm:'row',xs:'column'},
           overflow: 'auto',
           
+          
         }}
       >
         <AspectRatio objectFit="object-fit" sx={{width:400}}>
           <img
-            src="/acm_meetup.jpg"
+            src="https://i.ytimg.com/vi/zrdaueLMoYI/maxresdefault.jpg"
             // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
             loading="lazy"
             alt=""
@@ -219,7 +223,7 @@ function MeetUp() {
             }}
           >
           <Typography  level="h4" component="h1">
-                  ACM Monthly Meetup
+                  Docker Essentails Workshop
                 </Typography>
           </Box>
           <Box
@@ -232,7 +236,7 @@ function MeetUp() {
             <ListItemDecorator>
             <CalendarMonthOutlinedIcon/>  
             </ListItemDecorator>
-            Event Date - 21st July 2024
+            Event Date - 2st Aug 2024
           </ListItem>
           <ListItem>
             <ListItemDecorator>
@@ -245,6 +249,76 @@ function MeetUp() {
             <GroupsOutlinedIcon/>
             </ListItemDecorator>
              Current participants - 21 Attending
+          </ListItem>
+          
+        </List>
+          </Box>
+          <Box
+          sx={{
+            // 
+            ml:{sm:5}
+          }}
+          >
+             <Button  startDecorator={<EditCalendarIcon/>} sx={{mt:{xs:1 , sm:3}}}> Manage Event</Button>
+          </Box>
+            
+        </CardContent>
+      </Card>
+
+
+      <Card
+        orientation="horizontal"
+        sx={{
+          width: '90%',
+          flexWrap: 'wrap',
+          display:'flex',
+          flexDirection:{sm:'row',xs:'column'},
+          overflow: 'auto',
+          
+        }}
+      >
+        <AspectRatio objectFit="object-fit" sx={{width:400}}>
+          <img
+            src="https://th.bing.com/th/id/OIP.omJ4NBvS7Mcr45IRv_yGqQHaDt?rs=1&pid=ImgDetMain"
+            // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+            loading="lazy"
+            alt=""
+            
+          />
+        </AspectRatio>
+        <CardContent>
+          <Box
+            sx={{
+              alignSelf:'center'
+            }}
+          >
+          <Typography  level="h4" component="h1">
+                  API Integration Essentials
+                </Typography>
+          </Box>
+          <Box
+            sx={{
+              ml:{sm:3}
+            }}
+          >
+          <List size="md">
+           <ListItem>
+            <ListItemDecorator>
+            <CalendarMonthOutlinedIcon/>  
+            </ListItemDecorator>
+            Event Date - 5th Aug 2024
+          </ListItem>
+          <ListItem>
+            <ListItemDecorator>
+            <PinDropOutlinedIcon/>
+            </ListItemDecorator>
+            Location - WSO2 Premisus
+          </ListItem>
+          <ListItem>
+            <ListItemDecorator>
+            <GroupsOutlinedIcon/>
+            </ListItemDecorator>
+             Current participants - 32 Attending
           </ListItem>
           
         </List>
