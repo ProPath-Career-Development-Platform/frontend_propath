@@ -13,6 +13,7 @@ import LinearProgress from "@mui/joy/LinearProgress";
 import Button from "@mui/joy/Button";
 import Divider from "@mui/joy/Divider";
 import Avatar from "@mui/joy/Avatar";
+import seba from '/seba.jpg';
 
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -214,11 +215,11 @@ function JobSeekerSideBar() {
         <Avatar
           variant="outlined"
           size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+          src={seba}
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Siriwat K.</Typography>
-          <Typography level="body-xs">siriwatk@test.com</Typography>
+          <Typography level="title-sm">Santhush F.</Typography>
+          <Typography level="body-xs">Santhush@gmail.com</Typography>
         </Box>
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />

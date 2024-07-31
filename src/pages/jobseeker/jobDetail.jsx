@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState , useEffect} from 'react';
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -32,6 +32,7 @@ import { useLocation } from 'react-router-dom';
 import ApplyJob from '../../components/JobSeeker/applyJob';
 import AppliedCard from '../../components/JobSeeker/appliedcard';
 import Interviewcart from '../../components/JobSeeker/interviewcart';
+import CircularProgress from '@mui/joy/CircularProgress';
 const JobDetails = () => {
 
   const responsibilities = [
@@ -47,16 +48,13 @@ const JobDetails = () => {
   ];
 
   const cardData = [
-    { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' },
-    { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' },
-    { title: 'Technical Support Specialist', content: 'Provides technical assistance and support to clients.', location: 'Kandy', company: 'Tech Support Co.' },
-    { title: 'Junior Graphic Designer', content: 'Creates visual content under the guidance of senior designers.', location: 'Jaffna', company: 'Graphic World' },
-    { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' },
-    { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' },
-    { title: 'Project Manager', content: 'Oversees project planning, execution, and completion.', location: 'Trincomalee', company: 'Project Pros' },
-    { title: 'QA Engineer', content: 'Ensures the quality and functionality of software products.', location: 'Anuradhapura', company: 'Quality Assurance Inc.' },
-    { title: 'Data Scientist', content: 'Analyzes and interprets complex data to provide insights.', location: 'Batticaloa', company: 'Data Insights' },
-  ];
+    { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
+    { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
+    { title: 'Technical Support Specialist', content: 'Provides technical assistance and support to clients.', location: 'Kandy', company: 'Tech Support Co.' ,  img : '/jobs/99x.png' },
+    { title: 'Junior Graphic Designer', content: 'Creates visual content under the guidance of senior designers.', location: 'Jaffna', company: 'Graphic World' , img : '/jobs/virtusa.jpg' },
+    { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' ,img : '/jobs/codegen.png' },
+    { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' ,img : '/jobs/microsoft.png' }
+  ]
 
   var amount = 6
   const location = useLocation();
@@ -69,6 +67,15 @@ const JobDetails = () => {
     console.log(Submit)
 
   }
+  useEffect(() => {
+    if (Submit === 1) {
+      const timer = setTimeout(() => {
+        setSubmit(2);
+      }, 4000); // 10 seconds
+  
+      return () => clearTimeout(timer); // Cleanup timeout if the component unmounts or Submit changes
+    }
+  }, [Submit]);
   return (
     <Box
       component="main"
@@ -195,20 +202,21 @@ const JobDetails = () => {
 
       {Submit == 1 && (
            <Button
-           sx={{ backgroundColor: 'red' }}
+           sx={{ backgroundColor: 'blue' }}
            onClick={() => {
              setSubmit(2);
              console.log(Submit);
            }} // Correct capitalization of onClick and proper use of curly braces
          >
-         <Typography sx = {{display : {xs:'none' , sm:'none' , md: 'none' , lg: 'block'}, color: 'white'}}>Pending</Typography> 
+              <CircularProgress variant="soft"  />
+
        </Button>
       )
       }
 
     {Submit ==2 && (
       <Button
-        sx={{ backgroundColor: 'red' }}
+        sx={{ backgroundColor: 'green' }}
         onClick={() => setSubmit(2)} // Correct capitalization of onClick
       >
         <Typography
@@ -217,7 +225,7 @@ const JobDetails = () => {
             color: 'white'
           }}
         >
-         
+         Active
         </Typography>
       </Button>
     )}
@@ -285,7 +293,7 @@ const JobDetails = () => {
                           }}
                         >
                           {cardData.slice(0,6).map((card, index) => (
-                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {1}  />
+                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {1} img = {card.img} />
                           ))}
                           
                         

@@ -24,13 +24,13 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Modal from '@mui/joy/Modal';
-import Meetingview from './meetingview';
+
 
 export default function Interviewcart() {
-
+  const [open,setOpen] = React.useState(true)
   const [position, setPosition] = React.useState(50);
   return (
-    <Modal  open={open} sx={{display:'flex' , justifyContent: 'center'}}>
+    <Modal  open={open} onClose={()=> (setOpen(false))}sx={{display:'flex' , justifyContent: 'center' , alignItems: 'center'}}>
     <Card
       variant="outlined"
       sx={{
