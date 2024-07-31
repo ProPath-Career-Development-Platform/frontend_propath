@@ -116,7 +116,7 @@ function Signup() {
   return (
 
     <>
-    <JobNav/>
+    {/* <JobNav/> */}
     <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200 overflow-hidden">
       <div className="flex items-center justify-center w-full h-full lg:w-3/4">
         <div className="flex w-full max-w-[800px] rounded-3xl  bg-violet-100">
