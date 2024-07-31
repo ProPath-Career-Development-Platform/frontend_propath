@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
+
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
@@ -19,6 +20,9 @@ import IndicatorStepper from './stepper';
 import { useRef } from 'react';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import SurveyQuestions from './surveyQuestions';
+import { keyframes } from '@emotion/react';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+
 import {
     
     faPlusCircle,
@@ -26,6 +30,28 @@ import {
   } from "@fortawesome/free-solid-svg-icons";
 
 export default function BasicModalDialog({title , callback}) {
+
+
+    const scaleFadeIn = keyframes`
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    `;
+
+    const [showIcon, setShowIcon] = useState(false);
+
+    useEffect(() => {
+      setShowIcon(true);
+    }, []);
   const inputCvRef = useRef(null);
   const [open, setOpen] = React.useState(false);
   const [num,setNum] = React.useState(1)
@@ -46,6 +72,10 @@ export default function BasicModalDialog({title , callback}) {
   const submit = ()=> {
         callback(1)
   }
+
+  const getValuefromChild = (value)=> {
+        setNum(value)
+  }
   return (
     <React.Fragment>
       <Button
@@ -61,21 +91,22 @@ export default function BasicModalDialog({title , callback}) {
       
         <ModalDialog>
         <Box sx={{margin: "15px 0 15px 0" }}>
-        <IndicatorStepper></IndicatorStepper>
+        <IndicatorStepper callback = {getValuefromChild} num = {num}></IndicatorStepper>
         </Box>
-        {num==2 && (
+        {num==1 && (
           <Box sx={{width: '500px'}}>
             
-           <SurveyQuestions onClick = {()=> (
-            console.log("hello")
-           )}></SurveyQuestions>
+           <SurveyQuestions callback = {getValuefromChild}
+       >
+            
+           </SurveyQuestions>
+         
             </Box>
         )}
-          {num==1 && (
-            <Box>
-   <DialogTitle sx={{marginBottom: '10px' , paddingBottom:'3px' , borderBottom: '1px solid #E8DFDF' }}>Apply to {title}</DialogTitle>
+          {num==2 && (
+            <Box sx={{width: '500px'}}>
+   <DialogTitle sx={{marginBottom: '10px' , paddingBottom:'3px' , borderBottom: '1px solid #E8DFDF' }}>Contact Info</DialogTitle>
    <Box>
-   <DialogContent sx={{fontWeight: 'bold' , fontSize: '16px'}}>Contact Info</DialogContent>
 
    <Box sx={{display:'flex' , gap: 3 , mt: '25px'}}> 
          
@@ -141,7 +172,17 @@ export default function BasicModalDialog({title , callback}) {
                  />
                </Box>
        </FormControl>
-       <Button type="submit"  onClick={submit}>Submit Application</Button>
+            <Button
+                type="submit"
+                onClick={() => {
+                  setNum(3);
+                  setTimeout(() => {
+                    callback(1);
+                  }, 3000); // Delay of 5 seconds
+                }}
+              >
+                Submit Application
+      </Button>
      </Stack>
    </form>
 
@@ -149,6 +190,29 @@ export default function BasicModalDialog({title , callback}) {
 
    </Box>
    </Box>)}
+
+    {num == 3 && (
+
+       <Modal open={open} onClose={() => setOpen(false)} sx={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
+          <ModalDialog>
+            <DialogTitle sx={{ marginBottom: '10px', paddingBottom: '3px', borderBottom: '1px solid #E8DFDF' }}><Typography sx={{ color: 'green' , fontSize: '23px'}}>Successful</Typography></DialogTitle>
+            <Box sx= {{display:'flex' , justifyContent: 'center'}}>
+              {/* Loading or transition content can be added here */}
+              {showIcon && (
+              <DoneAllIcon
+                sx={{
+                  fontSize: 50,
+                  animation: `${scaleFadeIn} 1s ease-in-out`,
+                  color: 'green'
+                }}
+              />
+            
+      ) }
+      
+            </Box>
+          </ModalDialog>
+        </Modal>
+    )}
        
           </ModalDialog>
           
