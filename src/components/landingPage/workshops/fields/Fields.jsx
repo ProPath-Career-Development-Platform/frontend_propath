@@ -28,7 +28,6 @@ const Fields = () => {
           Show More
           </Button>
         </div>
-        
     </div>
   )
 }
