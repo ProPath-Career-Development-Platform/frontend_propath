@@ -74,7 +74,7 @@ import EmployerSite from "../pages/landingPage/EmployerSite";
 const router = createBrowserRouter([
   {
     path: "/",
-    // element: <Main />,
+    element: <Main />,
     children: [
       {
         path: "/",

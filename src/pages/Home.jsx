@@ -11,7 +11,7 @@ import EmployerBanner from '../components/landingPage/nextEmployer/EmployerBanne
 const Home = () => {
   return (
     <div>
-      <JobNav/>
+      {/* <JobNav/> */}
       <HeroLanding/>
       <JobSearch/>
       <PopularVacancies/>
