@@ -1,36 +1,38 @@
-import React, { useState } from "react";
-import Button from "@mui/joy/Button";
-import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import Link from "@mui/joy/Link";
-import Typography from "@mui/joy/Typography";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import Box from "@mui/joy/Box";
-import ProfileDropdown from "../../components/JobSeeker/ProfileDropDown";
-import Alert from "../../components/JobSeeker/alert";
-import JSSearch from "../../components/JobSeeker/search";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import wso2 from "/wso2.png";
-import LinkIcon from "@mui/icons-material/Link";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import EmailIcon from "@mui/icons-material/Email";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import TimerIcon from "@mui/icons-material/Timer";
-import SchoolIcon from "@mui/icons-material/School";
-import WalletIcon from "@mui/icons-material/Wallet";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import WorkIcon from "@mui/icons-material/Work";
-import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import Jobcard from "../../components/JobSeeker/jobcard";
-import Companycard from "../../components/JobSeeker/companycard";
-import JSCard from "../../components/JobSeeker/card";
-import { useLocation } from "react-router-dom";
-import ApplyJob from "../../components/JobSeeker/applyJob";
-import AppliedCard from "../../components/JobSeeker/appliedcard";
+import React , {useState , useEffect} from 'react';
+import Button from '@mui/joy/Button';
+import Breadcrumbs from '@mui/joy/Breadcrumbs';
+import Link from '@mui/joy/Link';
+import Typography from '@mui/joy/Typography';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import Box from '@mui/joy/Box';
+import ProfileDropdown from '../../components/JobSeeker/ProfileDropDown';
+import Alert from '../../components/JobSeeker/alert';
+import JSSearch from '../../components/JobSeeker/search';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import wso2 from '/wso2.png';
+import LinkIcon from '@mui/icons-material/Link';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import EmailIcon from '@mui/icons-material/Email';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import TimerIcon from '@mui/icons-material/Timer';
+import SchoolIcon from '@mui/icons-material/School';
+import WalletIcon from '@mui/icons-material/Wallet';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import WorkIcon from '@mui/icons-material/Work';
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
+import Jobcard from '../../components/JobSeeker/jobcard';
+import Companycard from '../../components/JobSeeker/companycard';
+import JSCard from '../../components/JobSeeker/card';
+import { useLocation } from 'react-router-dom';
+import ApplyJob from '../../components/JobSeeker/applyJob';
+import AppliedCard from '../../components/JobSeeker/appliedcard';
+import Interviewcart from '../../components/JobSeeker/interviewcart';
+import CircularProgress from '@mui/joy/CircularProgress';
 const JobDetails = () => {
   const responsibilities = [
     "Quisque semper gravida est et consectetur.",
@@ -45,72 +47,31 @@ const JobDetails = () => {
   ];
 
   const cardData = [
-    {
-      title: "UI/UX Designer",
-      content:
-        "Responsible for designing user interfaces and improving user experience.",
-      location: "Colombo",
-      company: "ABC Design",
-    },
-    {
-      title: "Senior UI/UX Designer",
-      content: "Leads design projects and mentors junior designers.",
-      location: "Galle",
-      company: "Creative Solutions",
-    },
-    {
-      title: "Technical Support Specialist",
-      content: "Provides technical assistance and support to clients.",
-      location: "Kandy",
-      company: "Tech Support Co.",
-    },
-    {
-      title: "Junior Graphic Designer",
-      content: "Creates visual content under the guidance of senior designers.",
-      location: "Jaffna",
-      company: "Graphic World",
-    },
-    {
-      title: "Front End Developer",
-      content: "Develops and implements front-end web applications.",
-      location: "Negombo",
-      company: "Web Solutions",
-    },
-    {
-      title: "Backend Developer",
-      content: "Handles server-side logic and database management.",
-      location: "Matara",
-      company: "Data Masters",
-    },
-    {
-      title: "Project Manager",
-      content: "Oversees project planning, execution, and completion.",
-      location: "Trincomalee",
-      company: "Project Pros",
-    },
-    {
-      title: "QA Engineer",
-      content: "Ensures the quality and functionality of software products.",
-      location: "Anuradhapura",
-      company: "Quality Assurance Inc.",
-    },
-    {
-      title: "Data Scientist",
-      content: "Analyzes and interprets complex data to provide insights.",
-      location: "Batticaloa",
-      company: "Data Insights",
-    },
-  ];
+    { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
+    { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
+    { title: 'Technical Support Specialist', content: 'Provides technical assistance and support to clients.', location: 'Kandy', company: 'Tech Support Co.' ,  img : '/jobs/99x.png' },
+    { title: 'Junior Graphic Designer', content: 'Creates visual content under the guidance of senior designers.', location: 'Jaffna', company: 'Graphic World' , img : '/jobs/virtusa.jpg' },
+    { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' ,img : '/jobs/codegen.png' },
+    { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' ,img : '/jobs/microsoft.png' }
+  ]
 
   var amount = 6;
   const location = useLocation();
   const { title } = location.state || {};
 
-  const [Submit, setSubmit] = useState(0);
-  const applyhandleChange = (value) => {
-    setSubmit(value);
-    console.log(Submit);
-  };
+    setSubmit(value)
+    console.log(Submit)
+
+  }
+  useEffect(() => {
+    if (Submit === 1) {
+      const timer = setTimeout(() => {
+        setSubmit(2);
+      }, 4000); // 10 seconds
+  
+      return () => clearTimeout(timer); // Cleanup timeout if the component unmounts or Submit changes
+    }
+  }, [Submit]);
   return (
     <Box
       component="main"
@@ -186,11 +147,73 @@ const JobDetails = () => {
         <Typography variant="h4">Find a job</Typography>
       </Box>
       <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          position: "relative",
-        }}
+       sx={{
+        display: 'flex',
+        gap : 2, 
+        position: 'relative'
+
+      }}>
+      <Box sx={{marginTop:'10px'}}>
+            <img 
+                src={wso2} 
+                alt="Logo" 
+                style={{ 
+                width: '100px', // Adjust the size as needed
+                height: '100px', // Adjust the size as needed
+                borderRadius: '50%',
+                objectFit: 'cover' 
+                }} 
+            />
+      </Box>
+
+      <Box sx =  
+        {{display: 'flex', 
+        flexDirection: 'column', 
+        marginTop: {xs:'16px'},
+        justifyContent: 'center', 
+        height: '75%'}}
+        >
+        <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '30px'} , marginBottom : '4px'}}>{title}</Typography>
+        <Box sx={{display:'flex' , gap: {xs: 1 , sm: 1 , md : 1 , lg: 2} ,
+                  flexDirection: {xs:'column' , sm:'column' , md:'column' , lg: 'row'}
+        }}>
+            <Typography><LinkIcon/>WWW.Instagram.com</Typography>
+            <Typography><LocalPhoneIcon/>+94 76 2 777 952</Typography>
+            <Typography><EmailIcon/>maniltenuka@gmail.com</Typography>
+        
+        </Box>
+    
+        
+      </Box>
+      
+      <Box 
+      sx={{alignItems:'center' , justifyContent:'center' , height: '95%' , display: 'flex' , flexDirection: 'column' ,position:'absolute' , right: 0 }}>
+      <Stack direction={{xs:'column' , sm: 'column' , md: 'column' , lg: 'row'}} spacing={2}>
+      <Button variant="contained" sx={{backgroundColor:'blue' , height: '42px' , width:{xs : '50px', sm: '50px' , md : '50px' , lg : 'auto'} }} >
+         <BookmarkBorderIcon sx={{color:'white' }}/>
+      </Button>
+      {Submit == 0 && (
+        <ApplyJob title = {title} callback={applyhandleChange}></ApplyJob>
+      )}
+
+      {Submit == 1 && (
+           <Button
+           sx={{ backgroundColor: 'blue' }}
+           onClick={() => {
+             setSubmit(2);
+             console.log(Submit);
+           }} // Correct capitalization of onClick and proper use of curly braces
+         >
+              <CircularProgress variant="soft"  />
+
+       </Button>
+      )
+      }
+
+    {Submit ==2 && (
+      <Button
+        sx={{ backgroundColor: 'green' }}
+        onClick={() => setSubmit(2)} // Correct capitalization of onClick
       >
         <Box sx={{ marginTop: "10px" }}>
           <img
@@ -214,41 +237,17 @@ const JobDetails = () => {
             height: "75%",
           }}
         >
-          <Typography
-            sx={{
-              fontWeight: "bold",
-              fontSize: { xs: "auto", sm: "auto", md: "30px" },
-              marginBottom: "4px",
-            }}
-          >
-            {title}
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              gap: { xs: 1, sm: 1, md: 1, lg: 2 },
-              flexDirection: {
-                xs: "column",
-                sm: "column",
-                md: "column",
-                lg: "row",
-              },
-            }}
-          >
-            <Typography>
-              <LinkIcon />
-              WWW.Instagram.com
-            </Typography>
-            <Typography>
-              <LocalPhoneIcon />
-              +94 76 2 777 952
-            </Typography>
-            <Typography>
-              <EmailIcon />
-              maniltenuka@gmail.com
-            </Typography>
-          </Box>
-        </Box>
+         Active
+        </Typography>
+      </Button>
+    )}
+     
+     
+      
+      </Stack>
+      <Typography sx={{ fontSize: '12px', marginTop: '3px' , display: 'flex' , flexDirection: {xs: 'column' , sm: 'row' }}}>
+        Job expires in : <span style={{ color: 'red' }}>30 June 2021</span>
+      </Typography>
 
         <Box
           sx={{
@@ -388,40 +387,25 @@ const JobDetails = () => {
         </Box>
       </Box>
 
-      <Box sx={{ border: "2px solid #e0e0e0", marginTop: "10px" }}>
-        <Typography
-          sx={{
-            fontWeight: "bold",
-            fontSize: { xs: "auto", sm: "auto", md: "20px" },
-            marginBottom: "12px",
-            marginTop: "12px",
-            marginLeft: "12px",
-          }}
-        >
-          Related Jobs
-        </Typography>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "repeat(1, 1fr)", // 1 column for extra-small screens (mobile)
-              sm: "repeat(2, 1fr)", // 2 columns for small screens (tablet)
-              md: "repeat(3, 1fr)", // 3 columns for medium and larger screens (desktop)
-            },
-            gap: 2,
-          }}
-        >
-          {cardData.slice(0, 6).map((card, index) => (
-            <JSCard
-              key={index}
-              title={card.title}
-              content={card.content}
-              location={card.location}
-              company={card.company}
-              type={1}
-            />
-          ))}
-        </Box>
+      <Box sx = {{border: '2px solid #e0e0e0' , marginTop : '10px'}} >
+      <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '20px'} , marginBottom : '12px' , marginTop : '12px' , marginLeft: '12px'}}>Related Jobs</Typography>
+      <Box 
+                          sx={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: {
+                              xs: 'repeat(1, 1fr)', // 1 column for extra-small screens (mobile)
+                              sm: 'repeat(2, 1fr)', // 2 columns for small screens (tablet)
+                              md: 'repeat(3, 1fr)', // 3 columns for medium and larger screens (desktop)
+                            }, 
+                            gap: 2, 
+                            
+                          }}
+                        >
+                          {cardData.slice(0,6).map((card, index) => (
+                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {1} img = {card.img} />
+                          ))}
+                          
+                        
       </Box>
     </Box>
   );

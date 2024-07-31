@@ -98,7 +98,7 @@ const JobSeekerDashboard= () => {
           maxHeight: "calc(100vh - 10px)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        {/* <Box sx={{ display: "flex", alignItems: "center" }}>
           <Breadcrumbs
             size="sm"
             aria-label="breadcrumbs"
@@ -123,7 +123,7 @@ const JobSeekerDashboard= () => {
               Dashboard
             </Link>
           </Breadcrumbs>
-        </Box>
+        </Box> */}
         <Box
             sx={{
                       display: 'flex',
@@ -166,7 +166,7 @@ const JobSeekerDashboard= () => {
           }}
         >
           <Typography level="h2" component="h1">
-            Overview
+            Dashboard
           </Typography>
         </Box>
 
@@ -174,7 +174,7 @@ const JobSeekerDashboard= () => {
 
         <Box sx={{ alignItems: "center", marginTop: "20px" }}>
           <Typography color="primary" fontSize="lg" fontWeight="lg">
-            Hello, Siriwat K.
+            Hello, Santhush.F
           </Typography>
 
           <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">

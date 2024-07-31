@@ -21,6 +21,8 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import CircularProgress from '@mui/material/CircularProgress';
 
 export default function ApplyATS({ title, open1 }) {
+
+  
   const navigate = useNavigate();
   const inputCvRef = useRef(null);
   const [open, setOpen] = useState(open1);

@@ -5,14 +5,17 @@ import StepButton from '@mui/joy/StepButton';
 import StepIndicator from '@mui/joy/StepIndicator';
 import Check from '@mui/icons-material/Check';
 
-const steps = ['Order placed', 'In review'];
+const steps = ['Questions', 'Contact Info'];
 
-export default function IndicatorStepper() {
-  const [activeStep, setActiveStep] = React.useState(0);
+export default function IndicatorStepper({callback , num}) {
+  const [activeStep, setActiveStep] = React.useState(num-1);
   return (
     <Stepper sx={{ width: '100%' }}>
       {steps.map((step, index) => (
         <Step
+          onClick = {()=> (
+            index == 1 ? callback(2) : callback(1)
+          )}
           key={step}
           indicator={
             <StepIndicator

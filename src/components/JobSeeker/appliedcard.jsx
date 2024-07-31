@@ -21,6 +21,10 @@ import Meetingview from './meetingview';
 const AppliedCard = ({status}) => {
 
     const [state, setState] = useState(1)
+    const [meeting,setMeeting] = useState(false)
+    const getValuefromChild = (event)=> {
+      setState(2)
+    } 
 
     const companyDetails = [['Applied Date:', '06 March 2006'] , ['Status :' , status] , 
     ]
@@ -49,6 +53,8 @@ const AppliedCard = ({status}) => {
                                       <Typography sx={{ marginRight : 1 , fontWeight : 500 }}>{item[1]}</Typography>
                                         
                                     ) }
+
+                                    
                                   
 
                                 </Box>
@@ -61,8 +67,10 @@ const AppliedCard = ({status}) => {
                 {companyDetails[1][1] == 'Active' && state == 1 && (
                         <Box>
                
-                        <Button sx={{backgroundColor: 'blue' }}><Typography sx={{color: 'white'}}>Schedule Interview</Typography></Button>
-                        <Meetingview></Meetingview>
+                        <Button sx={{backgroundColor: 'blue' }} onClick={()=> (
+                          meeting==false? setMeeting(true):setMeeting(false)
+                        )}><Typography sx={{color: 'white'}}>Schedule Interview</Typography></Button>
+                        <Meetingview status = {meeting} callback = {getValuefromChild}></Meetingview>
                         </Box>
 
                 )}
