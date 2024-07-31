@@ -31,13 +31,7 @@
     background-color: #fff;
 }
 
-@media (max-width: 10px) {
-    .topnav {
-      display: none;
-    }
-}
 
-
-.logo{
-    width: 200px;
+.isActive a{
+    color: #3f067a;
 }
