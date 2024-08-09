@@ -28,6 +28,8 @@ import JSSearch from "../../components/JobSeeker/search";
 import Alert from "../../components/JobSeeker/alert";
 import ProfileDropdown from "../../components/JobSeeker/ProfileDropDown";
 import TopNavBar from "../../components/JobSeeker/TopNavBar";
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import logo from "/logo.png"
 
 const jobs = [
@@ -182,84 +184,93 @@ const JobSeekerDashboard= () => {
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: 15,
-            marginTop: "20px",
-          }}
-        >
-          <Card variant="soft" color="primary" invertedColors>
-            <CardContent orientation="horizontal">
-              <IconButton
-                variant="soft"
-                color="primary"
-                size="lg"
-                sx={{ width: "80px" }}
-              >
-                <WorkOutlineIcon sx={{ fontSize: 50 }} />
-              </IconButton>
+        <Box sx={{   
+                        display:'flex',
+                        flexDirection:'row',
+                        width:'100%',
+                        justifyContent:'space-evenly',
+                        mt:4
+                   
+            }}>
+                 {/* {cardData.map((card, index) => (
+                    <SmallCard 
+                        key={index}
+                        icon={card.icon}
+                        heading={card.heading}
+                        count={card.count}
+            
+                        />
+                        ))} */}
+            <Card variant="soft" color="primary"  invertedColors>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
-              <CardContent>
-                <Typography level="body-md">Applied Jobs</Typography>
-                <Typography level="h2">589</Typography>
+                  <WorkOutlineIcon sx ={{fontSize: 50}}/>
+
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Open Jobs</Typography>
+                  <Typography level="h2">560</Typography>
+                </CardContent>
               </CardContent>
-            </CardContent>
-            <CardActions>
-              <Button variant="solid" size="sm">
-                See Jobs
-              </Button>
-            </CardActions>
-          </Card>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+                >
+                
+                  Job Posts
+                </Button>
+              </CardActions>
+            </Card>
 
-          <Card variant="soft" color="warning" invertedColors>
-            <CardContent orientation="horizontal">
-              <IconButton
-                variant="soft"
-                color="primary"
-                size="lg"
-                sx={{ width: "80px" }}
-              >
-                <BookmarkBorderOutlinedIcon sx={{ fontSize: 50 }} />
-              </IconButton>
+            <Card variant="soft" color="primary"  invertedColors>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
-              <CardContent>
-                <Typography level="body-md">Favorite Jobs</Typography>
-                <Typography level="h2">238</Typography>
+                  <PeopleAltOutlinedIcon sx ={{fontSize: 50}}/>
+
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Applied Jobs</Typography>
+                  <Typography level="h2">12</Typography>
+                </CardContent>
               </CardContent>
-            </CardContent>
-            <CardActions>
-              <Button variant="solid" size="sm">
-                See Jobs
-              </Button>
-            </CardActions>
-          </Card>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+            
+                 >
+                
+                  view
+                </Button>
+              </CardActions>
+            </Card>
+            <Card variant="soft" color="primary"  invertedColors>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
-          <Card variant="soft" color="success" invertedColors>
-            <CardContent orientation="horizontal">
-              <IconButton
-                variant="soft"
-                color="primary"
-                size="lg"
-                sx={{ width: "80px" }}
-              >
-                <NotificationsActiveOutlinedIcon sx={{ fontSize: 50 }} />
-              </IconButton>
+                  <EventOutlinedIcon sx ={{fontSize: 50}}/>
 
-              <CardContent>
-                <Typography level="body-md">Job Alerts</Typography>
-                <Typography level="h2">574</Typography>
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Applied Events</Typography>
+                  <Typography level="h2">109</Typography>
+                </CardContent>
               </CardContent>
-            </CardContent>
-            <CardActions>
-              <Button variant="solid" size="sm">
-                See Jobs
-              </Button>
-            </CardActions>
-          </Card>
-        </Box>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+                >
+                
+                  Registered Events
+                </Button>
+              </CardActions>
+            </Card>
+            </Box>
+
 
         <Box
           sx={{

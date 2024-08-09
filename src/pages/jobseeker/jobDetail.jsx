@@ -71,7 +71,7 @@ const JobDetails = () => {
     if (Submit === 1) {
       const timer = setTimeout(() => {
         setSubmit(2);
-      }, 4000); // 10 seconds
+      }, 60000); // 10 seconds
   
       return () => clearTimeout(timer); // Cleanup timeout if the component unmounts or Submit changes
     }

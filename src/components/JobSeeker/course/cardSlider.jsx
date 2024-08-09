@@ -12,8 +12,8 @@ import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import Chip from '@mui/joy/Chip';
 
-export default function BasicCard({url , callback}) {
-
+export default function BasicCard({url , callback ,}) {
+  const [num, setNum] = useState(0)
   const [scrollTop, setScrollTop] = useState(15); // Initial top position in percentage
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function BasicCard({url , callback}) {
           size="sm"
           sx={{ position: 'absolute', top: '0.875rem', right: '0.5rem' }}
         >
-          <BookmarkAdd />
+
         </IconButton>
       </div>
       <AspectRatio minHeight="120px" maxHeight="200px">
@@ -67,12 +67,22 @@ export default function BasicCard({url , callback}) {
         size="md"
         color="primary"
         aria-label="Explore Bahamas Islands"
-        sx={{ fontWeight: 600 , width: 200 }}
+        sx={{ fontWeight: 600 , width: 200 , background:num==0?'#3f067a': 'green' }}
         onClick={()=> {
+          setNum(1)
           callback(true)
         }}
-      >
-        Enroll
+      > {num ==0 && (
+        <Typography sx={{fontWeight: "bold", color:'white'}}> Enroll</Typography>
+       
+
+      )}
+        {num ==1 && (
+        <Typography sx={{fontWeight: "bold", color:'white'}}> Enrolled</Typography>
+        
+
+      )}
+        
       </Button>
     </CardContent>
 

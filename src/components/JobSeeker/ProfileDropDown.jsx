@@ -4,6 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Button, Typography } from '@mui/joy';
 import { useNavigate } from 'react-router-dom';
+import seba from '/seba.jpg'
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -39,7 +40,7 @@ const ProfileDropdown = () => {
         onClick={toggleDropdown}
         className="relative flex items-center p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
       >
-        <AccountCircleIcon sx={{height:'24px' , width:'24px'}}/>
+        <img src={seba} alt="icon" style={{ height: '24px', width: '24px' , borderRadius: '12px'}} />
       </button>
 
       {isOpen && (
