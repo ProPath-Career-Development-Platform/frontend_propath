@@ -43,8 +43,36 @@ import Badge from '@mui/joy/Badge';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
+import MapBoxGeo from '../../../components/jobprovider/dashboard/mapBoxGeo';
+
+import ImageKit from "imagekit";
+import axios from 'axios';
 
 function CreateAnEvent() {
+
+  const imagekit = new ImageKit({
+   
+    urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+    publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+    privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY
+   
+  });
+
+  const uploadImage = async (file) => {
+    try {
+      const response = await imagekit.upload({
+        file: file, // the file you want to upload
+        fileName: file.name, // file name you want to save as
+      });
+  
+      // Return the uploaded image URL
+      return response.url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null; // Return null in case of an error
+    }
+  };
+  
 
 
 
@@ -67,6 +95,7 @@ function CreateAnEvent() {
 
     const [formData, setFormData] = React.useState({
         bannerImg: false,
+        bannerFile:'',
         eventTitle: '',
         eventDate: '',
         startTime: '',
@@ -75,7 +104,12 @@ function CreateAnEvent() {
         closeDate: '',
         mapLocation: '',
         keyWords: [],
-        eventDescription: ''
+        eventDescription: '',
+        bannerUrl: '',
+        latitude: 6.9387469, 
+        longitude: 79.8541134,
+        
+
 
       }); // State for form data
 
@@ -327,6 +361,13 @@ function CreateAnEvent() {
           ...prev,
           [inputTagName]: reader.result,
         }));
+
+        setFormData((prev) => ({
+          ...prev,
+          bannerFile: file,
+        }));
+
+     
   
         setImgSnackOpen(true);
   
@@ -342,26 +383,100 @@ function CreateAnEvent() {
     };
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
        
           const errors = validationStep3();
           if (Object.keys(errors).length > 0) {
             return;
+
           }else{
 
-            setResponse((prev) => ({
+         /*   setResponse((prev) => ({
               ...prev,
               loading: true,
             })
-            );
+            );*/
 
 
-            setStep(prevStep => prevStep + 1);
-            alert(JSON.stringify(formData));
+           // setStep(prevStep => prevStep + 1);
+           // alert(JSON.stringify(formData));
 
             //send data to server
+
+            const jwtToken = localStorage.getItem('token');
+            // Transform keywords to the desired format
+             const formattedKeywords = formData.keyWords.map(keyword => keyword.word);
+
+            
+             setResponse((prev) => ({
+               ...prev,
+               loading: true,
+             }));
+             
+             const uploadedBannerUrl = await uploadImage(formData.bannerFile);
+
+           
+             
+           
+          
+
+            const eventData = {
+              title: formData.eventTitle,
+              date: formData.eventDate,
+              banner: uploadedBannerUrl,
+              startTime: formData.startTime,
+              endTime: formData.endTime,
+              maxParticipant: parseInt(formData.maxParticipant, 10), // Convert to number
+              closeDate: formData.closeDate,
+              location: formData.mapLocation,
+              latitude: formData.latitude,
+              longitude: formData.longitude,
+              keyWords: formattedKeywords, // Format keyWords
+              description: formData.eventDescription,
+              delete: "false", // You can use a boolean instead of string if needed
+              status: "active", // You can use a boolean instead of string if needed
+              
+            };
+
+            console.log(eventData);
+
+            try {
+              // Set loading to true before the request
+              
+            
+              const response = await axios.post('http://localhost:8080/jobprovider/event', eventData, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+            
+              // Check if the response is successful
+              if (response.status >= 200 && response.status < 300) {
+                console.log('Event created:', response.data);
+                
+                // Increment the step after a successful response
+                setStep((prevStep) => prevStep + 1);
+              } else {
+                console.error('Unexpected response status:', response.status);
+                setResponse((prev) => ({
+                  ...prev,
+                  error: true,
+                }));
+              }
+              
+            } catch (error) {
+              console.error('Error creating event:', error);
+            } finally {
+              // Set loading to false after the request completes, regardless of success or failure
+              setResponse((prev) => ({
+                ...prev,
+                loading: false,
+              }));
+            }
+
 
             
 
@@ -372,6 +487,20 @@ function CreateAnEvent() {
 
 
     }
+
+
+    // Function to handle map click event
+  const handleMapClick = (lng, lat, address) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      latitude: lat,
+      longitude: lng,
+      mapLocation: address,
+    }));
+  };
+
+
+
 
     const top100Films = [
       { label: 'The Shawshank Redemption', year: 1994 },
@@ -463,6 +592,8 @@ function CreateAnEvent() {
             </Box>
 
             <Divider />
+
+            
 
 
           
@@ -627,6 +758,8 @@ function CreateAnEvent() {
      
     </Stepper>
 
+   
+
 
     <Divider />
 
@@ -772,15 +905,17 @@ function CreateAnEvent() {
                             <VisuallyHiddenInput name="bannerImg" type="file" onChange={imgInputHandle} />
                             </IconButton>
 
+
                           </>
                          )
-                         }
+                        }
 
                           </div>
                             
 
                         </AspectRatio>
 
+                       
                       </>
 
                     )}
@@ -817,6 +952,9 @@ function CreateAnEvent() {
                                         }
                                     
                                             setFormData({...formData,startTime: event.target.value})
+
+                                            console.log(formData.startTime);
+                                            console.log(formData);
                                             }
                                             }
                                              />
@@ -924,24 +1062,13 @@ function CreateAnEvent() {
 
                       <FormControl error={Boolean(error.mapLocation)}>
                       <FormLabel>Event Location</FormLabel>
-                      <Autocomplete
+                      <Input
                         name='mapLocation'
                         startDecorator={<Button disabled><LocationOnIcon/></Button>}
-                        placeholder='Enter your map location'
-                        options={top100Films}
+                        placeholder='Mark the Event Location'
+                        readOnly={true}
                         value={formData.mapLocation}
-                        onChange={(event, newValue) => {
-
-                         if (error.mapLocation) {
-                            setError((prevState) => {
-                              const newErrors = { ...prevState };
-                              delete newErrors.mapLocation;
-                              return newErrors;
-                            });
-                          }
-
-                          setFormData({...formData, mapLocation: newValue});
-                        }}
+                        
 
                        // onInputChange={handleChangeForContact}
                       
@@ -954,6 +1081,27 @@ function CreateAnEvent() {
                       )}
 
                       </FormControl>
+
+                      <Stack
+                     
+                      >
+
+<MapBoxGeo
+        lng={formData.longitude}
+        setLng={(lng) => handleMapClick(lng, formData.latitude, formData.mapLocation)}
+        lat={formData.latitude}
+        setLat={(lat) => handleMapClick(formData.longitude, lat, formData.mapLocation)}
+        setFullAddress={(address) => handleMapClick(formData.longitude, formData.latitude, address)}
+      />
+
+                      </Stack>
+
+
+                      
+
+
+                    
+
 
                         
                         </>
@@ -986,8 +1134,9 @@ function CreateAnEvent() {
                               });
                             }
                           
-
+                            
                             setFormData({...formData, keyWords: newValue});
+                      
                           }}
 
                           inputValue={inputValue}
@@ -1161,6 +1310,8 @@ function CreateAnEvent() {
                 </Card>
 
                 </form>  
+
+             
 
 
 
