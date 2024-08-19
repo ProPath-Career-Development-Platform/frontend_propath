@@ -173,7 +173,7 @@ const Home = () => {
             <Box sx={{  alignItems: 'center', marginTop:'20px' }}>
 
               <Typography color="primary" fontSize="lg" fontWeight="lg">
-                Hello, Sysco Labs
+                Hello, {name}
               </Typography>
 
               <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
