@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -28,6 +28,8 @@ import Avatar from '@mui/joy/Avatar';
 import Divider from '@mui/joy/Divider';
 
 import { Link as RouterLink } from 'react-router-dom';
+import {getUserIdFromToken} from '../../../utils/tokenUtils';
+import axios from 'axios';
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -46,8 +48,43 @@ const rows = [
 ];
 
 
+const token = localStorage.getItem('token');
+
+export const GetJobPosts = (id) => {
+  return axios.get(`http://localhost:8080/jobprovider/my-jobs?userId=${id}`,{
+    headers: {
+      Authorization: `Bearer ${token}`  // Ensure the token is correctly passed
+    }
+  });
+
+}
+
+
 
 function MyJob() {
+
+  const [postedJobs, setPostedJobs] = useState([]);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const id = getUserIdFromToken();
+    
+    
+    if (id) {
+      GetJobPosts(id)
+        .then((response) => {
+          setPostedJobs(response.data);
+          console.log(response.data);
+          
+        })
+        .catch((error) => {
+          setError('Error fetching company details');
+          console.error(error);
+        });
+    }
+  }, []);
+
+  
   return (
    <Box
    component="main"
@@ -191,8 +228,8 @@ function MyJob() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
-                  <tr key={row.name}>
+                {postedJobs.map((job) => (
+                  <tr key={job.id}>
 
                     <td>
 
@@ -209,7 +246,7 @@ function MyJob() {
                                   },
                                   })}>
 
-                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {row.name} </Typography> 
+                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {job.jobTitle} </Typography> 
 
                         <Box sx={(theme)=>({ 
                                   display:'flex',
@@ -221,7 +258,7 @@ function MyJob() {
                                     gap: 0,
                                   },
                             })}>
-                          <Typography level='body-md'>Full Time</Typography>
+                          <Typography level='body-md'>{job.jobType}</Typography>
                           <Typography  level='body-md'>•</Typography>
                           <Typography level='body-sm'>23 Days Remaining</Typography>
                         </Box>
@@ -234,13 +271,13 @@ function MyJob() {
 
                     <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
                       
-                    {row.calories === 'Active' ? (
+                    {new Date(job.expiryDate) > new Date() ? (
                                                   <>
-                                                    <CheckCircleOutlineIcon color="success" /> {row.calories}
+                                                    <CheckCircleOutlineIcon color="success" /> Active
                                                   </>
                                                 ) : (
                                                   <>
-                                                    <WarningAmberIcon color="danger" /> {row.calories}
+                                                    <WarningAmberIcon color="danger" /> Expired
                                                   </>
                                                 )
                     }
@@ -251,7 +288,7 @@ function MyJob() {
 
                     <td>
                       <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                        <PeopleAltOutlinedIcon />      {row.fat}
+                        <PeopleAltOutlinedIcon />      {job.vacancies}
                       </Box>
                     </td>
 
