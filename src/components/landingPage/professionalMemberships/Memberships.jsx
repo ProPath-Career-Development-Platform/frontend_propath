@@ -9,7 +9,7 @@ const Memberships = () => {
       <div className='px-12 py-20 bg-[#f7f5f5]'>
         <div className='flex justify-between'>
           <div>
-          <p className='text-purple4 font-bold text-3xl'>Explore your workshop options in one place</p>
+          <p className='text-purple4 font-bold text-3xl'>Explore all membership options in one place</p>
           <p className="mb-5 text-grey1 text-lg font-light">You might be interested in these workshops</p>
           </div>
           <Button as={Link} className='bg-purple4 text-white font-semibold mt-2' href="#" variant="flat">

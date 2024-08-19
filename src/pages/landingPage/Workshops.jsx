@@ -7,7 +7,7 @@ import StartExploring from '../../components/landingPage/workshops/startExplorin
 const Workshops = () => {
   return (
     <div>
-        <WorkshopNav/>
+        {/* <WorkshopNav/> */}
         <WorkshopsHero/>
         <Fields/>
         <StartExploring/>

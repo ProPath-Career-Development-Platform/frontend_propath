@@ -16,11 +16,11 @@ import { CardOverflow, CardActions } from '@mui/joy';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useNavigate } from 'react-router-dom';
-export default function CourseCard({title, company , content , location ,type}) {
+export default function CourseCard({title, company , content , location ,type , img , slot}) {
   const Navigate = useNavigate()
   const columns = Math.ceil(Math.sqrt(content.length));
   const coursepage = () => {
-    alert('hello')
+ 
     Navigate('/JobSeeker/courses/course/' , { state: { title } })
 
   }
@@ -83,8 +83,8 @@ export default function CourseCard({title, company , content , location ,type}) 
       >
         <AspectRatio flex ratio="1" maxHeight={182} sx={{ minWidth: 182 }}>
           <img
-            src={courses}
-            srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+            src={img}
+
             loading="lazy"
             alt=""
           />
@@ -132,7 +132,7 @@ export default function CourseCard({title, company , content , location ,type}) 
               }
             }}
           >
-            5 slots remaining
+            {slot} slots remaining
         </Typography>
 
 
@@ -234,7 +234,7 @@ export default function CourseCard({title, company , content , location ,type}) 
               }
             }}
           >
-            5 slots remaining
+            {slot} slots remaining
         </Typography>
 
         <CardOverflow 
@@ -255,7 +255,7 @@ export default function CourseCard({title, company , content , location ,type}) 
             }}
           >
             <div>
-              <img src={courses}/>
+              <img src={img}/>
               
             </div>
           </AspectRatio>

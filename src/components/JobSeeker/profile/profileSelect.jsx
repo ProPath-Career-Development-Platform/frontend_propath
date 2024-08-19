@@ -12,9 +12,7 @@ import OpenInNew from '@mui/icons-material/OpenInNew';
 export default function ProfileSelect() {
   const details = [
                     { label: 'Name:', value: 'Santhush Fernando' },
-                    { label: 'Role:', value: 'Job Seeker' },
                     { label: 'Email:', value: 'Email Address' },
-                    { label: 'Contact:', value: '+94 762777952' },
                     { label: 'Status:', value: 'Active' },
                   ]
   const [type, setType] = React.useState(1);

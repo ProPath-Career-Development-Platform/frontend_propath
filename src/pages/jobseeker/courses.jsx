@@ -50,18 +50,18 @@ import { useLocation } from 'react-router-dom';
 import Pagination from '../../components/JobSeeker/pagination';
 
 const cardData = [
-  { title: 'UI/UX Design Fundamentals', content: ['User Interface Design', 'User Experience Design'], location: 'Online', company: 'ABC Design' },
-  { title: 'Advanced UI/UX Design', content: ['Project Leadership', 'Mentorship'], location: 'Online', company: 'Creative Solutions' },
-  { title: 'Technical Support Essentials', content: ['Client Support', 'Technical Assistance'], location: 'Online', company: 'Tech Support Co.' },
-  { title: 'Graphic Design Basics', content: ['Visual Content Creation', 'Design Principles'], location: 'Online', company: 'Graphic World' },
-  { title: 'Front End Development', content: ['HTML', 'CSS', 'JavaScript','HTML', 'CSS', 'JavaScript'], location: 'Negombo', company: 'Web Solutions' },
-  { title: 'Backend Development', content: ['Server-side Logic', 'Database Management'], location: 'Matara', company: 'Data Masters' },
-  { title: 'Project Management', content: ['Project Planning', 'Execution'], location: 'Trincomalee', company: 'Project Pros' },
-  { title: 'Quality Assurance Engineering', content: ['Software Testing', 'Quality Assurance'], location: 'Anuradhapura', company: 'Quality Assurance Inc.' },
-  { title: 'Data Science', content: ['Data Analysis', 'Data Interpretation'], location: 'Online', company: 'Data Insights' },
-  { title: 'System Administration', content: ['IT Infrastructure Management', 'System Maintenance'], location: 'Colombo', company: 'Tech Admins' },
-  { title: 'DevOps Engineering', content: ['CI/CD Pipelines', 'Automation'], location: 'Galle', company: 'DevOps Solutions' },
-  { title: 'Mobile App Development', content: ['iOS Development', 'Android Development'], location: 'Kandy', company: 'App Creators' },
+  { title: 'UI/UX Design Fundamentals', content: ['User Interface Design', 'User Experience Design'], location: 'Online', company: 'ABC Design' , img: '/ml2.png' , slots: '5' },
+  { title: 'Advanced UI/UX Design', content: ['Project Leadership', 'Mentorship'], location: 'Online', company: 'Creative Solutions'  ,  img : '/courses/AdvancedUI.jpg' , slots: 4 },
+  { title: 'Technical Support Essentials', content: ['Client Support', 'Technical Assistance'], location: 'Online', company: 'Tech Support Co.' ,img:'/courses/TechnicalSupport.jpg', slots: 2},
+  { title: 'Project Management', content: ['Project Planning', 'Execution'], location: 'Trincomalee', company: 'Project Pros' , img: '/courses/projectManagement.png' , slots: 1},
+  { title: 'Quality Assurance Engineering', content: ['Software Testing', 'Quality Assurance'], location: 'Anuradhapura', company: 'Quality Assurance Inc.' , img:'/courses/qualityAssuranc.jpg' , slots: 12},
+  { title: 'System Administration', content: ['IT Infrastructure Management', 'System Maintenance'], location: 'Colombo', company: 'Tech Admins' , img: '/courses/netad.jpg'  , slots: 19},
+  { title: 'Graphic Design Basics', content: ['Visual Content Creation', 'Design Principles'], location: 'Online', company: 'Graphic World' , img: '/courses/GraphicDesign.jpg' , slots: 21},
+  { title: 'Front End Development', content: ['HTML', 'CSS', 'JavaScript','HTML', 'CSS', 'JavaScript'], location: 'Negombo', company: 'Web Solutions', img: '/courses/frontend.png' , slots: 24 },
+  { title: 'Backend Development', content: ['Server-side Logic', 'Database Management'], location: 'Matara', company: 'Data Masters' , img: '/courses/backend.png' , slots: 4},
+  { title: 'Data Science', content: ['Data Analysis', 'Data Interpretation'], location: 'Online', company: 'Data Insights' , img: '/courses/datascience.jpeg' , slots: 11},
+  { title: 'DevOps Engineering', content: ['CI/CD Pipelines', 'Automation'], location: 'Galle', company: 'DevOps Solutions' , img: '/courses/devops.jpg' , slots: 9},
+  { title: 'Mobile App Development', content: ['iOS Development', 'Android Development'], location: 'Kandy', company: 'App Creators' , img: '/courses/mobiledev.jpg' , slots: 7},
   { title: 'Network Engineering', content: ['Network Design', 'Network Implementation'], location: 'Jaffna', company: 'Net Solutions' },
   { title: 'Database Administration', content: ['Database Management', 'SQL'], location: 'Negombo', company: 'Data Admins' },
   { title: 'Cybersecurity Fundamentals', content: ['IT Security', 'Data Protection'], location: 'Matara', company: 'SecureTech' },
@@ -74,7 +74,7 @@ const cardData = [
 
 
 
-
+ 
 
 
 
@@ -262,7 +262,7 @@ const Courses = () => {
                           }}
                         >
                           {cardData.slice(PageNumber* selectedSize,PageNumber * selectedSize + selectedSize).map((card, index) => (
-                            <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} />
+                            <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img={card.img} slot = {card.slots}/>
                           ))}
                           
                         
@@ -283,7 +283,7 @@ const Courses = () => {
                          }}
                        >
                          {cardData.slice(0,selectedSize).map((card, index) => (
-                           <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} />
+                           <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img={card.img} slot = {card.slots}/>
                          ))}
                          
                         

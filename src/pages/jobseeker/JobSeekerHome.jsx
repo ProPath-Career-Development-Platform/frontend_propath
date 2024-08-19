@@ -1,4 +1,5 @@
 import React , {useState} from 'react'
+import axios from 'axios';
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -49,7 +50,7 @@ import Pagination from '../../components/JobSeeker/pagination';
 import ListNew from '../../components/list';
 import Footer from '../../components/landingPage/footer/Footer';
 import Banner from '../../components/JobSeeker/banner';
-
+import ApplyATS from '../../components/JobSeeker/applyATS';
 const cardData = [
   { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
   { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
@@ -106,7 +107,8 @@ const cardData = [
 
 
 
-
+const REST_API_BASE_URL = 'http://localhost:8080/jobprovider/all-rows'
+export const getEmployee = (employeeId) => axios.get(REST_API_BASE_URL)
 
 
 const JobSeekerHome = () => {
@@ -226,6 +228,7 @@ const JobSeekerHome = () => {
                            <JSDropDown name = {"Salary "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '0'/> 
                            <AdvancedFilter/> 
                         </Box>
+                       
                         <Box
                               sx={{
                                         display: 'flex',

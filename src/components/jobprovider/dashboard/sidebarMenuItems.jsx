@@ -164,7 +164,7 @@ function sidebarMenuItems() {
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/my-jobs/"
-            selected={location.pathname === "/jobprovider/my-jobs/"}
+            selected={location.pathname === "/jobprovider/my-jobs/" }
           >
             <WorkIcon />
             <ListItemContent>
