@@ -1,5 +1,6 @@
 import * as React from 'react';
-
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Box from '@mui/joy/Box';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -12,7 +13,7 @@ import Stepper from '@mui/joy/Stepper';
 import Step, { stepClasses } from '@mui/joy/Step';
 import StepIndicator, { stepIndicatorClasses } from '@mui/joy/StepIndicator';
 import { styled } from '@mui/joy';
-
+import {Link as RouterLink} from 'react-router-dom';
 import Card from '@mui/joy/Card';
 import CardOverflow from '@mui/joy/CardOverflow';
 import CardContent from '@mui/joy/CardContent';
@@ -52,6 +53,16 @@ import RichText from '../../../components/jobprovider/dashboard/RichText';
 
 function CreateAnEvent() {
 
+  const { id } = useParams();
+
+
+  const getJwtToken = () => {
+    return localStorage.getItem('token');
+  };
+
+
+
+
   const imagekit = new ImageKit({
    
     urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
@@ -60,7 +71,55 @@ function CreateAnEvent() {
    
   });
 
+
+  const getFileIdFromUrl = async (imageUrl) => {
+
+    const filePath = imageUrl.split('/').pop().split('?')[0];
+    
+    try {
+      const response = await imagekit.listFiles({
+        searchQuery : `name="${filePath}"`,
+      });
+  
+      if (response.length > 0) {
+        return response[0].fileId; // Return the fileId of the first matching file
+      } else {
+        console.error("No file found with the given URL.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error retrieving fileId:", error);
+      return null;
+    }
+  };
+  
+  const deleteImageByUrl = async (imageUrl) => {
+    const fileId = await getFileIdFromUrl(imageUrl);
+  
+    if (fileId) {
+      try {
+        const deleteResponse = await imagekit.deleteFile(fileId);
+        console.log("Image deleted successfully:", deleteResponse);
+      } catch (error) {
+        console.error("Error deleting image:", error);
+      }
+    }
+  };
+
   const uploadImage = async (file) => {
+
+
+    if(!imgChange){
+      return formData.bannerUrl;
+    }
+
+   
+
+     // Delete the previous image by URL if it exists
+  if (prevImgUrl) {
+    await deleteImageByUrl(prevImgUrl);
+  }
+
     try {
       const response = await imagekit.upload({
         file: file, // the file you want to upload
@@ -108,8 +167,8 @@ function CreateAnEvent() {
         keyWords: [],
         eventDescription: '',
         bannerUrl: '',
-        latitude: 6.9387469, 
-        longitude: 79.8541134,
+        latitude: '', 
+        longitude: '',
         
 
 
@@ -126,7 +185,51 @@ function CreateAnEvent() {
       }
       );
 
-      const [emptyDescription, setEmptyDescription] = React.useState(true);
+      const [emptyDescription, setEmptyDescription] = React.useState(false);
+      const [prevImgUrl, setPrevImgUrl] = React.useState('');
+      const [imgChange, setImgChange] = React.useState(false);
+
+
+
+      useEffect(() => {
+        axios.get(`http://localhost:8080/jobprovider/event/${id}`, {
+          headers: {
+            Authorization: `Bearer ${getJwtToken()}`,
+          },
+        }).then((response) => {
+          setFormData(
+            (prev) => ({
+              ...prev,
+              eventTitle: response.data.title,
+              eventDate: response.data.date,
+              startTime: response.data.startTime,
+              endTime: response.data.endTime,
+              maxParticipant: response.data.maxParticipant,
+              closeDate: response.data.closeDate,
+              mapLocation: response.data.location,
+              latitude: response.data.latitude,
+              longitude: response.data.longitude,
+              keyWords: response.data.keyWords.map(keyword => ({ word: keyword })),
+              eventDescription: response.data.description,
+              bannerUrl: response.data.banner,
+              bannerImg: response.data.banner,
+            })
+
+          );
+
+          setText(response.data.description);
+          setPrevImgUrl(response.data.banner);
+          
+        }).catch((error) => {
+          console.error('Error fetching events:', error);
+        });
+      }, []);
+
+
+    
+    
+
+
 
       const handleNextStep = () => {
         if (step < 2) {
@@ -181,11 +284,11 @@ function CreateAnEvent() {
           newErrors.bannerImg = 'Event Banner is required';
         }
 
-        //setError(newErrors);
+        setError(newErrors);
 
-       //return newErrors;
+       return newErrors;
 
-       return [];
+       
 
     
         
@@ -218,9 +321,9 @@ function CreateAnEvent() {
           newErrors.mapLocation = 'Event Location is required';
         }
 
-        //setError(newErrors);
+        setError(newErrors);
 
-       //return newErrors;
+       return newErrors;
 
        return [];
     
@@ -359,6 +462,8 @@ function CreateAnEvent() {
         alert('Please select a jpg, jpeg, or png image file');
         return;
       }
+
+      setImgChange(true);
   
   
   
@@ -462,7 +567,7 @@ function CreateAnEvent() {
               // Set loading to true before the request
               
             
-              const response = await axios.post('http://localhost:8080/jobprovider/event', eventData, {
+              const response = await axios.put(`http://localhost:8080/jobprovider/event/${id}`, eventData, {
                 headers: {
                   Authorization: `Bearer ${jwtToken}`,
                   'Content-Type': 'application/json',
@@ -1170,7 +1275,10 @@ function CreateAnEvent() {
 
                       </FormControl>
 
-                    <Box sx={{mt:2}}>             
+                    <Box sx={{mt:2}}>    
+
+                      {formData.latitude && formData.longitude &&
+                                 
                           <MapBoxGeo
                      
                                   lng={formData.longitude}
@@ -1180,6 +1288,8 @@ function CreateAnEvent() {
                                   setFullAddress={(address) => handleAddress(address)}
                                   isVisible={step === 1}
                                   />
+
+                      }
 
                     </Box>
              
@@ -1295,7 +1405,7 @@ function CreateAnEvent() {
 
                       <Box sx={{display:'flex',flexDirection:'column', justifyContent:'center', alignContent:'center', mx:'auto' ,gap:2}}>
                         <PublishedWithChangesIcon sx={{fontSize:'120px', mx:'auto'}} color='success'/>
-                        <Typography  level="title-lg">Event Created Successfully!</Typography>
+                        <Typography  level="title-lg">Event Update Successfully!</Typography>
                       </Box>
                       
                       
@@ -1305,7 +1415,7 @@ function CreateAnEvent() {
 
                     <Box sx={{display:'flex',flexDirection:'column', justifyContent:'center', alignContent:'center', mx:'auto' ,gap:2}}>
                       <UnpublishedIcon sx={{fontSize:'120px', mx:'auto'}} color='danger'/>
-                      <Typography  level="title-lg">Failed to Create Event!</Typography>
+                      <Typography  level="title-lg">Failed to Update Event!</Typography>
                     </Box>
 
 
@@ -1332,7 +1442,7 @@ function CreateAnEvent() {
 
                         {step === 2 && (
                             <Button loading={response.loading} onClick={handleSubmit}  size="sm" variant="solid">
-                            Publish
+                            Update
                         </Button>
 
                         )}
@@ -1347,36 +1457,9 @@ function CreateAnEvent() {
 
                         {step >2 && !response.error && (
 
-                          <Button type='button' onClick={() => {
-                            
-                            setStep(0)
-
-                            setResponse((prev) => ({
-                              ...prev,
-                              loading: false,
-                            })
-                            );
-
-                            setFormData({
-                              bannerImg: false,
-                              eventTitle: '',
-                              eventDate: '',
-                              startTime: '',
-                              endTime: '',
-                              maxParticipant: '',
-                              closeDate: '',
-                              mapLocation: '',
-                              keyWords: [],
-                              eventDescription: '',
-                              bannerUrl: '',
-                              latitude: 6.9387469,
-                              longitude: 79.8541134,
-
-                            });
-
-
-                          }} size="sm" variant="solid">
-                            Create Another Event
+                          <Button type='button'  component= {RouterLink}
+                          to={`/jobprovider/meet-up`} size="sm" variant="solid">
+                            Go to MeetUp
                           </Button>
 
                         )}

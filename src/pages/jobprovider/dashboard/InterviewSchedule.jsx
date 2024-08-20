@@ -28,6 +28,7 @@ import Stack from '@mui/joy/Stack';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import CardActions from '@mui/joy/CardActions';
+import { Link as RouterLink } from 'react-router-dom';
 
 function InterviewSchedule() {
   const [highlightedDays, setHighlightedDays] = React.useState([]);
@@ -176,7 +177,7 @@ function InterviewSchedule() {
           Schedule Interview
         </Typography>
 
-        <Button color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={handleSubmit}>
+        <Button component={RouterLink} to="/jobprovider/home" color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={handleSubmit}>
           Finish Schedule
         </Button>
       </Box>

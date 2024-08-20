@@ -24,6 +24,9 @@ import JpSettings from "../pages/jobprovider/dashboard/Settings"
 import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
 
 import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
+import JpEventPreview from "../pages/jobprovider/dashboard/EventPreview"
+import JpUpdateEvent from "../pages/jobprovider/dashboard/UpdateEvent"
+import JpError from "../pages/jobprovider/dashboard/Page404"
 
 
 import JobDetails from "../pages/jobseeker/jobDetail";
@@ -67,6 +70,10 @@ import ExploreCompanies from "../pages/landingPage/ExploreCompanies";
 import Workshops from "../pages/landingPage/Workshops";
 import ProfessionalMemberships from '../pages/landingPage/ProfessionalMemberships';
 import EmployerSite from "../pages/landingPage/EmployerSite";
+
+
+//security
+import  ProtectedRoute  from "../components/ProtectedRoute";
 
 
 
@@ -131,7 +138,17 @@ const router = createBrowserRouter([
 
   {
     path: "/jobprovider",
-    element: <JPCompnaySetup1/>,
+    element: (
+
+      <ProtectedRoute requiredRole="JobProvider">
+    
+    <JPCompnaySetup1/>
+
+    </ProtectedRoute>
+   
+    ),
+
+
     children: [
       {
         path:"Setup",
@@ -147,7 +164,15 @@ const router = createBrowserRouter([
 
   {
     path: "/jobprovider",
-    element: <DashboardLayout user="jobprovider"/>,
+    element: (
+
+    <ProtectedRoute requiredRole="JobProvider">
+    
+    <DashboardLayout user="jobprovider"/>
+
+    </ProtectedRoute>
+  
+  ),
     children: [
       {
         path:"/jobprovider",
@@ -206,6 +231,19 @@ const router = createBrowserRouter([
         path:"settings",
         element:<JpSettings/>
       },
+      {
+        path:"meet-up/preview-event/:id",
+        element:<JpEventPreview/>
+      },
+      {
+        path:"meet-up/updateEvent/:id",
+        element:<JpUpdateEvent/>
+      },
+      {
+        path:"error/404",
+        element:<JpError/>
+      }
+
     ]
   },
 
@@ -215,9 +253,10 @@ const router = createBrowserRouter([
       <>
         
         {/* <TopNav /> */}
-        
-        <JobSeekerSetup />
-       
+        <ProtectedRoute requiredRole="JobSeeker">
+
+        <JobSeekerSetup />  
+        </ProtectedRoute>
       </>
     ),
     children: [
@@ -235,8 +274,12 @@ const router = createBrowserRouter([
         
         
         {/* <TopNav /> */}
+
+        <ProtectedRoute requiredRole="JobSeeker">
      
         <DashboardLayout user="jobseeker" />
+
+        </ProtectedRoute>
         
       </>
     ),
@@ -301,8 +344,9 @@ const router = createBrowserRouter([
     element: (
       <>
       
-      
+      <ProtectedRoute requiredRole="Admin">
         <DashboardLayout user="admin" />
+        </ProtectedRoute>
       </>
     ),
     children: [
