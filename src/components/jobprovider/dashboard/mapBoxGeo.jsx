@@ -1,30 +1,30 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import Box from '@mui/joy/Box';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-const MapboxExample = ({lng,setLng,lat,setLat,setFullAddress}) => {
+const MapboxExample = ({ lng, setLng, lat, setLat, setFullAddress, isVisible }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const marker = useRef(null);
   const [zoom, setZoom] = useState(12);
 
-
-
-
-
   useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current) return; // Initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [lng, lat],
       zoom: zoom,
     });
+
+    // Create the initial marker at the provided lng and lat
+    marker.current = new mapboxgl.Marker()
+      .setLngLat([lng, lat])
+      .addTo(map.current);
 
     // Add the Geocoder (search box) restricted to Sri Lanka
     const geocoder = new MapboxGeocoder({
@@ -47,11 +47,7 @@ const MapboxExample = ({lng,setLng,lat,setLat,setFullAddress}) => {
       setFullAddress(place_name);
 
       // Move the marker to the selected location
-      if (marker.current) {
-        marker.current.setLngLat([newLng, newLat]);
-      } else {
-        marker.current = new mapboxgl.Marker().setLngLat([newLng, newLat]).addTo(map.current);
-      }
+      marker.current.setLngLat([newLng, newLat]);
 
       // Center the map to the selected location
       map.current.flyTo({ center: [newLng, newLat], zoom: zoom });
@@ -72,23 +68,22 @@ const MapboxExample = ({lng,setLng,lat,setLat,setFullAddress}) => {
       setFullAddress(address);
 
       // Move the marker to the clicked location
-      if (marker.current) {
-        marker.current.setLngLat([lng, lat]);
-      } else {
-        marker.current = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map.current);
-      }
+      marker.current.setLngLat([lng, lat]);
 
-      // Center the map on the clicked location
-     // map.current.flyTo({ center: [lng, lat], zoom: zoom });
+      // Optionally center the map on the clicked location
+      // map.current.flyTo({ center: [lng, lat], zoom: zoom });
     });
-  }, [zoom]);
+  }, [lng, lat, zoom]);
 
-  return (
-    <>
-      <Box ref={mapContainer} style={{ height: '400px' }} />
-      
-    </>
-  );
+  useEffect(() => {
+    if (map.current && isVisible) {
+      setTimeout(() => {
+        map.current.resize();
+      }, 5); // Delay to ensure the container is fully rendered
+    }
+  }, [isVisible]);
+
+  return <div ref={mapContainer} style={{ height: '400px' }} />;
 };
 
 export default MapboxExample;

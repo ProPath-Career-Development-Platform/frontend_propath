@@ -13,7 +13,11 @@ import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CardOverflow from '@mui/joy/CardOverflow';
 import Skeleton from '@mui/joy/Skeleton';
+import { useLocation } from 'react-router-dom';
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
+import Snackbar from '@mui/joy/Snackbar';
+import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+
 import Stack from '@mui/joy/Stack';
 import Chip from '@mui/joy/Chip';
 
@@ -37,6 +41,16 @@ import FilterButton from '../../../components/jobprovider/dashboard/filterButton
 import RadioButton from '../../../components/jobprovider/dashboard/RadioButton';
 
 function MeetUp() {
+
+  const location = useLocation();
+
+  const [snackOpen, setSnackOpen] = React.useState(false);
+
+
+  const handleCloseSnackbar = () => {
+    setSnackOpen(false);
+    sessionStorage.removeItem('eventDeleteSuc');
+  };
 
   const theme = extendTheme({
     components: {
@@ -65,6 +79,12 @@ function MeetUp() {
   };
 
   useEffect(() => {
+
+    if (sessionStorage.getItem('eventDeleteSuc')) {
+      setSnackOpen(true);
+      
+    }
+
     axios.get('http://localhost:8080/jobprovider/event', {
       headers: {
         Authorization: `Bearer ${getJwtToken()}`,
@@ -180,14 +200,15 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
               }}
             >
 
-              <CardOverflow sx={{
+              <CardOverflow >
+
+            <AspectRatio sx={{
                 
                 display:{xs:'none', sm:'block'},
       
                 
-                }}>
-
-            <AspectRatio ratio="1" maxHeight={300} sx={{}}>
+                }}
+                 ratio="1" maxHeight={300}>
             <CssVarsProvider theme={theme}>
               <Skeleton loading={isLoaded.bannerImg} variant="overlay">
                 <img
@@ -199,6 +220,27 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
                 />
               </Skeleton>
             </CssVarsProvider>
+            </AspectRatio>
+
+            <AspectRatio sx={{
+                  
+                  display:{xs:'block', sm:'none'},
+                  }}
+                  ratio="20/9" maxHeight={200}>
+              <CssVarsProvider theme={theme}>
+                <Skeleton loading={isLoaded.bannerImg} variant="overlay">
+                  <img
+
+                    src="/workshophero.jpg"
+                    loading="lazy"
+                    alt=""
+                    onLoad={() => setIsLoaded(prevState => ({ ...prevState, bannerImg: false }))}
+
+                  />
+                </Skeleton>
+
+              </CssVarsProvider>
+
             </AspectRatio>
 
               </CardOverflow>
@@ -344,7 +386,8 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
 
           {currentEvents.map((event) => (
           <EventCard
-            key={event.id} // Ensure you have a unique key for each event
+            key={event.id}
+            eventId={event.id}
             eventImage={event.banner}
             eventName={event.title}
             eventDate={event.date}
@@ -370,8 +413,38 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
     </>
   )
   
-}   
+}  
+
+
+<React.Fragment>
+      
+      <Snackbar
+        variant="soft"
+        color="success"
+        open={snackOpen}
+        onClose={() => handleCloseSnackbar()}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+        endDecorator={
+          <Button
+            onClick={() => handleCloseSnackbar()}
+            size="sm"
+            variant="soft"
+            color="success"
+          >
+            Dismiss
+          </Button>
+        }
+      >
+        Event deleted successfully.
+      </Snackbar>
+    </React.Fragment>
+
+
           </Box>
+
+
+
   )
 }
 

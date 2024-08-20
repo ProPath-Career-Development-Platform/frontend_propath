@@ -27,7 +27,7 @@ import {Link as RouterLink} from 'react-router-dom';
 import MovingIcon from '@mui/icons-material/Moving';
 import Skeleton from '@mui/joy/Skeleton';
 export default function EventCard(props) {
-  const { status,eventName,eventImage,eventLocation,eventParticipants,eventDate,keywords , skeleton} = props;
+  const { eventId,status,eventName,eventImage,eventLocation,eventParticipants,eventDate,keywords , skeleton} = props;
 
   const [isLoaded, setIsLoaded] = React.useState(true);
 
@@ -151,10 +151,10 @@ export default function EventCard(props) {
                 '--AspectRatio-maxHeight': { xs: '160px', sm: '9999px' },
               }}
 
-              objectFit="contain"
+              objectFit="cover"
             >
               <Skeleton loading={isLoaded} onLoad={()=> setIsLoaded(false)} variant="overlay">
-              <img alt="" src={eventImage}  />
+              <img alt="" src={eventImage} />
               </Skeleton>
               <Stack
                 alignItems="center"
@@ -183,6 +183,8 @@ export default function EventCard(props) {
     
                 )}
                 <IconButton
+                  component= {RouterLink}
+                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
                   variant="outlined"
                   size="sm"
                   color="neutral"
@@ -228,6 +230,8 @@ export default function EventCard(props) {
                 </Typography>
               </div>
               <IconButton
+              component= {RouterLink}
+              to={`/jobprovider/meet-up/updateEvent/${eventId}`}
                 variant="outlined"
                 size="sm"
                 color="neutral"
@@ -273,7 +277,7 @@ export default function EventCard(props) {
                     startDecorator={<VisibilityIcon />} 
                     size="sm"
                     component= {RouterLink}
-                    to = "/jobprovider/meet-up/createEvent"
+                    to={`/jobprovider/meet-up/preview-event/${eventId}`}
                     > 
                     Preview
             </Button>
