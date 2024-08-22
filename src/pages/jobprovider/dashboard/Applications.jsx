@@ -1,4 +1,4 @@
-import React from 'react'
+import React ,{useState,useEffect} from 'react'
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Box from '@mui/joy/Box';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -29,19 +29,22 @@ import RadioGroup from '@mui/joy/RadioGroup';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 
 import FinalCandidateList from '../../../components/jobprovider/dashboard/FinalCandidateList';
+import { useParams } from 'react-router-dom';
 
 
 
 const Applications = () => {
   
+  const { jobId } = useParams();
+  console.log(jobId);
+  const [filteredRows, setFilteredRows] = useState();
+  const [rows, setRows] = useState([]);
+  const [value, setValue] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const [filteredRows, setFilteredRows] = React.useState();
-  const [value, setValue] = React.useState([]);
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  const [selectedRows, setSelectedRows] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
 
     if(!selectedRows){
 
@@ -373,12 +376,12 @@ const Applications = () => {
             
             >
 
-              <CandidateCard filteredRows={filteredRows} setFilteredRows={setFilteredRows} criteria={value}   rowSelectionModel = {rowSelectionModel} setRowSelectionModel = {setRowSelectionModel}/>
+              <CandidateCard jobId={jobId} filteredRows={filteredRows} setFilteredRows={setFilteredRows} rows={rows} setRows ={setRows} criteria={value}   rowSelectionModel = {rowSelectionModel} setRowSelectionModel = {setRowSelectionModel}/>
               
                
             </Box>
-
-            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} />
+              console.log(rowSelectionModel);
+            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} selectedIds = {rowSelectionModel} />
 
             
             

@@ -200,7 +200,7 @@ const router = createBrowserRouter([
         element:<JpMyJobs/>
       },
       {
-        path:"my-jobs/applications",
+        path:"my-jobs/:jobId/applications",
         element:<JpApplications/>
       },
       {
