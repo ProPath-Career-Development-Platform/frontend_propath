@@ -54,10 +54,10 @@
     "react-router-dom": "^6.23.1",
     "select2": "^4.1.0-rc.0",
     "styled-components": "^6.1.11",
-    "survey-core": "^1.11.10",
-    "survey-creator-core": "^1.11.10",
-    "survey-creator-react": "^1.11.10",
-    "survey-react-ui": "^1.11.8"
+    "survey-core": "^1.11.12",
+    "survey-creator-core": "^1.11.12",
+    "survey-creator-react": "^1.11.12",
+    "survey-react-ui": "^1.11.12"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

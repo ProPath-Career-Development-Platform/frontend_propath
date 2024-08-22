@@ -305,7 +305,10 @@ function MyJob() {
                                     },
                         }
                         )}>
-                        <Button component={RouterLink} to="/jobprovider/my-jobs/applications" color="primary" variant='solid' size="sm">View Applications</Button>
+                        <Button 
+                        component={RouterLink} 
+                        to={`/jobprovider/my-jobs/${job.id}/applications`}
+                        color="primary" variant='solid' size="sm">View Applications</Button>
 
                         <Dropdown>
                             <MenuButton

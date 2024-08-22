@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Typography from '@mui/joy/Typography';
 import Card from '@mui/joy/Card';
@@ -18,9 +19,11 @@ import ModalClose from '@mui/joy/ModalClose';
 import Stack from '@mui/joy/Stack';
 import Sheet from '@mui/joy/Sheet';
 import Chip from '@mui/joy/Chip';
+import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 
 
+const token = localStorage.getItem('token');
 
 const data = [
   {
@@ -51,8 +54,36 @@ const data = [
   
 ];
 
-export default function FinalCandidateList({open , setOpen,count}) {
+export default function FinalCandidateList({selectedIds, open , setOpen,count}) {
 
+  const [applicantDetails, setApplicantDetails] = useState([]);
+  console.log(selectedIds);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        // Ensure selectedApplicantIds is not empty
+        if (selectedIds.length === 0) return;
+
+        // Prepare a request to fetch details for all selected applicants //use post instead of get beacuse we pass lot of ids
+        const response = await axios.post('http://localhost:8080/jobprovider/applicants/details', 
+          selectedIds,
+          {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+        );
+        setApplicantDetails(response.data);
+      } catch (error) {
+        console.error('Error fetching applicant details:', error);
+      }
+    };
+
+    fetchDetails();
+  }, [selectedIds]);
+
+      
     const toggleDrawer = (inOpen) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
           return;
@@ -112,25 +143,25 @@ export default function FinalCandidateList({open , setOpen,count}) {
 
           <Card variant="outlined" sx={{ width: '100%', p: 0 }}>
       <List sx={{ py: 'var(--ListDivider-gap)' }}>
-        {data.map((item, index) => (
-          <React.Fragment key={item.title}>
+        {applicantDetails.map((applicant, applicantId) => (
+          <React.Fragment key={applicant.applicantId}>
             <ListItem>
               <ListItemButton sx={{ gap: 2 }}>
              
-                  <Avatar
+                  {/* <Avatar
                     size='lg'
                     src={`${item.src}`}
                     alt={item.title}
-                  />
+                  /> */}
                 
                 <ListItemContent sx={{}}>
-                  <Typography fontWeight="md">{item.title}</Typography>
-                  <Typography level="body-sm">ATS Score :<Chip color='primary' sx={{ml:1}}>{item.description}</Chip></Typography>
+                  <Typography fontWeight="md">{applicant.applicantName}</Typography>
+                  <Typography level="body-sm">ATS Score :<Chip color='primary' sx={{ml:1}}>{applicant.ats_Score}</Chip></Typography>
                   
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            {index !== data.length - 1 && <ListDivider />}
+            {applicantId !== data.length - 1 && <ListDivider />}
           </React.Fragment>
         ))}
       </List>
