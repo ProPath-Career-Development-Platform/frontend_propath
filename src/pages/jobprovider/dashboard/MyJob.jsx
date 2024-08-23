@@ -51,7 +51,7 @@ const rows = [
 const token = localStorage.getItem('token');
 
 export const GetJobPosts = (id) => {
-  return axios.get(`http://localhost:8080/jobprovider/my-jobs?userId=${id}`,{
+  return axios.get(`http://localhost:8080/jobprovider/job`,{
     headers: {
       Authorization: `Bearer ${token}`  // Ensure the token is correctly passed
     }

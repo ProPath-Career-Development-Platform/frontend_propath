@@ -381,7 +381,7 @@ const Applications = () => {
                
             </Box>
               console.log(rowSelectionModel);
-            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} selectedIds = {rowSelectionModel} />
+            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} selectedIds = {rowSelectionModel} setSelectIds = {setRowSelectionModel}  />
 
             
             
