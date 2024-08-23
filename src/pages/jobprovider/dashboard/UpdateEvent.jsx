@@ -50,10 +50,13 @@ import MapBoxGeo from '../../../components/jobprovider/dashboard/mapBoxGeo';
 import ImageKit from "imagekit";
 import axios from 'axios';
 import RichText from '../../../components/jobprovider/dashboard/RichText';
+import { useNavigate } from 'react-router-dom';
 
 function CreateAnEvent() {
 
   const { id } = useParams();
+  //function to handle delete
+  const navigate = useNavigate();
 
 
   const getJwtToken = () => {
@@ -222,6 +225,7 @@ function CreateAnEvent() {
           
         }).catch((error) => {
           console.error('Error fetching events:', error);
+          navigate('/jobprovider/error/404');
         });
       }, []);
 
