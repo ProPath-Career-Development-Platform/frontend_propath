@@ -24,11 +24,27 @@ import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import FormHelperText from '@mui/joy/FormHelperText';
 import Input from '@mui/joy/Input';
+import Radio from '@mui/joy/Radio';
+import RadioGroup from '@mui/joy/RadioGroup';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import MovingIcon from '@mui/icons-material/Moving';
+import DensitySmallIcon from '@mui/icons-material/DensitySmall';
 
 
-export default function filterButton() {
+export default function filterButton({formData, setFormData, handleFilter,handleReset,count}) {
 
   const [open, setOpen] = React.useState(false);
+
+
+
+
+  const handleChange = (event) => {
+    setFormData({...formData, status:event.target.value});
+   // console.log(event.target.value);
+   console.log(formData);
+  };
+  
 
     const toggleDrawer = (inOpen) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -47,6 +63,7 @@ export default function filterButton() {
         color="neutral"
         startDecorator={<TuneIcon />}
         onClick={() => setOpen(true)}
+        disabled={count === 0}
       >
         Filter
       </Button>
@@ -104,20 +121,25 @@ export default function filterButton() {
               <Input 
                 placeholder="Enter Title"
                 variant="outlined"
+                name="title"
+                value={formData.title}
+                onChange={
+                  (e) => setFormData({...formData, title:e.target.value})
+                }
 
               
               />
 
           </FormControl>
 
-          <Divider sx={{ mt: 'auto' }} />
+          <Divider sx={{ mt: 1 }} />
 
 
-          <Typography level="title-md" fontWeight="bold" sx={{ mt: 1 }}>
+          <Typography level="title-sm" fontWeight="bold" sx={{ mt: 1 }}>
               Date Range
             </Typography>
 
-            <Stack direction="row" spacing={1} wrap>
+            <Stack direction="row"  wrap sx={{display:{xs:'grid',md:'flex'} , gap:1}}>
 
             <FormControl>
 
@@ -126,9 +148,14 @@ export default function filterButton() {
               </FormLabel>
 
               <Input 
-              type="date"
-                placeholder="Enter Title"
+                type="date"
+                placeholder=""
                 variant="outlined"
+                name="fromDate"
+                value={formData.fromDate}
+                onChange={
+                  (e) => setFormData({...formData, fromDate:e.target.value})
+                }
 
               
               />
@@ -142,8 +169,13 @@ export default function filterButton() {
   
                 <Input 
                 type="date"
-                  placeholder="Enter Title"
+                  placeholder=""
                   variant="outlined"
+                  name="toDate"
+                  value={formData.toDate}
+                  onChange={
+                    (e) => setFormData({...formData, toDate:e.target.value})
+                  }
   
                 
                 />
@@ -152,7 +184,81 @@ export default function filterButton() {
 
           </Stack>
 
-          <Divider sx={{ mt: 'auto' }} />
+          <Divider sx={{ mt: 1 }} />
+
+          <FormControl>
+              <FormLabel sx={{ typography: 'title-sm', fontWeight: 'bold' }}>
+                Location
+              </FormLabel>
+
+              <Input 
+                placeholder="Enter Location"
+                variant="outlined"
+                name="location"
+                value={formData.location}
+                onChange={
+                  (e) => setFormData({...formData, location:e.target.value})
+                }
+
+              
+              />
+
+          </FormControl>
+
+          <Divider sx={{ mt: 1}} />
+
+          <FormControl>
+              <FormLabel sx={{ typography: 'title-sm', fontWeight: 'bold' }}>
+                Status
+              </FormLabel>
+
+              <RadioGroup
+                name="status"
+                defaultValue={formData.status}
+                value={formData.status}
+                onChange={handleChange}
+                >
+      <List
+        sx={{
+          minWidth: 240,
+          '--List-gap': '0.5rem',
+          '--ListItem-paddingY': '1rem',
+          '--ListItem-radius': '8px',
+          '--ListItemDecorator-size': '32px',
+        }}
+      >
+        {[ 'Active', 'Completed'].map((item, index) => (
+          <ListItem variant="outlined" key={item} sx={{ boxShadow: 'sm' }}>
+            <ListItemDecorator>
+              {[ <MovingIcon />, <DoneAllIcon />][index]}
+            </ListItemDecorator>
+            <Radio
+              overlay
+              value={item}
+              label={item}
+              sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
+              slotProps={{
+                action: ({ checked }) => ({
+                  sx: (theme) => ({
+                    ...(checked && {
+                      inset: -1,
+                      border: '2px solid',
+                      borderColor: theme.vars.palette.primary[500],
+                    }),
+                  }),
+                }),
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </RadioGroup>
+
+
+
+          </FormControl>
+
+          <Divider sx={{ mt: 1}} />
 
           
             
@@ -169,11 +275,13 @@ export default function filterButton() {
              sx={{fontSize:{xs:'13px',sm:'sm'}}}
               variant="outlined"
               color="neutral"
-              onClick={() => setOpen(false)}
+              onClick={() => {setOpen(false); handleReset();}}
+              component={RouterLink} 
+              to="/jobprovider/meet-up"
             >
-              Close
+              Remove Filter
             </Button>
-            <Button size='sm' sx={{fontSize:{xs:'13px',sm:'sm'}}} component={RouterLink} to="/jobprovider/my-jobs/shedule-interview">Confirm & Go to Schedule</Button>
+            <Button  sx={{fontSize:{xs:'13px',sm:'sm'}}}  onClick={()=>{ setOpen(false); handleFilter(); }}>Filter Events</Button>
           </Stack>
         </Sheet>
       </Drawer>

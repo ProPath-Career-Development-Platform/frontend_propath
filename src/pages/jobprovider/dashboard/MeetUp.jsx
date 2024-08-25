@@ -64,15 +64,62 @@ function MeetUp() {
 
 
   const [events, setEvents] = useState([]);
+  const[initialEventData, setInitialEventData] = useState([]);
   const [isLoaded, setIsLoaded] = useState({
     bannerImg:true,
     eventCard:true
-
+    
   });
-
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  
+  const [filterData,setFilterData] = useState(
 
+    {
+      title:'',
+      fromDate:'',
+      toDate:'',
+      location:'',
+      status:''
+    }
+  );
+
+  const handleFilter = () => {
+    const filteredEvents = events.filter((event) => {
+      // Filter by title
+      const matchesTitle = filterData.title === '' || event.title.toLowerCase().includes(filterData.title.toLowerCase());
+  
+      // Filter by date range
+      const matchesDate = (!filterData.fromDate || new Date(event.date) >= new Date(filterData.fromDate)) &&
+                          (!filterData.toDate || new Date(event.date) <= new Date(filterData.toDate));
+  
+      // Filter by location
+      const matchesLocation = filterData.location === '' || event.location.toLowerCase().includes(filterData.location.toLowerCase());
+  
+      // Filter by status
+      
+      const matchesStatus = filterData.status === '' || event.status.toLowerCase() === filterData.status.toLowerCase();
+  
+      // Return true if all conditions match
+      return matchesTitle && matchesDate && matchesLocation && matchesStatus;
+    });
+  
+    // Update the filtered events state with the new filtered data
+    setEvents(filteredEvents);
+  };
+
+  const handleReset = () => {
+    setEvents(initialEventData);
+    setFilterData({
+      title:'',
+      fromDate:'',
+      toDate:'',
+      location:'',
+      status:''
+    });
+  };
+  
  
   const getJwtToken = () => {
     return localStorage.getItem('token');
@@ -91,6 +138,7 @@ function MeetUp() {
       },
     }).then((response) => {
       setEvents(response.data);
+      setInitialEventData(response.data);
       setIsLoaded(prevState => ({ ...prevState, eventCard: false }));
       console.log(response.data);
     }).catch((error) => {
@@ -307,8 +355,8 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
 
             <Box sx={{display:'flex', justifyContent:'flex-end', gap:1}}>
 
-              <FilterButton/>
-              <RadioButton pages={itemsPerPage} setPageNumber={setItemsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+              <FilterButton formData={filterData} setFormData={setFilterData} handleFilter={handleFilter} handleReset={handleReset} count={initialEventData.length}/>
+              <RadioButton pages={itemsPerPage} setPageNumber={setItemsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage} count={events.length} />
             </Box>
 
 
