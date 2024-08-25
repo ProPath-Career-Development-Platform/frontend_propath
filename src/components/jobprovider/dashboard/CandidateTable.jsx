@@ -325,7 +325,7 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
 
   const columns = [
   
-         { field: 'col0', headerName: '#', width: 10 },
+         { field: 'col0', headerName: '#', width: 10, type: 'number', },
          { 
            field: 'col1', 
            headerName: 'Name', 
@@ -351,9 +351,12 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
                }
              </Box>
           ),
+          sortComparator: (a, b) => {
+            return a.name.localeCompare(b.name);
+          }
          },
         { field: 'col2', headerName: 'Email', width: 250 },
-        { field: 'col3', headerName: 'ATS Score', width: 150 },
+        { field: 'col3', headerName: 'ATS Score (%)', width: 150, type: 'number', },
         { field: 'col4', headerName: 'Applied Date', width: 150 },
         { field: 'col5', headerName: 'Expirenced Level', width: 150 },
       
@@ -399,7 +402,7 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
             name: `${applicant.name}`
           },
           col2: applicant.email,
-          col3: `${applicant.atsScore}%`, // Format as percentage
+          col3: applicant.atsScore, // Format as percentage
           col4: applicant.appliedDate,
           col5: applicant.exp,
           col6: '' // Placeholder for empty column
@@ -452,7 +455,7 @@ useEffect(() => {
             name: `${applicant.name}`
           },
           col2: applicant.email,
-          col3: `${applicant.atsScore}%`,
+          col3: applicant.atsScore,
           col4: applicant.appliedDate,
           col5: applicant.exp,
           col6: ''

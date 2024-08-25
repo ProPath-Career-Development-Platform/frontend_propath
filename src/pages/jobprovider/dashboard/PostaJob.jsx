@@ -430,7 +430,7 @@ const Dashboard = () => {
             jobLevel: formData.jobLevel,
             jobDescription: formData.description,
             customizedForm: formData.isCustomizedFormNeeded ?  formData.customizedForm : null,
-            postedIn: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            postedIn: dayjs().format('YYYY-MM-DD'),
             delete: false,
             status: "active"
           }

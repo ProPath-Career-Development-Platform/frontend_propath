@@ -6,7 +6,8 @@ import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import Divider from '@mui/joy/Divider';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import Checkbox from '@mui/joy/Checkbox';
 import List from '@mui/joy/List';
@@ -22,7 +23,7 @@ import IconButton from '@mui/joy/IconButton';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CandidateCard from '../../../components/jobprovider/dashboard/CandidateTable';
-import { Link as RouterLink } from 'react-router-dom';
+import { Navigate, Link as RouterLink } from 'react-router-dom';
 import Radio from '@mui/joy/Radio';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import RadioGroup from '@mui/joy/RadioGroup';
@@ -44,7 +45,28 @@ const Applications = () => {
   const [selectedRows, setSelectedRows] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
+
+    //axios to get job details
+     axios.get(`http://localhost:8080/jobprovider/job/${jobId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      if(response.data.delete === true){
+        navigate('/jobprovider/error/404');
+      }
+    
+    })
+    .catch((error) => {
+      console.error('Error fetching job details:', error);
+      navigate('/jobprovider/error/404');
+    });
+
 
     if(!selectedRows){
 

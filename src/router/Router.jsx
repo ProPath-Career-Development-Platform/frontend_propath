@@ -192,7 +192,7 @@ const router = createBrowserRouter([
         element:<JpDashboard/>
       },
       {
-        path:"post-a-job",
+        path:"my-jobs/post-a-job",
         element:<JpPostAJob/>
       },
       {
