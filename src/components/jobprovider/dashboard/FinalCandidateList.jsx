@@ -83,7 +83,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
     fetchDetails();
   }, [selectedIds]);
 
-      
+ 
     const toggleDrawer = (inOpen) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
           return;
@@ -164,7 +164,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
             {applicantId !== data.length - 1 && <ListDivider />}
           </React.Fragment>
         ))}
-      </List>
+      </List> 
     </Card>
             
           </DialogContent>
