@@ -148,7 +148,7 @@ function sidebarMenuItems() {
           </ListItemButton>
         </ListItem>
 
-        <ListItem>
+        {/*<ListItem>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/post-a-job/"
@@ -159,7 +159,7 @@ function sidebarMenuItems() {
               <Typography level="title-sm">Post a Job</Typography>
             </ListItemContent>
           </ListItemButton>
-        </ListItem>
+        </ListItem>*/}
 
         <ListItem>
           <ListItemButton
@@ -169,7 +169,7 @@ function sidebarMenuItems() {
           >
             <WorkIcon />
             <ListItemContent>
-              <Typography level="title-sm">My Jobs</Typography>
+              <Typography level="title-sm">Jobs</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>

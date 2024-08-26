@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState} from 'react';
+import { useParams } from 'react-router-dom';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Typography from '@mui/joy/Typography';
 import Card from '@mui/joy/Card';
@@ -21,9 +22,16 @@ import Sheet from '@mui/joy/Sheet';
 import Chip from '@mui/joy/Chip';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
+import IconButton from '@mui/joy/IconButton';
+import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import Snackbar from '@mui/joy/Snackbar';
 
 
 const token = localStorage.getItem('token');
+
+
+
 
 const data = [
   {
@@ -54,10 +62,56 @@ const data = [
   
 ];
 
-export default function FinalCandidateList({selectedIds, open , setOpen,count}) {
+export default function FinalCandidateList({selectedIds, open , setOpen,count,setSelectIds}) {
 
   const [applicantDetails, setApplicantDetails] = useState([]);
+  const [snackOpen, setSnackOpen] = useState(false);
   console.log(selectedIds);
+
+  const { jobId } = useParams();
+  const token = localStorage.getItem('token');
+
+  const updateStatus = async (seekerId, jobId) => {
+
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/jobprovider/applicant/updateStatus/${seekerId}/${jobId}`, 
+        null, // No payload
+        {
+          headers: {
+            Authorization: `Bearer ${token}` // Ensure token is defined
+          }
+        }
+      );
+  
+      if (response.status === 200) {
+        console.log('Status updated successfully');
+        // Additional logic such as updating the UI or state can be added here
+  
+        // Remove the applicant from the list of selectedIds
+        setSelectIds((prevSelectedIds) =>
+          prevSelectedIds.filter((id) => id !== seekerId)
+        );
+
+        if(count === 1){
+          setOpen(false);
+        }
+
+        
+
+      } else {
+        console.log('Failed to update status');
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      setSnackOpen(true);
+    } 
+
+  };
+  
+
+  //updateStatu
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -66,7 +120,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
         if (selectedIds.length === 0) return;
 
         // Prepare a request to fetch details for all selected applicants //use post instead of get beacuse we pass lot of ids
-        const response = await axios.post('http://localhost:8080/jobprovider/applicants/details', 
+        const response = await axios.post("http://localhost:8080/jobprovider/applicant/selected", 
           selectedIds,
           {
           headers: {
@@ -75,6 +129,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
         }
         );
         setApplicantDetails(response.data);
+        
       } catch (error) {
         console.error('Error fetching applicant details:', error);
       }
@@ -83,7 +138,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
     fetchDetails();
   }, [selectedIds]);
 
-      
+ 
     const toggleDrawer = (inOpen) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
           return;
@@ -112,9 +167,33 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
         }}
 
         sx={{
-            zIndex: '10001',
+          zIndex: '10001',
         }}
       >
+        <React.Fragment>
+    
+    <Snackbar
+    sx={{mb:2}}
+      variant="soft"
+      color="danger"
+      open={snackOpen}
+      onClose={() => setSnackOpen(false)}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      startDecorator={<CloseIcon />}
+      endDecorator={
+        <Button
+          onClick={() => setSnackOpen(false)}
+          size="sm"
+          variant="soft"
+          color="danger"
+        >
+          Dismiss
+        </Button>
+      }
+    >
+     Error Occured.
+    </Snackbar>
+  </React.Fragment>
         <Sheet
           sx={{
             borderRadius: 'md',
@@ -142,29 +221,44 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
           <DialogContent sx={{ gap: 2 }}>
 
           <Card variant="outlined" sx={{ width: '100%', p: 0 }}>
+
       <List sx={{ py: 'var(--ListDivider-gap)' }}>
-        {applicantDetails.map((applicant, applicantId) => (
-          <React.Fragment key={applicant.applicantId}>
+        {applicantDetails.map((applicantDetails) => (
+          <React.Fragment key={applicantDetails.seekerId}>
             <ListItem>
               <ListItemButton sx={{ gap: 2 }}>
              
-                  {/* <Avatar
+                 <Avatar
                     size='lg'
-                    src={`${item.src}`}
-                    alt={item.title}
-                  /> */}
+                    src={`https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg`}
+                    
+                  /> 
                 
                 <ListItemContent sx={{}}>
-                  <Typography fontWeight="md">{applicant.applicantName}</Typography>
-                  <Typography level="body-sm">ATS Score :<Chip color='primary' sx={{ml:1}}>{applicant.ats_Score}</Chip></Typography>
+                  <Typography fontWeight="md">{applicantDetails.name}</Typography>
+                  <Typography level="body-sm">ATS Score :<Chip color='primary' sx={{ml:1}}>{applicantDetails.atsScore}</Chip></Typography>
                   
                 </ListItemContent>
               </ListItemButton>
+
+              <IconButton
+              aria-label="bookmark Bahamas Islands"
+              variant="soft"
+              color="danger"
+              size="sm"
+              sx={{ position: 'absolute', top: '0.875rem', right: '0.5rem' }}
+              onClick={()=>updateStatus(applicantDetails.seekerId,jobId)}
+            >
+              <CloseIcon />
+
+            </IconButton>
+
+
             </ListItem>
-            {applicantId !== data.length - 1 && <ListDivider />}
+            {data.length != 1 && <ListDivider />}
           </React.Fragment>
         ))}
-      </List>
+      </List> 
     </Card>
             
           </DialogContent>
@@ -188,7 +282,15 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count}) 
           </Stack>
         </Sheet>
       </Drawer>
+
+
+
+      
+
+
     </React.Fragment>
+
+    
 
 
     
