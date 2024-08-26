@@ -321,41 +321,64 @@ const getDarkTheme = () => extendTheme({
   },
 });
 
-export default function CandidateTable({ rows,setRows,jobId, filteredRows, setFilteredRows, criteria, rowSelectionModel, setRowSelectionModel }) {
+export default function CandidateTable({ filteredRows , setFilteredRows, criteria, rowSelectionModel, setRowSelectionModel,jobId }) {
 
   const columns = [
-    { field: 'applicantId', headerName: 'ID', width: 70 },
-    {
-      field: 'applicantName',
-      headerName: 'Name',
-      width: 200,
-      renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar sx={{ marginRight: 1 }}>{params.value.charAt(0)}</Avatar>
-          {params.value}
-        </Box>
-      ),
-    },
-    { field: 'email', headerName: 'Email', width: 250 },
-    { field: 'ats_Score', headerName: 'ATS Score', width: 150 },
-    { field: 'appliedDate', headerName: 'Applied Date', width: 150 },
-    { field: 'expLevel', headerName: 'Experience Level', width: 150 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      headerAlign: 'center',
-      width: 150,
-      renderCell: (params) => (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, p: 1 }}>
-          <Button variant="contained" size="small"><VisibilityIcon /></Button>
-          <Button variant="contained" size="small"><DownloadIcon /></Button>
-        </Box>
-      ),
-    },
-  ];
+  
+         { field: 'col0', headerName: '#', width: 10, type: 'number', },
+         { 
+           field: 'col1', 
+           headerName: 'Name', 
+           width: '200',
+           renderCell: (params) => (
+             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+               {params.value.url  ? (
+                 <>
+                 <Avatar src={params.value.url} sx={{ marginRight: 1 }}/> 
+                 {params.value.name}
+                 </>
+             ):
+      
+               (
+                 <>
+                 <Avatar  sx={{ marginRight: 1 }}> 
+               {params.value.name.charAt(0)}
+                </Avatar>
+                {params.value.name}
+                </>
+              )
+              
+               }
+             </Box>
+          ),
+          sortComparator: (a, b) => {
+            return a.name.localeCompare(b.name);
+          }
+         },
+        { field: 'col2', headerName: 'Email', width: 250 },
+        { field: 'col3', headerName: 'ATS Score (%)', width: 150, type: 'number', },
+        { field: 'col4', headerName: 'Applied Date', width: 150 },
+        { field: 'col5', headerName: 'Expirenced Level', width: 150 },
+      
+       { field: 'col6',
+          headerName: 'Actions',
+           headerAlign: 'center',
+          width: 150,
+           renderCell: (params) => (
+             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' , gap:1 ,p:1}}>
+            <Button variant="contained" size="small"><VisibilityIcon/></Button>
+            <Button variant="contained"  size='small'><DownloadIcon/></Button>
+            </Box>
+         )
+         
+        },
+      
+       ];
 
   const { mode } = useColorScheme();
   const [theme, setTheme] = useState(getLightTheme);
+  const [rows, setRows] = useState([]);
+  const [prevRowSelectionModel, setPrevRowSelectionModel] = useState([]);
 
   useEffect(() => {
     setTheme(mode === 'light' ? getLightTheme() : getDarkTheme());
@@ -369,15 +392,86 @@ export default function CandidateTable({ rows,setRows,jobId, filteredRows, setFi
             Authorization: `Bearer ${token}`
           }
         });
-        setRows(response.data); //Add a new state for storing the original rows / Modify the filtering logic to filter the original rows instead of the filtered rows.
-        setFilteredRows(response.data);
+          
+        const rows = response.data.map(applicant => ({
+          id: applicant.seekerId,
+          status:applicant.status,
+          col0: applicant.seekerId,
+          col1: {
+            url: 'https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg', // Placeholder URL
+            name: `${applicant.name}`
+          },
+          col2: applicant.email,
+          col3: applicant.atsScore, // Format as percentage
+          col4: applicant.appliedDate,
+          col5: applicant.exp,
+          col6: '' // Placeholder for empty column
+        }));
+  
+        setRows(rows);
+  
+        // Check if any applicant has the status "preSelected"
+        const preSelectedIds = response.data
+          .filter(applicant => applicant.status === 'preSelected')
+          .map(applicant => applicant.seekerId);
+  
+        // Set row selection model if there are preSelected applicants
+        if (preSelectedIds.length > 0) {
+          setRowSelectionModel(preSelectedIds);
+        } else {
+          setRowSelectionModel([]); // or set to any default selection if needed
+        }
+  
+        // Set the mapped rows to the state
+        setFilteredRows(rows);
+      } catch (error) {
+        console.error('Error fetching candidates:', error);
+      }
+    };
+  
+    fetchData();
+  }, [jobId]); // Added token as a dependency if it changes
+
+
+  // Effect to refetch data when rowSelectionModel changes
+useEffect(() => {
+  if (rowSelectionModel.length > 0) {
+    // Fetch data again based on the new selection model
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/jobprovider/myjobs/${jobId}/applications`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        // Process the fetched data again (same as the previous useEffect)
+        const rows = response.data.map(applicant => ({
+          id: applicant.seekerId,
+          status: applicant.status,
+          col0: applicant.seekerId,
+          col1: {
+            url: 'https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg',
+            name: `${applicant.name}`
+          },
+          col2: applicant.email,
+          col3: applicant.atsScore,
+          col4: applicant.appliedDate,
+          col5: applicant.exp,
+          col6: ''
+        }));
+
+        setRows(rows);
+        setFilteredRows(rows);
       } catch (error) {
         console.error('Error fetching candidates:', error);
       }
     };
 
     fetchData();
-  }, [jobId]);
+  }
+}, [rowSelectionModel]); // Dependency array for row selection changes
+  
 
   useEffect(() => {
     const filterRows = (criteria) => {
@@ -404,18 +498,69 @@ export default function CandidateTable({ rows,setRows,jobId, filteredRows, setFi
 
   return (
     <CssVarsProvider theme={theme}>
+
+
+          {/* Add styles based on mode */}
+      {mode === 'dark' ? (
+        <style>
+          {`
+            .highlight-selected {
+              background-color: #0f081c;
+              color: #fff;
+            }
+            .highlight-selected:hover {
+              background-color: #0f081c !important;
+              color: #fff;
+            }
+          `}
+        </style>
+      ):
+
+      (
+
+        <style>
+          {`
+            .highlight-selected {
+              background-color: #f2eff9;
+              color: #222;
+            }
+            
+          `}
+        </style>
+
+
+      )
+      
+      
+      }
+
+
+        
+
       <Box sx={{ height: 500, width: '100%' }}>
         <DataGrid
-          rows={filteredRows}
+          rows={filteredRows ? filteredRows : rows}
           columns={columns}
           checkboxSelection
           disableRowSelectionOnClick
+          isRowSelectable={(params) => params.row.status === "pending"}
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setRowSelectionModel(newRowSelectionModel);
           }}
           rowSelectionModel={rowSelectionModel}
           
-          getRowId={(row) => row.applicantId} // Ensure unique id for each row
+          getRowId={(row) => row.id} // Ensure unique id for each row
+          components={{
+            // Override the default Checkbox component to disable "Select All" behavior
+            Checkbox: () => null // This disables the checkbox rendering for "Select All"
+          }}
+
+          getRowClassName={(params) => {
+            if (params.row.status === "preSelected") {
+              return 'highlight-selected'; // CSS class for selected status
+            }
+            return ''; // Default class
+          }}
         />
       </Box>
     </CssVarsProvider>

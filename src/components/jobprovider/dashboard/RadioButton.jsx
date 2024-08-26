@@ -5,7 +5,7 @@ import MenuItem from '@mui/joy/MenuItem';
 import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
 import Dropdown from '@mui/joy/Dropdown';
 
-export default function RadioButton({ pages, setPageNumber , setCurrentPage, currentPage}) {
+export default function RadioButton({ pages, setPageNumber , setCurrentPage, currentPage, count}) {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
 
@@ -22,7 +22,7 @@ export default function RadioButton({ pages, setPageNumber , setCurrentPage, cur
 
   return (
     <Dropdown>
-      <MenuButton endDecorator={<ArrowDropDown />}>
+      <MenuButton endDecorator={<ArrowDropDown />} disabled={count===0}>
         {pages} Events Per Page
       </MenuButton>
       <Menu>
