@@ -27,6 +27,7 @@ import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
 import JpEventPreview from "../pages/jobprovider/dashboard/EventPreview"
 import JpUpdateEvent from "../pages/jobprovider/dashboard/UpdateEvent"
 import JpError from "../pages/jobprovider/dashboard/Page404"
+import JpUpdateJob from "../pages/jobprovider/dashboard/UpdateJob"
 
 
 import JobDetails from "../pages/jobseeker/jobDetail";
@@ -152,7 +153,7 @@ const router = createBrowserRouter([
 
     children: [
       {
-        path:"Setup",
+        path:"setup",
         element:<JPCompnaySetup1/>
       }
     ]
@@ -195,6 +196,10 @@ const router = createBrowserRouter([
       {
         path:"my-jobs/post-a-job",
         element:<JpPostAJob/>
+      },
+      {
+        path:"my-jobs/update-job/:jobId",
+        element:<JpUpdateJob/>
       },
       {
         path:"my-jobs",
