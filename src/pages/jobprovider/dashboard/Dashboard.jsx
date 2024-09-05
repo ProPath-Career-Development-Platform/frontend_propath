@@ -21,7 +21,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleSignInClick = () => {
-    navigate('/jobprovider/Setup');
+    navigate('/jobprovider/setup');
   };
 
   return (

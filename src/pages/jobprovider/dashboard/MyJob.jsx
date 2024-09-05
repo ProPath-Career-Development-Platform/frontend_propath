@@ -30,12 +30,11 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import Add from '@mui/icons-material/Add';
 import Badge, { badgeClasses } from '@mui/joy/Badge';
 import Avatar from '@mui/joy/Avatar';
-
+import Snackbar from '@mui/joy/Snackbar';
 import Divider from '@mui/joy/Divider';
-
 import { Link as RouterLink } from 'react-router-dom';
 import {getUserIdFromToken} from '../../../utils/tokenUtils';
-import TablePagination from '../../../components/jobprovider/dashboard/TablePagination';
+import JobTable from '../../../components/jobprovider/dashboard/JobTable';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import DialogActions from '@mui/joy/DialogActions';
@@ -43,10 +42,13 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import axios from 'axios';
 import WorkIcon from '@mui/icons-material/Work';
+import {getUserId} from '../../../utils/auth';
 
 
 
 function MyJob() {
+
+  console.log("user id", getUserId());
 
   const [open,setOpen] = useState({
     open:false,
@@ -58,6 +60,9 @@ function MyJob() {
   const [isLoaded, setIsLoaded] = useState({
     bannerImg: true
   });
+
+  const [updateMsg, setUpdateMsg] = useState(false);
+  const [postMsg, setPostMsg] = useState(false);
 
   const token = localStorage.getItem('token');
 
@@ -93,6 +98,30 @@ function MyJob() {
         console.error('Error marking job as expired:', error);
     }
 };
+
+useEffect(() => {
+
+  if (sessionStorage.getItem('jobUpdateSuc')) {
+    setUpdateMsg(true); 
+  }
+
+  if (sessionStorage.getItem('jobPostSuc')) {
+    setPostMsg(true); 
+  }
+
+},[]);
+
+const handleUpdateSnackbar = () => {
+
+  setUpdateMsg(false);
+  sessionStorage.removeItem('jobUpdateSuc');
+}
+
+const handlePostSnackbar = () => {
+
+  setPostMsg(false);
+  sessionStorage.removeItem('jobPostSuc');
+}
 
 
 
@@ -286,7 +315,7 @@ function MyJob() {
 
             
 
-          <TablePagination markAsExpire={modelCheck} loading={loading} setLoading={setLoading} change={change} setChange={setChange} count ={setCount} />
+          <JobTable key={getUserId()} markAsExpire={modelCheck} loading={loading} setLoading={setLoading} change={change} setChange={setChange} count ={setCount} />
 
           <React.Fragment>
       <Modal open={open.open} onClose={() => setOpen(open.false)}>
@@ -309,7 +338,54 @@ function MyJob() {
           </DialogActions>
         </ModalDialog>
       </Modal>
+
+     
+      
+      <Snackbar
+        variant="soft"
+        color="success"
+        open={updateMsg}
+        onClose={() => handleUpdateSnackbar()}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        startDecorator={<CheckCircleOutlineIcon />}
+        endDecorator={
+          <Button
+            onClick={() => handleUpdateSnackbar()}
+            size="sm"
+            variant="soft"
+            color="success"
+          >
+            Dismiss
+          </Button>
+        }
+      >
+        Job updated successfully!
+      </Snackbar>
+
+      <Snackbar
+        variant="soft"
+        color="success"
+        open={postMsg}
+        onClose={() => handlePostSnackbar()}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        startDecorator={<CheckCircleOutlineIcon />}
+        endDecorator={
+          <Button
+            onClick={() => handlePostSnackbar()}
+            size="sm"
+            variant="soft"
+            color="success"
+          >
+            Dismiss
+          </Button>
+        }
+      >
+        Job posted successfully!
+      </Snackbar>
+   
     </React.Fragment>
+
+
             
    </Box>
   )
