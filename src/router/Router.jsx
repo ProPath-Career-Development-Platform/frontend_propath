@@ -75,6 +75,7 @@ import EmployerSite from "../pages/landingPage/EmployerSite";
 
 //security
 import  ProtectedRoute  from "../components/ProtectedRoute";
+import AdminLayout from '../layout/AdminLayout';
 
 
 
@@ -350,7 +351,7 @@ const router = createBrowserRouter([
       <>
       
       <ProtectedRoute requiredRole="Admin">
-        <DashboardLayout user="admin" />
+        <AdminLayout user="admin" />
         </ProtectedRoute>
       </>
     ),
