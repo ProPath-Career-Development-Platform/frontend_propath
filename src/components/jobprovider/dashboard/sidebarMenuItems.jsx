@@ -148,7 +148,7 @@ function sidebarMenuItems() {
           </ListItemButton>
         </ListItem>
 
-        <ListItem>
+        {/*<ListItem>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/post-a-job/"
@@ -159,17 +159,17 @@ function sidebarMenuItems() {
               <Typography level="title-sm">Post a Job</Typography>
             </ListItemContent>
           </ListItemButton>
-        </ListItem>
+        </ListItem>*/}
 
         <ListItem>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/my-jobs/"
-            selected={location.pathname === "/jobprovider/my-jobs/" }
+            selected={location.pathname.includes("/my-jobs/")}
           >
             <WorkIcon />
             <ListItemContent>
-              <Typography level="title-sm">My Jobs</Typography>
+              <Typography level="title-sm">Jobs</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>
@@ -178,7 +178,8 @@ function sidebarMenuItems() {
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/plans-and-billing/"
-            selected={location.pathname === "/jobprovider/plans-and-billing/"}
+            selected={location.pathname.includes("/plans-and-billing/")}
+            
           >
             <PaymentIcon />
             <ListItemContent>
@@ -191,7 +192,7 @@ function sidebarMenuItems() {
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/meet-up/"
-            selected={location.pathname === "/jobprovider/meet-up/"}
+            selected={location.pathname.includes("/meet-up/")}
           >
             <GroupsIcon />
             <ListItemContent>

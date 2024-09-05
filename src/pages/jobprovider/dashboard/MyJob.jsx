@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -13,6 +13,12 @@ import { typographyClasses } from '@mui/joy/Typography';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import AspectRatio from '@mui/joy/AspectRatio';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import CardOverflow from '@mui/joy/CardOverflow';
+import Skeleton from '@mui/joy/Skeleton';
 
 import Dropdown from '@mui/joy/Dropdown';
 import Menu from '@mui/joy/Menu';
@@ -28,26 +34,69 @@ import Avatar from '@mui/joy/Avatar';
 import Divider from '@mui/joy/Divider';
 
 import { Link as RouterLink } from 'react-router-dom';
-
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Software Engineer', 'Active', 0, 24),
-  createData('Senior UI/UX Designer', 'Expire', 100, 37),
-  createData('Techical Support Specialist', 'Active', 50, 24),
-  createData('Junior Graphic Designer', 'Expire', 1000, 67),
-  createData('Front End Developer', 'Active', 300, 49),
-  createData('Quality Assurance Engineer', 'Active', 300, 49),
-  createData('Business Analytics', 'Expire', 300, 49),
-  createData('Junior Project Manager', 'Active', 300, 49),
-];
+import {getUserIdFromToken} from '../../../utils/tokenUtils';
+import TablePagination from '../../../components/jobprovider/dashboard/TablePagination';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+import DialogActions from '@mui/joy/DialogActions';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import axios from 'axios';
+import WorkIcon from '@mui/icons-material/Work';
 
 
 
 function MyJob() {
+
+  const [open,setOpen] = useState({
+    open:false,
+    id:''
+  });
+  const [loading,setLoading] = useState(true);
+  const [change, setChange] = useState(false);
+  const [count, setCount] = useState(0);
+  const [isLoaded, setIsLoaded] = useState({
+    bannerImg: true
+  });
+
+  const token = localStorage.getItem('token');
+
+  const modelCheck = (id) => {
+
+    setOpen(prevState => ({
+      ...prevState, 
+      open: true,  
+      id: id       
+    }));
+  }
+
+
+  const markAsExpire = async (id) => {
+
+   
+    try {
+        const response = await axios.put(`http://localhost:8080/jobprovider/job/status/expire/${id}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        // Handle the response, if needed
+        console.log('Job marked as expired:', response.data);
+        setChange(prev => !prev);
+        setLoading(true);
+
+        // Return the response or perform any other actions
+        return response.data;
+
+    } catch (error) {
+        console.error('Error marking job as expired:', error);
+    }
+};
+
+
+
+  
   return (
    <Box
    component="main"
@@ -109,46 +158,7 @@ function MyJob() {
                
               }}
               >
-                <Box>
-                  <a href="/jobprovider/post-a-job/"><Button startDecorator={<Add />} size="sm">Post a Job</Button></a>
-                </Box>
-                <Box
-                  
-                >
-                {/* <Badge
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  badgeInset="14%"
-                  color="success"
-                  sx={{
-                  [`& .${badgeClasses.badge}`]: {
-                  '&::after': {
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  animation: 'ripple 1.2s infinite ease-in-out',
-                  border: '2px solid',
-                  borderColor: 'success.500',
-                  content: '""',
-                  },
-                  },
-                  '@keyframes ripple': {
-                  '0%': {
-                   transform: 'scale(1)',
-                    opacity: 1,
-                  },
-                  '100%': {
-                   transform: 'scale(2)',
-                  opacity: 0,
-                  },
-                  },
-                  }}
-                   >
-                  <Avatar alt="Remy Sharp" src="../../public/seba.jpg" />
-                </Badge> */}
-                </Box>
+                
               
               </Box>
               
@@ -167,143 +177,139 @@ function MyJob() {
               }}
             >
               <Typography level="h2" component="h1">
-                My Jobs <Typography fontWeight={400} color="neutral">({100})</Typography>
+                My Jobs 
               </Typography>
              
             </Box>
 
             <Divider />
+
+
+            <Card
+              variant="outlined"
+            
+              sx={{
+
+              
+                mb:2
+                
+              }}
+            >
+
+              <CardOverflow >
+
+            <AspectRatio sx={{
+                
+                display:{xs:'none', sm:'block'},
+      
+                
+                }}
+                 ratio="1" maxHeight={350}>
+           
+              <Skeleton loading={isLoaded.bannerImg} variant="overlay">
+                <img
+                  src="https://ik.imagekit.io/propath/annie-spratt-hCb3lIB8L8E-unsplash%20(1)%20(1).jpg?updatedAt=1724606245558"
+                  loading="lazy"
+                  alt=""
+                  onLoad={() => setIsLoaded(prevState => ({ ...prevState, bannerImg: false }))}
+                  
+                />
+              </Skeleton>
+            
+            </AspectRatio>
+
+            <AspectRatio sx={{
+                  
+                  display:{xs:'block', sm:'none'},
+                  }}
+                  ratio="20/9" maxHeight={200}>
+              
+                <Skeleton loading={isLoaded.bannerImg} variant="overlay">
+                  <img
+
+                    src="https://ik.imagekit.io/propath/annie-spratt-hCb3lIB8L8E-unsplash%20(1)%20(1).jpg?updatedAt=1724606245558"
+                    loading="lazy"
+                    alt=""
+                    onLoad={() => setIsLoaded(prevState => ({ ...prevState, bannerImg: false }))}
+
+                  />
+                </Skeleton>
+
+
+            </AspectRatio>
+
+              </CardOverflow>
+      <CardContent sx={{m:2}}>
+        <Typography level="h3" id="card-description" sx={{mb:{xs:0,sm:1}}}>
+          <Skeleton loading={isLoaded.bannerImg}>Post Your Job - Connect with Top Talent </Skeleton>
+        </Typography>
+        <Typography level="body-md" aria-describedby="card-description" mb={1}>
+
+          <Skeleton loading={isLoaded.bannerImg}>
+          Take the next step in building your dream team.
+           Post your job today and reach out to a diverse pool of talented professionals ready to contribute to your success. 
+           Whether you need seasoned experts or fresh perspectives, find the right candidates to help your business thrive. 
+           </Skeleton>
+        </Typography>
+
+        {
+          isLoaded.bannerImg ? (
+
+            <Skeleton loading={isLoaded.bannerImg} width={200} height={44} sx={{mt:{md:2} , borderRadius:'5px'}} variant="rectangular" />
+          ) : (
+
+        <Button 
+                startDecorator={<WorkIcon/>} 
+                sx={{
+                  mt:{md:2},
+                  width:{md:'200px'}
+                }}
+                component= {RouterLink}
+                to = "/jobprovider/my-jobs/post-a-job"
+                > 
+                Post a Job</Button>
+
+          )
+        }
+
+          
+      </CardContent>
+    </Card>
+
+
+    <Box sx={{display:'flex', justifyContent:'flex-start'}}>
+
+              <Typography  level="h3" >My Jobs ({count})</Typography>
+            </Box>
+  <Divider sx={{mb:2}} />
             
 
-            <Sheet  sx={{ pt: 1, borderRadius: 'sm' }}>
-            <Table
-              hoverRow
-              sx={{  '& tbody': { bgcolor: 'background.surface' } }}
-              size='md'
-            >
-              
-              <thead>
-                <tr>
-                  <th>Jobs</th>
-                  <th>Status</th>
-                  <th>Applications</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={row.name}>
+            
 
-                    <td>
+          <TablePagination markAsExpire={modelCheck} loading={loading} setLoading={setLoading} change={change} setChange={setChange} count ={setCount} />
 
-                      <Box sx={(theme)=>({
-                                 display:'flex',
-                                 flexDirection: 'column',
-                                  alignItems: 'left',
-                                  [theme.breakpoints.up(834)]: {
-                                    alignItems: 'flex-start',
-                                    textAlign: 'initial',
-                                  },
-                                  [`& .${typographyClasses.root}`]: {
-                                    textWrap: 'balance',
-                                  },
-                                  })}>
-
-                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {row.name} </Typography> 
-
-                        <Box sx={(theme)=>({ 
-                                  display:'flex',
-                                  gap: 1.5,
-                                  alignItems: 'center',
-                                  [theme.breakpoints.down(834)]: {
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-                                    gap: 0,
-                                  },
-                            })}>
-                          <Typography level='body-md'>Full Time</Typography>
-                          <Typography  level='body-md'>•</Typography>
-                          <Typography level='body-sm'>23 Days Remaining</Typography>
-                        </Box>
-                      </Box>
-                      
-                    </td>
-
-
-                    <td> 
-
-                    <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                      
-                    {row.calories === 'Active' ? (
-                                                  <>
-                                                    <CheckCircleOutlineIcon color="success" /> {row.calories}
-                                                  </>
-                                                ) : (
-                                                  <>
-                                                    <WarningAmberIcon color="danger" /> {row.calories}
-                                                  </>
-                                                )
-                    }
-
-   
-                    </Box> 
-                    </td>
-
-                    <td>
-                      <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                        <PeopleAltOutlinedIcon />      {row.fat}
-                      </Box>
-                    </td>
-
-
-                    <td>
-
-                      <Box sx={(theme)=>({
-                                    display:'flex',
-                                    alignItems:'center',
-                                    gap: 1,
-                                    [theme.breakpoints.down(834)]: {
-                                      flexDirection: 'column',
-                                      gap: 1,
-                                    },
-                        }
-                        )}>
-                        <Button component={RouterLink} to="/jobprovider/my-jobs/applications" color="primary" variant='solid' size="sm">View Applications</Button>
-
-                        <Dropdown>
-                            <MenuButton
-                              slots={{ root: IconButton }}
-                              slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
-                              
-                            >
-                              <MoreVert />
-                            </MenuButton>
-                            <Menu>
-
-                              <MenuItem component="a" href="/jobprovider/my-jobs/">
-                              <ListItemDecorator>
-                                <RemoveRedEyeIcon />
-                              </ListItemDecorator>{' '}
-                                View Details
-                              </MenuItem>
-                              
-                              <MenuItem>
-                              <ListItemDecorator>
-                                <WarningAmberIcon color="danger" />
-                              </ListItemDecorator>{' '}
-                                
-                              Mark As Expired
-                              </MenuItem>
-                            </Menu>
-                          </Dropdown>
-                      </Box>
-                      
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Sheet>
+          <React.Fragment>
+      <Modal open={open.open} onClose={() => setOpen(open.false)}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>
+            <WarningRoundedIcon />
+            Confirmation
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+          Are you sure you want to expire this job? This action cannot be undone.
+          </DialogContent>
+          <DialogActions>
+            <Button  variant="solid" color="danger"  onClick={() => {setOpen({ open: false }); markAsExpire(open.id)}}>
+              Expire
+            </Button>
+            <Button variant="outlined" color="neutral" onClick={() => setOpen({ open: false, id: '' })} >
+              Cancel
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
+    </React.Fragment>
             
    </Box>
   )

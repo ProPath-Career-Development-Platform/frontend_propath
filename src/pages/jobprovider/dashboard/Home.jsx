@@ -71,25 +71,36 @@ const Subscription =[
 
 ];
 
-
+const token = localStorage.getItem('token');
 
 export const GetCompany = (id) => {
-  return axios.get(`http://localhost:8080/jobprovider/home?userId=${id}`);
+  return axios.get(`http://localhost:8080/jobprovider/home?userId=${id}`,{
+    headers: {
+      Authorization: `Bearer ${token}`  // Ensure the token is correctly passed
+    }
+  });
+
 }
   
 
 const Home = () => {
 
   const [company, setCompany] = useState(null);
+  const [postedJobs, setPostedJobs] = useState([]);
   const [error, setError] = useState(null);
   
   useEffect(() => {
     const id = getUserIdFromToken();
+    
+    
     if (id) {
       GetCompany(id)
         .then((response) => {
-          setCompany(response.data);
-          console.log(company);
+          setCompany(response.data.company); // Assuming the API returns { company, postedJobs }
+          setPostedJobs(response.data.postedJobs);
+        
+          console.log(response.data);
+          
         })
         .catch((error) => {
           setError('Error fetching company details');
@@ -97,6 +108,10 @@ const Home = () => {
         });
     }
   }, []);
+
+  useEffect(() => {
+    console.log("Updated company:", company);
+  }, [company]);
 
   return (
     
@@ -162,7 +177,7 @@ const Home = () => {
               }}
             >
               <Typography level="h2" component="h1">
-                Home
+                Home 
               </Typography>
              
             </Box>
@@ -173,7 +188,7 @@ const Home = () => {
             <Box sx={{  alignItems: 'center', marginTop:'20px' }}>
 
               <Typography color="primary" fontSize="lg" fontWeight="lg">
-                Hello, Sysco Labs
+                Hello, {company?.companyName ? company.companyName : 'Company Name'}
               </Typography>
 
               <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
@@ -181,7 +196,7 @@ const Home = () => {
               </Typography>
 
             </Box>
-
+              
             {/* insights */}
 
             <Box sx={{   
@@ -333,8 +348,8 @@ const Home = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
-                  <tr key={row.name}>
+                {postedJobs.map((job) => (
+                  <tr key={job.id}>
 
                     <td>
 
@@ -351,7 +366,7 @@ const Home = () => {
                                   },
                                   })}>
 
-                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {row.name} </Typography> 
+                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {job.jobTitle} </Typography> 
 
                         <Box sx={(theme)=>({ 
                                   display:'flex',
@@ -363,7 +378,7 @@ const Home = () => {
                                     gap: 0,
                                   },
                             })}>
-                          <Typography level='body-md'>Full Time</Typography>
+                          <Typography level='body-md'>{job.jobType}</Typography>
                           <Typography  level='body-md'>•</Typography>
                           <Typography level='body-sm'>23 Days Remaining</Typography>
                         </Box>
@@ -376,13 +391,13 @@ const Home = () => {
 
                     <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
                       
-                    {row.calories === 'Active' ? (
+                    {new Date(job.expiryDate) > new Date() ?(
                                                   <>
-                                                    <CheckCircleOutlineIcon color="success" /> {row.calories}
+                                                    <CheckCircleOutlineIcon color="success" /> Active
                                                   </>
                                                 ) : (
                                                   <>
-                                                    <WarningAmberIcon color="danger" /> {row.calories}
+                                                    <WarningAmberIcon color="danger" /> Expired
                                                   </>
                                                 )
                     }
@@ -393,7 +408,7 @@ const Home = () => {
 
                     <td>
                       <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                        <PeopleAltOutlinedIcon />      {row.fat}
+                        <PeopleAltOutlinedIcon />      {job.vacancies}
                       </Box>
                     </td>
 

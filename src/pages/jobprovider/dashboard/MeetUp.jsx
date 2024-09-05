@@ -11,6 +11,15 @@ import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
+import CardOverflow from '@mui/joy/CardOverflow';
+import Skeleton from '@mui/joy/Skeleton';
+import { useLocation } from 'react-router-dom';
+import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
+import Snackbar from '@mui/joy/Snackbar';
+import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+
+import Stack from '@mui/joy/Stack';
+import Chip from '@mui/joy/Chip';
 
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
@@ -22,39 +31,140 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 
+
 import {Link as RouterLink} from 'react-router-dom';
+import axios from 'axios';
+import EventCard from '../../../components/jobprovider/dashboard/eventCard';
+import BasicPagination from '../../../components/jobprovider/dashboard/BasicPagination'
+import FilterButton from '../../../components/jobprovider/dashboard/filterButton';
+
+import RadioButton from '../../../components/jobprovider/dashboard/RadioButton';
 
 function MeetUp() {
 
+  const location = useLocation();
 
-  //  // Initialize state with a default image from the public folder or from localStorage if available
-  //  const [image, setImage] = useState(() => localStorage.getItem('userImage') || '/meetups.jpg');
-  //  const fileInputRef = useRef(null);
+  const [snackOpen, setSnackOpen] = React.useState(false);
+
+
+  const handleCloseSnackbar = () => {
+    setSnackOpen(false);
+    sessionStorage.removeItem('eventDeleteSuc');
+  };
+
+  const theme = extendTheme({
+    components: {
+      JoySkeleton: {
+        defaultProps: {
+          animation: 'wave',
+        },
+      },
+    },
+  });
+
+
+  const [events, setEvents] = useState([]);
+  const[initialEventData, setInitialEventData] = useState([]);
+  const [isLoaded, setIsLoaded] = useState({
+    bannerImg:true,
+    eventCard:true
+    
+  });
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  
+  const [filterData,setFilterData] = useState(
+
+    {
+      title:'',
+      fromDate:'',
+      toDate:'',
+      location:'',
+      status:''
+    }
+  );
+
+  const handleFilter = () => {
+    const filteredEvents = events.filter((event) => {
+      // Filter by title
+      const matchesTitle = filterData.title === '' || event.title.toLowerCase().includes(filterData.title.toLowerCase());
+  
+      // Filter by date range
+      const matchesDate = (!filterData.fromDate || new Date(event.date) >= new Date(filterData.fromDate)) &&
+                          (!filterData.toDate || new Date(event.date) <= new Date(filterData.toDate));
+  
+      // Filter by location
+      const matchesLocation = filterData.location === '' || event.location.toLowerCase().includes(filterData.location.toLowerCase());
+  
+      // Filter by status
+      
+      const matchesStatus = filterData.status === '' || event.status.toLowerCase() === filterData.status.toLowerCase();
+  
+      // Return true if all conditions match
+      return matchesTitle && matchesDate && matchesLocation && matchesStatus;
+    });
+  
+    // Update the filtered events state with the new filtered data
+    setEvents(filteredEvents);
+  };
+
+  const handleReset = () => {
+    setEvents(initialEventData);
+    setFilterData({
+      title:'',
+      fromDate:'',
+      toDate:'',
+      location:'',
+      status:''
+    });
+  };
+  
  
-  //  useEffect(() => {
-  //    // Check for the saved image in localStorage on component mount
-  //    const savedImage = localStorage.getItem('userImage');
-  //    if (savedImage) {
-  //      setImage(savedImage);
-  //    }
-  //  }, []);
+  const getJwtToken = () => {
+    return localStorage.getItem('token');
+  };
+
+  useEffect(() => {
+
+    if (sessionStorage.getItem('eventDeleteSuc')) {
+      setSnackOpen(true);
+      
+    }
+
+    axios.get('http://localhost:8080/jobprovider/event', {
+      headers: {
+        Authorization: `Bearer ${getJwtToken()}`,
+      },
+    }).then((response) => {
+      setEvents(response.data);
+      setInitialEventData(response.data);
+      setIsLoaded(prevState => ({ ...prevState, eventCard: false }));
+      console.log(response.data);
+    }).catch((error) => {
+      console.error('Error fetching events:', error);
+    });
+  }, []);
+
+  
+  // Calculate paginated events
+  const indexOfLastEvent = currentPage * itemsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
+  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+  
+  // Handle page change
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
  
-  //  const handleImageChange = (event) => {
-  //    const file = event.target.files[0];
-  //    if (file) {
-  //      const reader = new FileReader();
-  //      reader.onload = (e) => {
-  //        const imageUrl = e.target.result;
-  //        setImage(imageUrl);
-  //        localStorage.setItem('userImage', imageUrl);
-  //      };
-  //      reader.readAsDataURL(file);
-  //    }
-  //  };
- 
-  //  const handleClick = () => {
-  //    fileInputRef.current.click();
-  //  };
+    
+  };
+  // Watch for changes to currentPage and currentEvents
+
+  
+// Calculate page count
+const pageCount = Math.ceil(events.length / itemsPerPage);
+  
+
   
   return (
     <Box
@@ -127,227 +237,262 @@ function MeetUp() {
 
           {/*breadcrumbs over*/}
           <Divider />
-          <Card>
-            <Box
+            <Card
+              variant="outlined"
+            
               sx={{
-                display:'flex',
-                flexDirection:{xs:'column',sm:'row'},
-                justifyContent:{sm:'space-around'},
-                mt:{xs:1 , sm:3},
-                gap:{xs:3}
+
+              
+                mb:2
+                
               }}
             >
-              <Box>
-                <Typography  level="h3" component="h1" sx={{mt:4}}>
-                  Connect and Create Where Ideas Become Reality
-                </Typography>
-                <Typography sx={{mt:{xs:1 , sm:3} , width:{sm:550 , xs:400}}}>
+
+              <CardOverflow >
+
+            <AspectRatio sx={{
+                
+                display:{xs:'none', sm:'block'},
+      
+                
+                }}
+                 ratio="1" maxHeight={300}>
+            <CssVarsProvider theme={theme}>
+              <Skeleton loading={isLoaded.bannerImg} variant="overlay">
+                <img
+                  src="/workshophero.jpg"
+                  loading="lazy"
+                  alt=""
+                  onLoad={() => setIsLoaded(prevState => ({ ...prevState, bannerImg: false }))}
+                  
+                />
+              </Skeleton>
+            </CssVarsProvider>
+            </AspectRatio>
+
+            <AspectRatio sx={{
+                  
+                  display:{xs:'block', sm:'none'},
+                  }}
+                  ratio="20/9" maxHeight={200}>
+              <CssVarsProvider theme={theme}>
+                <Skeleton loading={isLoaded.bannerImg} variant="overlay">
+                  <img
+
+                    src="/workshophero.jpg"
+                    loading="lazy"
+                    alt=""
+                    onLoad={() => setIsLoaded(prevState => ({ ...prevState, bannerImg: false }))}
+
+                  />
+                </Skeleton>
+
+              </CssVarsProvider>
+
+            </AspectRatio>
+
+              </CardOverflow>
+      <CardContent sx={{m:2}}>
+        <Typography level="h3" id="card-description" sx={{mb:{xs:0,sm:1}}}>
+          <Skeleton loading={isLoaded.bannerImg}>Connect and Create Where Ideas Become Reality </Skeleton>
+        </Typography>
+        <Typography level="body-md" aria-describedby="card-description" mb={1}>
+
+          <Skeleton loading={isLoaded.bannerImg}>
                 Whether you're into coding, painting, or public speaking,  
                 find and connect with people who share your passion.
                 Host or join meetups and workshops to learn, share, and grow together.  
                 Events are happening all the time-join us and bring your ideas to life. 
-                </Typography>
-                <Button 
+           </Skeleton>
+        </Typography>
+
+        {
+          isLoaded.bannerImg ? (
+
+            <Skeleton loading={isLoaded.bannerImg} width={200} height={44} sx={{mt:{md:2} , borderRadius:'5px'}} variant="rectangular" />
+          ) : (
+
+        <Button 
                 startDecorator={<EditCalendarIcon/>} 
-                sx={{mt:{xs:1 , sm:3}}}
+                sx={{
+                  mt:{md:2},
+                  width:{md:'200px'}
+                }}
                 component= {RouterLink}
                 to = "/jobprovider/meet-up/createEvent"
                 > 
                 Create Event</Button>
-              </Box>
-              <Box
-              component="img"
-              src="/meetups.jpg"
-              sx={{
-                width: 350,
-                height: 350,
-                borderRadius: '50%', // For a circular image
-                objectFit: 'cover',
-              }}
-              >
-              </Box>
-            </Box>
-            </Card>
-            <Box
-              sx ={{
-                display:'flex',
-                flexDirection:'column',
-                mt:{sm:2},
-                gap:{sm:3}
-              }}
-            >
 
-              <Box>
-              <Typography  level="h3" component="h1">
-                  Upcoming Events
-                </Typography>
-              </Box>
-              <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap:3,
-        width: '100%',
-        position: 'relative',
-        overflow: { xs: 'auto', sm: 'initial' },
-       
-       
-      }}
-    >
-     
-      <Card
-        orientation="horizontal"
-        sx={{
-          width: '90%',
-          flexWrap: 'wrap',
-          display:'flex',
-          flexDirection:{sm:'row',xs:'column'},
-          overflow: 'auto',
+          )
+        }
+
           
-          
-        }}
-      >
-        <AspectRatio objectFit="object-fit" sx={{width:400}}>
-          <img
-            src="https://i.ytimg.com/vi/zrdaueLMoYI/maxresdefault.jpg"
-            // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
-            loading="lazy"
-            alt=""
-            
-          />
-        </AspectRatio>
-        <CardContent>
+      </CardContent>
+    </Card>
+
+
+
+
+
+
           <Box
             sx={{
-              alignSelf:'center'
-            }}
-          >
-          <Typography  level="h4" component="h1">
-                  Docker Essentails Workshop
-                </Typography>
-          </Box>
-          <Box
-            sx={{
-              ml:{sm:3}
-            }}
-          >
-          <List size="md">
-           <ListItem>
-            <ListItemDecorator>
-            <CalendarMonthOutlinedIcon/>  
-            </ListItemDecorator>
-            Event Date - 2st Aug 2024
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <PinDropOutlinedIcon/>
-            </ListItemDecorator>
-            Location - UCSC Premisus
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <GroupsOutlinedIcon/>
-            </ListItemDecorator>
-             Current participants - 21 Attending
-          </ListItem>
-          
-        </List>
-          </Box>
-          <Box
-          sx={{
-            // 
-            ml:{sm:5}
-          }}
-          >
-             <Button  startDecorator={<EditCalendarIcon/>} sx={{mt:{xs:1 , sm:3}}}> Manage Event</Button>
-          </Box>
-            
-        </CardContent>
-      </Card>
-
-
-      <Card
-        orientation="horizontal"
-        sx={{
-          width: '90%',
-          flexWrap: 'wrap',
-          display:'flex',
-          flexDirection:{sm:'row',xs:'column'},
-          overflow: 'auto',
-          
-        }}
-      >
-        <AspectRatio objectFit="object-fit" sx={{width:400}}>
-          <img
-            src="https://th.bing.com/th/id/OIP.omJ4NBvS7Mcr45IRv_yGqQHaDt?rs=1&pid=ImgDetMain"
-            // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
-            loading="lazy"
-            alt=""
-            
-          />
-        </AspectRatio>
-        <CardContent>
-          <Box
-            sx={{
-              alignSelf:'center'
-            }}
-          >
-          <Typography  level="h4" component="h1">
-                  API Integration Essentials
-                </Typography>
-          </Box>
-          <Box
-            sx={{
-              ml:{sm:3}
-            }}
-          >
-          <List size="md">
-           <ListItem>
-            <ListItemDecorator>
-            <CalendarMonthOutlinedIcon/>  
-            </ListItemDecorator>
-            Event Date - 5th Aug 2024
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <PinDropOutlinedIcon/>
-            </ListItemDecorator>
-            Location - WSO2 Premisus
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <GroupsOutlinedIcon/>
-            </ListItemDecorator>
-             Current participants - 32 Attending
-          </ListItem>
-          
-        </List>
-          </Box>
-          <Box
-          sx={{
-            // 
-            ml:{sm:5}
-          }}
-          >
-             <Button  startDecorator={<EditCalendarIcon/>} sx={{mt:{xs:1 , sm:3}}}> Manage Event</Button>
-          </Box>
-            
-        </CardContent>
-      </Card>
-      
-    </Box>
-
-
-
-
-
-
+              display: 'flex',
+              gap: 1,
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb:1
               
+              
+            }}
+          >
+
+            <Box sx={{display:'flex', justifyContent:'flex-start'}}>
+
+              <Typography  level="h3" >My Events ({events.length})</Typography>
+            </Box>
+
+            <Box sx={{display:'flex', justifyContent:'flex-end', gap:1}}>
+
+              <FilterButton formData={filterData} setFormData={setFilterData} handleFilter={handleFilter} handleReset={handleReset} count={initialEventData.length}/>
+              <RadioButton pages={itemsPerPage} setPageNumber={setItemsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage} count={events.length} />
             </Box>
 
 
-          
           </Box>
+          
+
+            
+
+          <Divider sx={{mb:2}} />
+
+     
+
+          {
+
+  isLoaded.eventCard ? (
+    <>
+      <EventCard keyWords={["test"]} skeleton = {true}/>
+      <EventCard keyWords={["test"]} skeleton = {true}/>
+      <EventCard keyWords={["test"]} skeleton = {true}/>
+      <EventCard keyWords={["test"]} skeleton = {true}/>
+      <EventCard keyWords={["test"]} skeleton = {true}/>
+    </>
+  ) : 
+
+  events.length === 0 ? (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+          width: '100%',
+          position: 'relative',
+          px: { xs: 2, md: 4 },
+          pt: 2,
+        }}
+      >
+        <Box sx={{ m: 'auto' }}>
+          <AspectRatio
+            ratio="4/3"
+            variant="soft"
+            objectFit="contain"
+            sx={{ width: { sm: '100%', md: '500px' }, borderRadius: '10px' }}
+          >
+            <img src="/empty-events.png" loading="lazy" alt="" />
+          </AspectRatio>
+          <Typography level="title-md" sx={{ mt: 2, textAlign: 'center' }}>
+            No events yet. Why not create one to get started?
+          </Typography>
+        </Box>
+      </Box>
+      <Divider sx={{ mt: 2 }} />
+    </>
+  ) :
+
+  (
+    <>
+      
+
+      
+
+
+      <Stack spacing={1} sx={{
+        px: { xs: 2, md: 4 },
+        pt: 2,
+        
+        minHeight: { xs:'400px',md:'580px'},
+        
+        overflowY: 'auto', // Enable vertical scrolling
+    
+  }}
+>
+          
+          <Stack spacing={2} sx={{ overflow: 'auto', p:{xs:0.3,md:2} }}>
+
+          {currentEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            eventId={event.id}
+            eventImage={event.banner}
+            eventName={event.title}
+            eventDate={event.date}
+            eventLocation={event.location}
+            eventParticipants={event.maxParticipant}
+            keywords={event.keyWords}
+            status={event.status}
+            skeleton = {false}
+          />
+        ))}
+            
+          </Stack>
+        </Stack>
+      <Divider sx={{ mt: 2 }} />
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+        <BasicPagination
+          page={currentPage}
+          pageCount={pageCount}
+          pageChange={handlePageChange}
+        />
+      </Box>
+    </>
+  )
+  
+}  
+
+
+<React.Fragment>
+      
+      <Snackbar
+        variant="soft"
+        color="success"
+        open={snackOpen}
+        onClose={() => handleCloseSnackbar()}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+        endDecorator={
+          <Button
+            onClick={() => handleCloseSnackbar()}
+            size="sm"
+            variant="soft"
+            color="success"
+          >
+            Dismiss
+          </Button>
+        }
+      >
+        Event deleted successfully.
+      </Snackbar>
+    </React.Fragment>
+
+
+          </Box>
+
+
+
   )
 }
 
