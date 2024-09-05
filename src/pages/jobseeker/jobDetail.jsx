@@ -1,39 +1,55 @@
-import React , {useState , useEffect} from 'react';
-import Button from '@mui/joy/Button';
-import Breadcrumbs from '@mui/joy/Breadcrumbs';
-import Link from '@mui/joy/Link';
-import Typography from '@mui/joy/Typography';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import Box from '@mui/joy/Box';
-import ProfileDropdown from '../../components/JobSeeker/ProfileDropDown';
-import Alert from '../../components/JobSeeker/alert';
-import JSSearch from '../../components/JobSeeker/search';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import wso2 from '/wso2.png';
-import LinkIcon from '@mui/icons-material/Link';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import EmailIcon from '@mui/icons-material/Email';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import React, { useState, useEffect } from "react";
+import Button from "@mui/joy/Button";
+import Breadcrumbs from "@mui/joy/Breadcrumbs";
+import Link from "@mui/joy/Link";
+import Typography from "@mui/joy/Typography";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import Box from "@mui/joy/Box";
+import ProfileDropdown from "../../components/JobSeeker/ProfileDropDown";
+import Alert from "../../components/JobSeeker/alert";
+import JSSearch from "../../components/JobSeeker/search";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import wso2 from "../../assets/wso2.png";
+import LinkIcon from "@mui/icons-material/Link";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import EmailIcon from "@mui/icons-material/Email";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import TimerIcon from "@mui/icons-material/Timer";
+import SchoolIcon from "@mui/icons-material/School";
+import WalletIcon from "@mui/icons-material/Wallet";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import Companycard from "../../components/JobSeeker/companycard";
+import ApplyJob from "../../components/JobSeeker/applyJob";
+import axios from "axios";
+import { useParams, useLocation } from "react-router-dom";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import TimerIcon from '@mui/icons-material/Timer';
-import SchoolIcon from '@mui/icons-material/School';
-import WalletIcon from '@mui/icons-material/Wallet';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import WorkIcon from '@mui/icons-material/Work';
-import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import Jobcard from '../../components/JobSeeker/jobcard';
-import Companycard from '../../components/JobSeeker/companycard';
 import JSCard from '../../components/JobSeeker/card';
-import { useLocation } from 'react-router-dom';
-import ApplyJob from '../../components/JobSeeker/applyJob';
-import AppliedCard from '../../components/JobSeeker/appliedcard';
-import Interviewcart from '../../components/JobSeeker/interviewcart';
-import CircularProgress from '@mui/joy/CircularProgress';
-const JobDetails = () => {
+
+const JobDetails = ({
+  content,
+  location,
+  company,
+  customQuestion,
+  education,
+  experience,
+  expiryDate,
+  jobType,
+  jobLevel,
+  jobRole,
+  minSalary,
+  maxSalary,
+  salaryType,
+  vacancies,
+  tags,
+  postedIn,
+  type,
+  img,
+}) => {
+
   const responsibilities = [
     "Quisque semper gravida est et consectetur.",
     "Curabitur blandit lorem velit, vitae pretium leo placerat eget.",
@@ -47,31 +63,109 @@ const JobDetails = () => {
   ];
 
   const cardData = [
-    { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
-    { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
-    { title: 'Technical Support Specialist', content: 'Provides technical assistance and support to clients.', location: 'Kandy', company: 'Tech Support Co.' ,  img : '/jobs/99x.png' },
-    { title: 'Junior Graphic Designer', content: 'Creates visual content under the guidance of senior designers.', location: 'Jaffna', company: 'Graphic World' , img : '/jobs/virtusa.jpg' },
-    { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' ,img : '/jobs/codegen.png' },
-    { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' ,img : '/jobs/microsoft.png' }
-  ]
+    {
+      title: "UI/UX Designer",
+      content:
+        "Responsible for designing user interfaces and improving user experience.",
+      location: "Colombo",
+      company: "ABC Design",
+    },
+    {
+      title: "Senior UI/UX Designer",
+      content: "Leads design projects and mentors junior designers.",
+      location: "Galle",
+      company: "Creative Solutions",
+    },
+    {
+      title: "Technical Support Specialist",
+      content: "Provides technical assistance and support to clients.",
+      location: "Kandy",
+      company: "Tech Support Co.",
+    },
+    {
+      title: "Junior Graphic Designer",
+      content: "Creates visual content under the guidance of senior designers.",
+      location: "Jaffna",
+      company: "Graphic World",
+    },
+    {
+      title: "Front End Developer",
+      content: "Develops and implements front-end web applications.",
+      location: "Negombo",
+      company: "Web Solutions",
+    },
+    {
+      title: "Backend Developer",
+      content: "Handles server-side logic and database management.",
+      location: "Matara",
+      company: "Data Masters",
+    },
+    {
+      title: "Project Manager",
+      content: "Oversees project planning, execution, and completion.",
+      location: "Trincomalee",
+      company: "Project Pros",
+    },
+    {
+      title: "QA Engineer",
+      content: "Ensures the quality and functionality of software products.",
+      location: "Anuradhapura",
+      company: "Quality Assurance Inc.",
+    },
+    {
+      title: "Data Scientist",
+      content: "Analyzes and interprets complex data to provide insights.",
+      location: "Batticaloa",
+      company: "Data Insights",
+    },
+  ];
+  const [jobDetails, setJobDetails] = useState(null);
+  const [Submit, setSubmit] = useState(0);
+  const [jobs, setJobs] = useState([]);
 
-  var amount = 6;
-  const location = useLocation();
-  const { title } = location.state || {};
+  const { jobId } = useParams();
+  console.log("Job ID2:", jobId);
+
+  const token = localStorage.getItem("token");
+
+  const fetchJobDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/jobseeker/jobDetails/${jobId}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setJobDetails(response.data);
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (jobId) {
+      fetchJobDetails();
+    }
+  }, [jobId]);
+
+  var amount = 6
+  const location1 = useLocation();
+  const { title } = location1.state || {}
+  
+
+  const applyhandleChange = (value)=> {
 
     setSubmit(value)
     console.log(Submit)
 
   }
-  useEffect(() => {
-    if (Submit === 1) {
-      const timer = setTimeout(() => {
-        setSubmit(2);
-      }, 4000); // 10 seconds
-  
-      return () => clearTimeout(timer); // Cleanup timeout if the component unmounts or Submit changes
-    }
-  }, [Submit]);
+
+  if (!jobDetails) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <Box
       component="main"
@@ -79,12 +173,15 @@ const JobDetails = () => {
       sx={{
         px: { xs: 2, md: 6 },
         pt: {
+
           xs: "calc(12px + var(--Header-height))",
           sm: "calc(12px + var(--Header-height))",
+
           md: 3,
         },
         pb: { xs: 2, sm: 2, md: 3 },
         flex: 1,
+
         display: "flex",
         flexDirection: "column",
         minWidth: 0,
@@ -94,6 +191,7 @@ const JobDetails = () => {
         overflow: "auto ",
         "&::-webkit-scrollbar": {
           display: "none",
+
         },
       }}
     >
@@ -137,7 +235,9 @@ const JobDetails = () => {
             </Typography>
           </Breadcrumbs>
         </Box>
+
         <Box sx={{ display: "flex" }}>
+
           <JSSearch />
           <Alert />
           <ProfileDropdown />
@@ -147,77 +247,15 @@ const JobDetails = () => {
         <Typography variant="h4">Find a job</Typography>
       </Box>
       <Box
-       sx={{
-        display: 'flex',
-        gap : 2, 
-        position: 'relative'
-
-      }}>
-      <Box sx={{marginTop:'10px'}}>
-            <img 
-                src={wso2} 
-                alt="Logo" 
-                style={{ 
-                width: '100px', // Adjust the size as needed
-                height: '100px', // Adjust the size as needed
-                borderRadius: '50%',
-                objectFit: 'cover' 
-                }} 
-            />
-      </Box>
-
-      <Box sx =  
-        {{display: 'flex', 
-        flexDirection: 'column', 
-        marginTop: {xs:'16px'},
-        justifyContent: 'center', 
-        height: '75%'}}
-        >
-        <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '30px'} , marginBottom : '4px'}}>{title}</Typography>
-        <Box sx={{display:'flex' , gap: {xs: 1 , sm: 1 , md : 1 , lg: 2} ,
-                  flexDirection: {xs:'column' , sm:'column' , md:'column' , lg: 'row'}
-        }}>
-            <Typography><LinkIcon/>WWW.Instagram.com</Typography>
-            <Typography><LocalPhoneIcon/>+94 76 2 777 952</Typography>
-            <Typography><EmailIcon/>maniltenuka@gmail.com</Typography>
-        
-        </Box>
-    
-        
-      </Box>
-      
-      <Box 
-      sx={{alignItems:'center' , justifyContent:'center' , height: '95%' , display: 'flex' , flexDirection: 'column' ,position:'absolute' , right: 0 }}>
-      <Stack direction={{xs:'column' , sm: 'column' , md: 'column' , lg: 'row'}} spacing={2}>
-      <Button variant="contained" sx={{backgroundColor:'blue' , height: '42px' , width:{xs : '50px', sm: '50px' , md : '50px' , lg : 'auto'} }} >
-         <BookmarkBorderIcon sx={{color:'white' }}/>
-      </Button>
-      {Submit == 0 && (
-        <ApplyJob title = {title} callback={applyhandleChange}></ApplyJob>
-      )}
-
-      {Submit == 1 && (
-           <Button
-           sx={{ backgroundColor: 'blue' }}
-           onClick={() => {
-             setSubmit(2);
-             console.log(Submit);
-           }} // Correct capitalization of onClick and proper use of curly braces
-         >
-              <CircularProgress variant="soft"  />
-
-       </Button>
-      )
-      }
-
-    {Submit ==2 && (
-      <Button
-        sx={{ backgroundColor: 'green' }}
-        onClick={() => setSubmit(2)} // Correct capitalization of onClick
+        sx={{
+          display: "flex",
+          gap: 2,
+          position: "relative",
+        }}
       >
         <Box sx={{ marginTop: "10px" }}>
           <img
-            src={wso2}
+            src={img}
             alt="Logo"
             style={{
               width: "100px", // Adjust the size as needed
@@ -237,17 +275,41 @@ const JobDetails = () => {
             height: "75%",
           }}
         >
-         Active
-        </Typography>
-      </Button>
-    )}
-     
-     
-      
-      </Stack>
-      <Typography sx={{ fontSize: '12px', marginTop: '3px' , display: 'flex' , flexDirection: {xs: 'column' , sm: 'row' }}}>
-        Job expires in : <span style={{ color: 'red' }}>30 June 2021</span>
-      </Typography>
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              fontSize: { xs: "auto", sm: "auto", md: "30px" },
+              marginBottom: "4px",
+            }}
+          >
+            {title}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              gap: { xs: 1, sm: 1, md: 1, lg: 2 },
+              flexDirection: {
+                xs: "column",
+                sm: "column",
+                md: "column",
+                lg: "row",
+              },
+            }}
+          >
+            <Typography>
+              <LinkIcon />
+              WWW.Instagram.com
+            </Typography>
+            <Typography>
+              <LocalPhoneIcon />
+              +94 76 2 777 952
+            </Typography>
+            <Typography>
+              <EmailIcon />
+              jobapplication@gmail.com
+            </Typography>
+          </Box>
+        </Box>
 
         <Box
           sx={{
@@ -279,13 +341,7 @@ const JobDetails = () => {
             )}
 
             {Submit == 1 && (
-              <Button
-                sx={{ backgroundColor: "red" }}
-                onClick={() => {
-                  setSubmit(2);
-                  console.log(Submit);
-                }} // Correct capitalization of onClick and proper use of curly braces
-              >
+              <Button sx={{ backgroundColor: "red" }}>
                 <Typography
                   sx={{
                     display: {
@@ -301,27 +357,6 @@ const JobDetails = () => {
                 </Typography>
               </Button>
             )}
-
-            {Submit == 2 && (
-              <Button
-                sx={{ backgroundColor: "red" }}
-                onClick={() => setSubmit(2)} // Correct capitalization of onClick
-              >
-                <Typography
-                  sx={{
-                    display: {
-                      xs: "none",
-                      sm: "none",
-                      md: "none",
-                      lg: "block",
-                    },
-                    color: "white",
-                  }}
-                >
-                  PH
-                </Typography>
-              </Button>
-            )}
           </Stack>
           <Typography
             sx={{
@@ -331,7 +366,7 @@ const JobDetails = () => {
               flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            Job expires in : <span style={{ color: "red" }}>30 June 2021</span>
+            Job expires in : <span style={{ color: "red" }}>{expiryDate}</span>
           </Typography>
         </Box>
       </Box>
@@ -380,32 +415,46 @@ const JobDetails = () => {
           </Stack>
         </Box>
         <Box sx={{ marginLeft: "16px", minWidth: "40%" }}>
-          {Submit == 1 && <AppliedCard status={"Pending"}></AppliedCard>}
-          {Submit == 2 && <AppliedCard status={"Active"}></AppliedCard>}
+          {Submit == 1 && <AppliedCard></AppliedCard>}
           <Jobcard />
           <Companycard />
         </Box>
       </Box>
 
-      <Box sx = {{border: '2px solid #e0e0e0' , marginTop : '10px'}} >
-      <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '20px'} , marginBottom : '12px' , marginTop : '12px' , marginLeft: '12px'}}>Related Jobs</Typography>
-      <Box 
-                          sx={{ 
-                            display: 'grid', 
-                            gridTemplateColumns: {
-                              xs: 'repeat(1, 1fr)', // 1 column for extra-small screens (mobile)
-                              sm: 'repeat(2, 1fr)', // 2 columns for small screens (tablet)
-                              md: 'repeat(3, 1fr)', // 3 columns for medium and larger screens (desktop)
-                            }, 
-                            gap: 2, 
-                            
-                          }}
-                        >
-                          {cardData.slice(0,6).map((card, index) => (
-                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {1} img = {card.img} />
-                          ))}
-                          
-                        
+      <Box sx={{ border: "2px solid #e0e0e0", marginTop: "10px" }}>
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            fontSize: { xs: "auto", sm: "auto", md: "20px" },
+            marginBottom: "12px",
+            marginTop: "12px",
+            marginLeft: "12px",
+          }}
+        >
+          Related Jobs
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(1, 1fr)", // 1 column for extra-small screens (mobile)
+              sm: "repeat(2, 1fr)", // 2 columns for small screens (tablet)
+              md: "repeat(3, 1fr)", // 3 columns for medium and larger screens (desktop)
+            },
+            gap: 2,
+          }}
+        >
+          {cardData.slice(0, 6).map((card, index) => (
+            <JSCard
+              key={index}
+              title={card.title}
+              content={card.content}
+              location={card.location}
+              company={card.company}
+              type={1}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );

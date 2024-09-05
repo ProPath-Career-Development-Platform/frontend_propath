@@ -34,7 +34,7 @@ import { jsx } from '@emotion/react';
 
 const Companycard = () => {
     const companyDetails = [['Founded In :', '06 March 2006'] , ['Organization type :' , 'Private Company'] ,
-                            ['Company Size : ', '20 - 300 employees '] , ['Phone', '+76 548 7514'] , ['Email :' , 'maniltenuka@gmail.com'],
+                              ['Phone', '+76 548 7514'] , ['Email :' , 'maniltenuka@gmail.com'],
                             ['Website','www.wso2.com']]
    return(
 

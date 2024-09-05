@@ -1,25 +1,49 @@
-import * as React from 'react';
-import AspectRatio from '@mui/joy/AspectRatio';
-import Button from '@mui/joy/Button';
-import Card from '@mui/joy/Card';
-import CardActions from '@mui/joy/CardActions';
-import CardContent from '@mui/joy/CardContent';
-import CardOverflow from '@mui/joy/CardOverflow';
-import Typography from '@mui/joy/Typography';
-import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BusinessIcon from '@mui/icons-material/Business';
-import { Box } from '@mui/material';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import { useLocation, useNavigate } from 'react-router-dom';
-import wso2img from '/wso2img.png'
-import sysco from '/jobs/sysco.png'
+import * as React from "react";
+import AspectRatio from "@mui/joy/AspectRatio";
+import Button from "@mui/joy/Button";
+import Card from "@mui/joy/Card";
+import CardActions from "@mui/joy/CardActions";
+import CardContent from "@mui/joy/CardContent";
+import CardOverflow from "@mui/joy/CardOverflow";
+import Typography from "@mui/joy/Typography";
+import BakeryDiningIcon from "@mui/icons-material/BakeryDining";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import BusinessIcon from "@mui/icons-material/Business";
+import { Box } from "@mui/material";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+import { useNavigate } from "react-router-dom";
+import wso2img from "../../assets/wso2.png";
+import sysco from "../../assets/sysco.png";
 
-export default function JSCard({ title, content, location, company, type , img }) {
+export default function JSCard({
+  jobId,
+  title,
+  content,
+  location,
+  company,
+  customQuestion,
+  education,
+  experience,
+  expiryDate,
+  jobType,
+  jobLevel,
+  jobRole,
+  minSalary,
+  maxSalary,
+  salaryType,
+  vacancies,
+  tags,
+  postedIn,
+  type,
+  img,
+
+}) {
   const navigate = useNavigate();
 
   const handleApplyNowClick = () => {
-    navigate('/JobSeeker/JobDetails/' , { state: { title } });
+    console.log("Job ID: ", jobId);
+    navigate(`/JobSeeker/JobDetails/${jobId}`, { state: { title } });
+
   };
 
   if (type === 1) {

@@ -242,31 +242,18 @@ const Dashboard = () => {
   const handleChange = (e) => {
     console.log("Event:", e);
     if (e && e.target) {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
-  
-      if (errors[name]) {
-        setErrors((prevState) => {
-          const newErrors = { ...prevState };
-          delete newErrors[name];
-          return newErrors;
-        });
-      }
+      setFormData({ ...formData, [e.target.name]: e.target.value });
     } else {
       console.log("Event or event.target is null");
     }
   };
-  
   const navigate = useNavigate();
+  const handlepost = () => {
+    navigate("/jobprovider/my-jobs");
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
 
     const userId = getUserIdFromToken();
     if (!userId) {
@@ -335,6 +322,11 @@ const Dashboard = () => {
         setOpen(true);
       } else if (plan === "premium" && postCount >= 6) {
         setOpen(true);
+      } else {
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+          setErrors(validationErrors);
+        }
       }
     } catch (error) {
       console.error("There was an error posting the job!", error);
@@ -420,7 +412,7 @@ const Dashboard = () => {
 
       <Divider />
 
-      <form onSubmit={handleSubmit}>
+      <form>
         <Card
           variant="outlined"
           sx={{
@@ -1030,6 +1022,7 @@ const Dashboard = () => {
 
             <CardActions sx={{ maxWidth: "200px" }}>
               <Button
+              onClick={handlepost}
                 type="submit"
                 variant="solid"
                 color="primary"

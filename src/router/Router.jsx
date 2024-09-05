@@ -248,7 +248,7 @@ const router = createBrowserRouter([
     path: "/jobseeker",
     element: (
       <>
-        <Navbar1 />
+        {/* <Navbar1 /> */}
         {/* <TopNav /> */}
 
         <DashboardLayout user="jobseeker" />

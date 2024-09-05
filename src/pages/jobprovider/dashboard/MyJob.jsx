@@ -115,7 +115,7 @@ function MyJob() {
                 <Box
                   
                 >
-                <Badge
+                {/* <Badge
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   badgeInset="14%"
                   color="success"
@@ -147,7 +147,7 @@ function MyJob() {
                   }}
                    >
                   <Avatar alt="Remy Sharp" src="../../public/seba.jpg" />
-                </Badge>
+                </Badge> */}
                 </Box>
               
               </Box>

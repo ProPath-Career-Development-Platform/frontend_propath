@@ -24,22 +24,22 @@ const Jobcard = () => {
             <Box sx={{marginTop: '15px' , marginLeft: '24px' , alignItems: 'center' , justifyContent: 'center'}}>
               <CalendarTodayIcon sx={{width: '32px' , height: '32px', color: 'blue'}}/>
               <Typography>Job posted In</Typography>
-              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>20 June ,2024</Typography>
+              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>31 July ,2024</Typography>
             </Box>
             <Box sx={{marginTop: '15px' , marginLeft: '24px'}}>
               <TimerIcon sx={{width: '32px' , height: '32px' , color: 'blue'}}/>
               <Typography>Job expire in</Typography>
-              <Typography sx = {{fontWeight: '700', fontSize: ' 13px'}}>20 August ,2024</Typography>
+              <Typography sx = {{fontWeight: '700', fontSize: ' 13px'}}>31 August ,2024</Typography>
             </Box>
             <Box sx={{marginLeft: '24px'}}>
               <SchoolIcon sx={{width: '32px' , height: '32px' , color: 'blue'}}/>
               <Typography>Education</Typography>
-              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>Graduation</Typography>
+              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>Master's Degree</Typography>
             </Box>
             <Box sx={{marginLeft: '24px'}}>
               <WalletIcon sx={{width: '32px' , height: '32px' , color: 'blue'}}/>
               <Typography>Salary</Typography>
-              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>$50k-80k/month</Typography>
+              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>$400k-500k/month</Typography>
             </Box>
             <Box sx={{marginLeft: '24px'}}>
               <WorkIcon sx={{width: '32px' , height: '32px' , color: 'blue'}}/>
@@ -49,12 +49,12 @@ const Jobcard = () => {
             <Box sx={{marginLeft: '24px'}}>
               <LocationOnIcon sx={{width: '32px' , height: '32px' , color: 'blue'}}/>
               <Typography>Location</Typography>
-              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>New York, USA</Typography>
+              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>Colombo 02</Typography>
             </Box>
             <Box sx={{marginLeft: '24px' , marginBottom: '12px'}}>
               <WorkHistoryIcon sx={{width: '32px' , height: '32px' , color: 'blue' }}/>
               <Typography>Experience</Typography>
-              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>Graduation</Typography>
+              <Typography sx = {{fontWeight: '700' , fontSize: ' 13px'}}>Senior Level (5-10 years)</Typography>
             </Box>
             
         </Box>
