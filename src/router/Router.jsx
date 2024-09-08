@@ -22,6 +22,7 @@ import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
 import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
+import JpInterviews from "../pages/jobprovider/dashboard/MyInterviews";
 
 import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
 import JpEventPreview from "../pages/jobprovider/dashboard/EventPreview"
@@ -210,7 +211,7 @@ const router = createBrowserRouter([
         element:<JpApplications/>
       },
       {
-        path:"my-jobs/shedule-interview",
+        path:"my-jobs/:jobId/shedule-interview",
         element:<><JpInterviewSchedule/></>
       },
       {
@@ -232,6 +233,10 @@ const router = createBrowserRouter([
       {
         path:"meet-up/createEvent",
         element:<JpCreateEvent/>
+      },
+      {
+        path:"Interviews",
+        element:<JpInterviews/>
       },
       {
         path:"settings",
