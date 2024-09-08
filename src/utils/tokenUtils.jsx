@@ -3,7 +3,7 @@
   export function getUserIdFromToken() {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    const decodedToken = decodeJWT(token);
+    const decodedToken = decodeJWT(token); //call the below function to decode jwt token
     return decodedToken ? decodedToken.user_id : null;
   }
 

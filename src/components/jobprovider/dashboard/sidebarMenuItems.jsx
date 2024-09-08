@@ -221,6 +221,20 @@ function sidebarMenuItems() {
             </ListItemContent>
           </ListItemButton>
         </ListItem>
+
+        <ListItem>
+          <ListItemButton
+            component={RouterLink}
+            to="/jobprovider/Interviews/"
+            selected={location.pathname.includes("/Interviews")}
+          
+          >
+            <SchoolIcon />
+            <ListItemContent>
+              <Typography level="title-sm">Interviews</Typography>
+            </ListItemContent>
+          </ListItemButton>
+        </ListItem>
           
 
         {/*   <ListItem nested>
