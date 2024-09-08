@@ -40,6 +40,8 @@ import DoughnutChartComponent from '../../../components/Admin/doughnutchart';
 import {Link as RouterLink} from 'react-router-dom';
 import axios from 'axios';
 
+import { useNavigate } from 'react-router-dom';
+
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -71,47 +73,53 @@ const Subscription =[
 
 ];
 
-const token = localStorage.getItem('token');
 
-export const GetCompany = (id) => {
-  return axios.get(`http://localhost:8080/jobprovider/home?userId=${id}`,{
-    headers: {
-      Authorization: `Bearer ${token}`  // Ensure the token is correctly passed
-    }
-  });
 
-}
+
   
 
 const Home = () => {
+ 
 
   const [company, setCompany] = useState(null);
   const [postedJobs, setPostedJobs] = useState([]);
   const [error, setError] = useState(null);
-  
-  useEffect(() => {
-    const id = getUserIdFromToken();
-    
-    
-    if (id) {
-      GetCompany(id)
-        .then((response) => {
-          setCompany(response.data.company); // Assuming the API returns { company, postedJobs }
-          setPostedJobs(response.data.postedJobs);
-        
-          console.log(response.data);
-          
-        })
-        .catch((error) => {
-          setError('Error fetching company details');
-          console.error(error);
-        });
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const jwtToken = localStorage.getItem('token');
 
-  useEffect(() => {
-    console.log("Updated company:", company);
-  }, [company]);
+  const navigate = useNavigate();
+
+  
+ useEffect(() => {
+  setLoading(true);
+
+  axios.get('http://localhost:8080/jobprovider/company', {
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  }).then((response) => {
+
+    if(response.data.status === "delete"){
+      navigate('/jobprovider/dashboard');
+    }else{
+
+      localStorage.setItem('companyName', response.data.companyName);
+      localStorage.setItem('companyEmail', response.data.email);
+      localStorage.setItem('companyLogo', response.data.logoImg);
+      
+      setLoading(false);
+
+    }
+
+
+
+
+  }
+  ).catch((error) => {
+    console.error(error);
+  });
+ },[jwtToken]);
+
 
   return (
     

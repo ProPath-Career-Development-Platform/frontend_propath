@@ -1,4 +1,4 @@
-import React ,{useState}from 'react'
+import React ,{useState,useEffect}from 'react'
 
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
@@ -16,8 +16,16 @@ import LanguageIcon from '@mui/icons-material/Language';
 import Button from '@mui/joy/Button';
 import Textarea from '@mui/joy/Textarea';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import axios from 'axios';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import Skeleton from '@mui/joy/Skeleton';
+import Snackbar from '@mui/joy/Snackbar';
+import Typography from '@mui/joy/Typography';
 
 function SettingsFoundingInfo() {
+
+  const jwtToken = localStorage.getItem('token');
   
   const [formData, setFormData] = useState({
     organizationType: '',
@@ -26,6 +34,41 @@ function SettingsFoundingInfo() {
     companyWebsite: '',
     companyVision: ''
   })
+
+  const [dataLoad, setDataLoad] = useState(true);
+  const [formLoad,setFormLoad] = useState(false);
+  const [resStat,setResStat] = useState(false);
+  const [errorPut, setErrorPut] = useState(false);
+
+  useEffect(()=> {
+
+    //setDataLoad(true);
+
+    axios.get('http://localhost:8080/jobprovider/company', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+
+      
+      setFormData(
+        (prev) => ({
+          ...prev,
+          organizationType: response.data.organizationType,
+          industryType:response.data.industryType,
+          yearOfEstablishment: response.data.establishedDate,
+          companyWebsite: response.data.companyWebsite,
+          companyVision: response.data.companyVision,
+
+        }));
+        setDataLoad(false);
+    }
+    ).catch((error) => {
+      console.error(error);
+    });
+
+  },[])
+
 
   const [errors, setErrors] = useState({});
 
@@ -76,7 +119,7 @@ function SettingsFoundingInfo() {
 
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationErrors = validateForm();
@@ -86,6 +129,33 @@ function SettingsFoundingInfo() {
      
     }else{
       alert(JSON.stringify(formData));
+
+      setFormLoad(true);
+
+      const postData = {
+        organizationType: formData.organizationType,
+        industryType: formData.industryType,
+        establishedDate: formData.yearOfEstablishment,
+        companyWebsite: formData.companyWebsite,
+        companyVision: formData.companyVision
+      }
+
+      try {
+        const response = await axios.put('http://localhost:8080/jobprovider/settings/companyFoundingInfo', postData, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log(response);
+        setResStat(true);
+      } catch (error) {
+        console.error(error);
+        setErrorPut(true);
+      } finally {
+        setFormLoad(false);
+      }
+
     }
 
 
@@ -134,9 +204,11 @@ function SettingsFoundingInfo() {
                     >
 
                         <FormLabel>Organization Type</FormLabel>
+                        <Skeleton loading={dataLoad}>
                         <Select 
                         name='organizationType' 
                         placeholder="Select a Type" 
+                        value={formData.organizationType}
 
                         onChange={(event, newValue) => { 
 
@@ -159,6 +231,7 @@ function SettingsFoundingInfo() {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
 
                       {errors.organizationType && (
@@ -179,10 +252,11 @@ function SettingsFoundingInfo() {
                     >
 
                         <FormLabel>Industry Type</FormLabel>
+                        <Skeleton loading={dataLoad}>
                         <Select 
                         name='industryType' 
                         placeholder="Select a Type" 
-
+                        value={formData.industryType}
                         onChange={(event, newValue) => { 
 
                                   if (errors.industryType) {
@@ -204,6 +278,7 @@ function SettingsFoundingInfo() {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {errors.industryType && (
                           
@@ -226,11 +301,12 @@ function SettingsFoundingInfo() {
                     >
 
                         <FormLabel>Year of Establishment</FormLabel>
-
+                        <Skeleton loading={dataLoad}>
                         <Input
                          type='date'
                          name='yearOfEstablishment'
                          onChange={handleChange}
+                         value={formData.yearOfEstablishment}
                          slotProps={{
                             input: {
                              
@@ -238,6 +314,7 @@ function SettingsFoundingInfo() {
                             },
                           }}
                           />
+                        </Skeleton>
 
                       {errors.yearOfEstablishment && (
 
@@ -255,13 +332,15 @@ function SettingsFoundingInfo() {
                     >
 
                         <FormLabel>Company Website</FormLabel>
-
+                        <Skeleton loading={dataLoad}>
                         <Input
                           name='companyWebsite'
                           onChange={handleChange}
                           placeholder='https://www.example.com'
+                          value={formData.companyWebsite}
                           startDecorator={<Button disabled><LanguageIcon/></Button>}
                           />
+                        </Skeleton>
                         
                         {errors.companyWebsite && (
 
@@ -288,14 +367,16 @@ function SettingsFoundingInfo() {
                     >
                         
                           <FormLabel>Company Vision</FormLabel>
-  
+                          <Skeleton loading={dataLoad}>
                           <Textarea
                             name='companyVision'
                             minRows={5}
                             maxRows={4}
                             onChange={handleChange}
                             placeholder='Write a brief description about your company'
+                            value={formData.companyVision}
                             />
+                          </Skeleton>
 
                             {errors.companyVision && (
                                 
@@ -316,10 +397,10 @@ function SettingsFoundingInfo() {
 
                 <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
             <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-              <Button onClick={resetForm} size="sm" variant="outlined" color="neutral">
+              <Button disabled={dataLoad || formLoad} onClick={resetForm} size="sm" variant="outlined" color="neutral">
                 Cancel
               </Button>
-              <Button type="submit" size="sm" variant="solid">
+              <Button disabled={dataLoad} loading={formLoad} type="submit" size="sm" variant="solid">
                 Save
               </Button>
             </CardActions>
@@ -330,6 +411,62 @@ function SettingsFoundingInfo() {
     </form>   
 
     </Stack>
+
+    <React.Fragment>
+
+                 
+
+                  <Snackbar
+                    variant="soft"
+                    color="success"
+                    open={resStat}
+                    onClose={() => setResStat(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<CheckCircleOutlineIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() =>  setResStat(false)}
+                        size="sm"
+                        variant="soft"
+                        color="success"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                    <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                    Company Founding Info Updated
+                    </Box>
+                  </Snackbar>
+
+                  <Snackbar
+                    variant="soft"
+                    color="warning"
+                    open={errorPut}
+                    onClose={() => setErrorPut(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<WarningAmberIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() =>setErrorPut(false)}
+                        size="sm"
+                        variant="soft"
+                        color="warning"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                    <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                    <Typography level='title-md' textAlign={'left'}>Error</Typography>
+                    <Typography level='body-sm'>Please Try again later.</Typography>
+
+                    
+                    </Box>
+                  </Snackbar>
+                </React.Fragment>
     
     
     </>
