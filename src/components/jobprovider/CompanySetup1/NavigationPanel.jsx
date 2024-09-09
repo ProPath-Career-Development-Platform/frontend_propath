@@ -42,6 +42,8 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Check from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
 import { getToken } from '../../../pages/Auth/Auth';
+import {getUserIdFromToken} from '../../../utils/tokenUtils'
+
 
 
 import axios from 'axios';
@@ -58,7 +60,7 @@ export const RegisterCompany = (companyData, token) => {
 
 export default function NavigationPanel() {
 
-  
+  const userId = getUserIdFromToken();
 
   const navigate = useNavigate();
 
@@ -315,7 +317,8 @@ export default function NavigationPanel() {
           location: formData.location,
           contactNumber: formData.contactNumber,
           email: formData.email,
-          status:"pending"
+          status:"pending",
+          userId:userId
         };
 
         const token = getToken();

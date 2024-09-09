@@ -1,4 +1,4 @@
-import React from 'react'
+import React ,{useState,useEffect} from 'react'
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Box from '@mui/joy/Box';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -6,7 +6,8 @@ import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import Divider from '@mui/joy/Divider';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import Checkbox from '@mui/joy/Checkbox';
 import List from '@mui/joy/List';
@@ -22,26 +23,50 @@ import IconButton from '@mui/joy/IconButton';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CandidateCard from '../../../components/jobprovider/dashboard/CandidateTable';
-import { Link as RouterLink } from 'react-router-dom';
+import { Navigate, Link as RouterLink } from 'react-router-dom';
 import Radio from '@mui/joy/Radio';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import RadioGroup from '@mui/joy/RadioGroup';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 
 import FinalCandidateList from '../../../components/jobprovider/dashboard/FinalCandidateList';
+import { useParams } from 'react-router-dom';
 
 
 
 const Applications = () => {
   
+  const { jobId } = useParams();
+  console.log(jobId);
+  const [filteredRows, setFilteredRows] = useState();
+  const [rows, setRows] = useState([]);
+  const [value, setValue] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const [filteredRows, setFilteredRows] = React.useState();
-  const [value, setValue] = React.useState([]);
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  const [selectedRows, setSelectedRows] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
-  React.useEffect(() => {
+  useEffect(() => {
+
+    //axios to get job details
+     axios.get(`http://localhost:8080/jobprovider/job/${jobId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      if(response.data.delete === true){
+        navigate('/jobprovider/error/404');
+      }
+    
+    })
+    .catch((error) => {
+      console.error('Error fetching job details:', error);
+      navigate('/jobprovider/error/404');
+    });
+
 
     if(!selectedRows){
 
@@ -373,12 +398,12 @@ const Applications = () => {
             
             >
 
-              <CandidateCard filteredRows={filteredRows} setFilteredRows={setFilteredRows} criteria={value}   rowSelectionModel = {rowSelectionModel} setRowSelectionModel = {setRowSelectionModel}/>
+              <CandidateCard jobId={jobId} filteredRows={filteredRows} setFilteredRows={setFilteredRows} rows={rows} setRows ={setRows} criteria={value}   rowSelectionModel = {rowSelectionModel} setRowSelectionModel = {setRowSelectionModel}/>
               
                
             </Box>
-
-            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} />
+              console.log(rowSelectionModel);
+            <FinalCandidateList open={open} setOpen={setOpen} count ={rowSelectionModel.length} selectedIds = {rowSelectionModel} setSelectIds = {setRowSelectionModel}  />
 
             
             

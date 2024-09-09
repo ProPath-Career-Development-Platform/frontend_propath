@@ -7,7 +7,7 @@ import Memberships from '../../components/landingPage/professionalMemberships/Me
 const ProfessionalMemberships = () => {
   return (
     <div>
-        <ProfessionalMembershipsNav/>
+        {/* <ProfessionalMembershipsNav/> */}
         <ProfessionalMembershipHero/>
         <Institutes/>
         <Memberships/>

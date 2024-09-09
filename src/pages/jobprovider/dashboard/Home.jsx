@@ -40,6 +40,8 @@ import DoughnutChartComponent from '../../../components/Admin/doughnutchart';
 import {Link as RouterLink} from 'react-router-dom';
 import axios from 'axios';
 
+import { useNavigate } from 'react-router-dom';
+
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -73,30 +75,51 @@ const Subscription =[
 
 
 
-export const GetCompany = (id) => {
-  return axios.get(`http://localhost:8080/jobprovider/home?userId=${id}`);
-}
+
   
 
 const Home = () => {
+ 
 
   const [company, setCompany] = useState(null);
+  const [postedJobs, setPostedJobs] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const jwtToken = localStorage.getItem('token');
+
+  const navigate = useNavigate();
+
   
-  useEffect(() => {
-    const id = getUserIdFromToken();
-    if (id) {
-      GetCompany(id)
-        .then((response) => {
-          setCompany(response.data);
-          console.log(company);
-        })
-        .catch((error) => {
-          setError('Error fetching company details');
-          console.error(error);
-        });
+ useEffect(() => {
+  setLoading(true);
+
+  axios.get('http://localhost:8080/jobprovider/company', {
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  }).then((response) => {
+
+    if(response.data.status === "delete"){
+      navigate('/jobprovider/dashboard');
+    }else{
+
+      localStorage.setItem('companyName', response.data.companyName);
+      localStorage.setItem('companyEmail', response.data.email);
+      localStorage.setItem('companyLogo', response.data.logoImg);
+      
+      setLoading(false);
+
     }
-  }, []);
+
+
+
+
+  }
+  ).catch((error) => {
+    console.error(error);
+  });
+ },[jwtToken]);
+
 
   return (
     
@@ -162,7 +185,7 @@ const Home = () => {
               }}
             >
               <Typography level="h2" component="h1">
-                Home
+                Home 
               </Typography>
              
             </Box>
@@ -173,7 +196,7 @@ const Home = () => {
             <Box sx={{  alignItems: 'center', marginTop:'20px' }}>
 
               <Typography color="primary" fontSize="lg" fontWeight="lg">
-                Hello, Sysco Labs
+                Hello, {company?.companyName ? company.companyName : 'Company Name'}
               </Typography>
 
               <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
@@ -181,7 +204,7 @@ const Home = () => {
               </Typography>
 
             </Box>
-
+              
             {/* insights */}
 
             <Box sx={{   
@@ -333,8 +356,8 @@ const Home = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
-                  <tr key={row.name}>
+                {postedJobs.map((job) => (
+                  <tr key={job.id}>
 
                     <td>
 
@@ -351,7 +374,7 @@ const Home = () => {
                                   },
                                   })}>
 
-                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {row.name} </Typography> 
+                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {job.jobTitle} </Typography> 
 
                         <Box sx={(theme)=>({ 
                                   display:'flex',
@@ -363,7 +386,7 @@ const Home = () => {
                                     gap: 0,
                                   },
                             })}>
-                          <Typography level='body-md'>Full Time</Typography>
+                          <Typography level='body-md'>{job.jobType}</Typography>
                           <Typography  level='body-md'>•</Typography>
                           <Typography level='body-sm'>23 Days Remaining</Typography>
                         </Box>
@@ -376,13 +399,13 @@ const Home = () => {
 
                     <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
                       
-                    {row.calories === 'Active' ? (
+                    {new Date(job.expiryDate) > new Date() ?(
                                                   <>
-                                                    <CheckCircleOutlineIcon color="success" /> {row.calories}
+                                                    <CheckCircleOutlineIcon color="success" /> Active
                                                   </>
                                                 ) : (
                                                   <>
-                                                    <WarningAmberIcon color="danger" /> {row.calories}
+                                                    <WarningAmberIcon color="danger" /> Expired
                                                   </>
                                                 )
                     }
@@ -393,7 +416,7 @@ const Home = () => {
 
                     <td>
                       <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                        <PeopleAltOutlinedIcon />      {row.fat}
+                        <PeopleAltOutlinedIcon />      {job.vacancies}
                       </Box>
                     </td>
 

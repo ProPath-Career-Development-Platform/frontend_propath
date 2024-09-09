@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState} from 'react';
 import Card from '@mui/joy/Card';
 import  CardContent  from '@mui/joy/CardContent';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
@@ -29,9 +30,56 @@ import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import CardActions from '@mui/joy/CardActions';
 
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import ModalDialog from '@mui/joy/ModalDialog';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+
+import { Link as RouterLink,useLocation,useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const token = localStorage.getItem('token');
+
 function InterviewSchedule() {
+  
+  const location = useLocation();
+  const { selectedIds } = location.state || { selectedIds: [] }; //get the selected ids from uselocation . we passed ids as state parameter
+  const {jobId} = useParams();
+  console.log(selectedIds.length);
+  //update the status of applicant to preSelected.
+
+
+  
+  // const updateStatusPreSelected = async(jobId,selectedIds)=>{
+
+  //   try{
+  //     const response = await axios.put(`http://localhost:8080/jobprovider/applicant/updateStatusPreSelected/${jobId})`,selectedIds,{
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         'Content-Type': 'application/json'
+  //       },
+  //     });
+  //     if (response.status === 200) {
+  //       console.log('Applicants updated successfully');
+  //     } else {
+  //       console.error('Failed to update applicants');
+  //     }
+  //   }catch(error){
+  //     console.error('error is updating',error)
+  //   }
+          
+  // }
+
+  // useEffect(() => {
+  //   if (jobId && selectedIds && selectedIds.length > 0) {
+  //     updateStatusPreSelected(jobId, selectedIds);
+  //   }
+  // }, [jobId, selectedIds]);
+  
   const [highlightedDays, setHighlightedDays] = React.useState([]);
   const [tabData, setTabData] = React.useState([]);
+  const [layout, setLayout] = React.useState(undefined);
 
   const handleDateChange = (newDate) => {
     const dateString = newDate.format('MM/DD/YY');
@@ -68,13 +116,29 @@ function InterviewSchedule() {
     );
   };
 
+  
+
+
   const handleTimeSlotChange = (dateString, newHoldTime) => {
-    setTabData((prev) =>
-      prev.map((tab) =>
-        tab.date === dateString ? { ...tab, holdTime: newHoldTime } : tab
-      )
+    const totalSlotsSelected = tabData.reduce(
+      (total, tab) => total + (tab.date === dateString ? newHoldTime.length : tab.holdTime.length),
+      0
     );
+
+    if (selectedIds && totalSlotsSelected > selectedIds.length) {
+      // Show the modal 
+      setLayout('center');
+    } else {
+      setTabData((prev) =>
+        prev.map((tab) =>
+          tab.date === dateString ? { ...tab, holdTime: newHoldTime } : tab
+        )
+      );
+    }
   };
+
+
+  
 
   React.useEffect(() => {
     tabData.forEach((tab) => {
@@ -107,18 +171,65 @@ function InterviewSchedule() {
     setHighlightedDays((prev) => prev.filter((date) => dayjs(date).format('MM/DD/YY') !== dateString));
   };
 
-  const handleSubmit = () => {
-    // Collect the data to send to the backend
-    const dataToSend = tabData.map((tab) => ({
-      date: tab.date,
-      sliderValue: tab.sliderValue,
-      duration: tab.duration,
-      holdTime: tab.holdTime,
-    }));
+  console.log(jobId);
 
-    console.log(dataToSend);
+  const dataToSend = tabData.map((tab) => ({
+    interviewDate: tab.date,
+    duration: tab.duration,
+    timeSlot: tab.holdTime,
+    
+    
+    
+  }));
 
-    // Send dataToSend to the backend using your preferred method (e.g., fetch, axios)
+  
+    // console.log('Data to send:', JSON.stringify(dataToSend, null, 2));
+    console.log('data to send',dataToSend);
+  
+
+  const handleSubmit = async(jobId,dataToSend,selectedIds) => {
+
+    try{
+      const response = await axios.post(`http://localhost:8080/jobprovider/createInterview/${jobId}`,dataToSend,
+        {
+        headers: {
+          Authorization: `Bearer ${token}` ,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if(response.status == 200){
+        console.log("successfully created Interview");
+      }else{
+        console.log("error in creating");
+      }
+      
+    }catch(error){
+      console.error("Error Creating Interview",error);
+    }
+   
+    try{
+      
+      const responseUpdate = await axios.put(`http://localhost:8080/jobprovider/applicant/updateStatusSelected/${jobId})`,selectedIds,
+      {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if(responseUpdate.status == 200){
+            console.log("successfully Updated Status");
+          }else{
+            console.log("error in Updating");
+          }
+          
+    }catch(error){
+      console.error("Error Updating Status",error);
+    }
+
+    
+    
   };
 
   return (
@@ -176,7 +287,7 @@ function InterviewSchedule() {
           Schedule Interview
         </Typography>
 
-        <Button color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={handleSubmit}>
+        <Button component={RouterLink} to="/jobprovider/home" color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={() => handleSubmit(jobId, dataToSend,selectedIds)}>
           Finish Schedule
         </Button>
       </Box>
@@ -249,8 +360,8 @@ function InterviewSchedule() {
                 >
                   {tabData
                     .sort((a, b) => {
-                        const dateA = dayjs(a.date, 'MM/DD/YY');
-                        const dateB = dayjs(b.date, 'MM/DD/YY');
+                        const dateA = dayjs(a.date, 'yyyy-MM-dd');
+                        const dateB = dayjs(b.date, 'yyyy-MM-dd');
                         return dateA.isAfter(dateB) ? 1 : -1; // Sorts in ascending order
                     })
                     .map((tab, index) => (
@@ -340,6 +451,25 @@ function InterviewSchedule() {
           </Box>
         </CardContent>
       </Card>
+      
+      <Modal open={!!layout} onClose={() => setLayout(undefined)}>
+        <ModalDialog
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <ModalClose />
+          <DialogTitle id="alert-dialog-title">
+            Invalid Selection
+          </DialogTitle>
+          <DialogContent id="alert-dialog-description">
+            You have selected more time slots than the available number of applicants. Please review your selection.
+          </DialogContent>
+        </ModalDialog>
+      </Modal>
+
+
+
+      
     </Box>
   );
 }

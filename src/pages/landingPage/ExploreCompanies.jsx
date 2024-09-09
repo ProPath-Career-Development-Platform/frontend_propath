@@ -7,7 +7,7 @@ import BeforeApply from '../../components/landingPage/exploreCompanies/BeforeApp
 const ExploreCompanies = () => {
   return (
     <div>
-        <JobNav/>
+        {/* <JobNav/> */}
         <ExploreCompaniesHero/>
         <Companies/>
         <BeforeApply/>

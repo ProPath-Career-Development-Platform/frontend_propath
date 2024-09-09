@@ -1,4 +1,4 @@
-import React,{useState} from 'react' 
+import React,{useState,useContext} from 'react' 
 import { useLocation } from 'react-router-dom'
 
 import Box from '@mui/joy/Box';
@@ -13,6 +13,10 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import Button from '@mui/joy/Button';
 import Divider from '@mui/joy/Divider';
 import Avatar from '@mui/joy/Avatar';
+import CircularProgress from '@mui/joy/CircularProgress';
+
+
+
 
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -24,6 +28,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';
 import Chip from '@mui/joy/Chip';
+import SchoolIcon from '@mui/icons-material/School';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import WorkIcon from '@mui/icons-material/Work';
@@ -33,6 +38,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import Typography from '@mui/joy/Typography';
 import { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { Skeleton } from 'survey-react-ui';
+import { useNavigate } from 'react-router-dom';
+//import  UserContext  from '../../../utils/userContext';
+import UserContext from '../../../utils/userContext'
+
 
 
 
@@ -63,37 +73,28 @@ function Toggler({
  
 function sidebarMenuItems() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [stackState, setStackState] = useState(false);
+
+
+  const {logUser,logout} = useContext(UserContext);
+
+ 
 
   useEffect(() => {
     const savedState = sessionStorage.getItem('planCardState');
-    if (savedState === null) {
-      setStackState(true);
-    } else {
-      const parsedState = JSON.parse(savedState);
-      if (parsedState === false) {
-        setStackState(false);
-      } else if (parsedState === true) {
-        setStackState(true);
-      }
-    }
+    setStackState(savedState === 'true');
+
   }, []);
-  
 
-   // Save state to session storage when it changes
-   useEffect(() => {
-    sessionStorage.setItem('planCardState', JSON.stringify(stackState));
-  }, [stackState]);
+  const handleStack = () => {
+    setStackState(prev => !prev);
+    sessionStorage.setItem('planCardState', !stackState);
+  };
 
-  function handleStack() {
-    console.log('Stack clicked');
-    if (stackState){
-      setStackState(false);
-    }else{
-      setStackState(true);
-    }
+ 
     
-  }
+
 
   
   return (
@@ -113,7 +114,8 @@ function sidebarMenuItems() {
       >
 
       {/* ================ List here ========== */}
-      <List
+
+<List
         size="sm"
         sx={{
           gap: 1,
@@ -126,6 +128,8 @@ function sidebarMenuItems() {
             component={RouterLink}
             to="/jobprovider/home/"
             selected={location.pathname === "/jobprovider/home/"}
+            disabled={!logUser}
+            
           >
             <HomeRoundedIcon />
             <ListItemContent>
@@ -134,11 +138,12 @@ function sidebarMenuItems() {
           </ListItemButton>
         </ListItem>
 
-        <ListItem>
+        <ListItem sx={{display: !logUser ? 'block' : 'none'}}>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/dashboard/"
             selected={location.pathname === "/jobprovider/dashboard/"}
+            disabled={logUser}
           >
             <DashboardRoundedIcon />
             <ListItemContent>
@@ -147,7 +152,7 @@ function sidebarMenuItems() {
           </ListItemButton>
         </ListItem>
 
-        <ListItem>
+        {/*<ListItem>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/post-a-job/"
@@ -158,17 +163,18 @@ function sidebarMenuItems() {
               <Typography level="title-sm">Post a Job</Typography>
             </ListItemContent>
           </ListItemButton>
-        </ListItem>
+        </ListItem>*/}
 
         <ListItem>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/my-jobs/"
-            selected={location.pathname === "/jobprovider/my-jobs/" }
+            selected={location.pathname.includes("/my-jobs/")}
+            disabled={!logUser}
           >
             <WorkIcon />
             <ListItemContent>
-              <Typography level="title-sm">My Jobs</Typography>
+              <Typography level="title-sm">Jobs</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>
@@ -177,7 +183,9 @@ function sidebarMenuItems() {
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/plans-and-billing/"
-            selected={location.pathname === "/jobprovider/plans-and-billing/"}
+            selected={location.pathname.includes("/plans-and-billing/")}
+            disabled={!logUser}
+            
           >
             <PaymentIcon />
             <ListItemContent>
@@ -190,11 +198,40 @@ function sidebarMenuItems() {
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/meet-up/"
-            selected={location.pathname === "/jobprovider/meet-up/"}
+            selected={location.pathname.includes("/meet-up/")}
+            disabled={!logUser}
           >
             <GroupsIcon />
             <ListItemContent>
               <Typography level="title-sm">Meet Up</Typography>
+            </ListItemContent>
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem>
+          <ListItemButton
+            component={RouterLink}
+            to="/jobprovider/home/"
+            disabled={!logUser}
+          
+          >
+            <SchoolIcon />
+            <ListItemContent>
+              <Typography level="title-sm">Courses</Typography>
+            </ListItemContent>
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem>
+          <ListItemButton
+            component={RouterLink}
+            to="/jobprovider/Interviews/"
+            selected={location.pathname.includes("/Interviews")}
+          
+          >
+            <SchoolIcon />
+            <ListItemContent>
+              <Typography level="title-sm">Interviews</Typography>
             </ListItemContent>
           </ListItemButton>
         </ListItem>
@@ -291,6 +328,7 @@ function sidebarMenuItems() {
             component={RouterLink}
             to="/jobprovider/settings/"
             selected={location.pathname === "/jobprovider/settings/"}
+            disabled={!logUser}
             
             >
               <SettingsRoundedIcon />
@@ -355,20 +393,32 @@ function sidebarMenuItems() {
 
         </>}
 
+      
+  
+      
+
 
       </Box>
       <Divider />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+
+
         <Avatar
+          sx={{p:0.6}}
           variant="outlined"
           size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+          src={logUser?.logoImg || ''}
+         
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Sysco Labs</Typography>
-          <Typography level="body-xs">syscolabs@org.com</Typography>
+          
+          <Typography level="title-sm">{logUser?.companyName || ''}</Typography>
+         
+          
+          <Typography level="body-xs">{logUser?.email || ''}</Typography>
+         
         </Box>
-        <IconButton size="sm" variant="plain" color="neutral">
+        <IconButton size="sm" variant="plain" color="neutral" onClick={()=> logout(navigate)}>
           <LogoutRoundedIcon />
         </IconButton>
       </Box>

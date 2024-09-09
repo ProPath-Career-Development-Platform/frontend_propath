@@ -23,6 +23,21 @@ const JobNav = () => {
             Explore Companies
           </Link>
         </NavbarItem>
+        <NavbarItem className={location.pathname === '/workshops' ? 'isActive' : ''}>
+          <Link color="foreground" to='/workshops' href="#" className='font-semibold text-[#808080]'>
+            Workshops
+          </Link>
+        </NavbarItem>
+        <NavbarItem className={location.pathname === '/professionalmemberships' ? 'isActive' : ''}>
+          <Link color="foreground" to='/professionalmemberships' href="#" className='font-semibold text-[#808080]'>
+            Professional Memberships
+          </Link>
+        </NavbarItem>
+        <NavbarItem className={location.pathname === '/cpdcourses' ? 'isActive' : ''}>
+          <Link color="foreground" to='/cpdcourses' href="#" className='font-semibold text-[#808080]'>
+            CPD Courses
+          </Link>
+        </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
