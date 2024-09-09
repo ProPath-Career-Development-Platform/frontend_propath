@@ -1,4 +1,4 @@
-import React , {useState} from 'react'
+import React , {useState, useEffect} from 'react'
 import axios from 'axios';
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
@@ -51,6 +51,9 @@ import ListNew from '../../components/list';
 import Footer from '../../components/landingPage/footer/Footer';
 import Banner from '../../components/JobSeeker/banner';
 import ApplyATS from '../../components/JobSeeker/applyATS';
+import { Navigate } from 'react-router-dom';
+import { getToken } from '../Auth/Auth';
+import { useNavigate } from 'react-router-dom';
 const cardData = [
   { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
   { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
@@ -107,11 +110,34 @@ const cardData = [
 
 
 
-const REST_API_BASE_URL = 'http://localhost:8080/jobprovider/all-rows'
-export const getEmployee = (employeeId) => axios.get(REST_API_BASE_URL)
-
 
 const JobSeekerHome = () => {
+  const navigate = useNavigate()
+  if(getToken() == null){
+    console.log("Token doesnt exist")
+    navigate('/');
+  }
+
+  const [message, setMessage] = useState([]);
+
+
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/jobseeker/getCompany', {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+      },
+    }).then((response) => {
+      setMessage(response.data); // Store the response data in state
+      console.log("Response Data: ", response.data); // Log the response data
+    }).catch((error) => {
+      console.error('Error fetching data:', error.response ? error.response.data : error.message);
+    });
+  }, []);
+
+  console.log("JTTOKEN: " + getToken());
+
+  
   const [type, setType] = useState(1);
   const people = ["Bob", "Lisa", "Anika", "Obi", "Sara"];
   const pageLimit = 8;
@@ -125,7 +151,7 @@ const JobSeekerHome = () => {
   };
   
   
-
+  
    
   const [selectedSize, setSelectedSize] = useState(12); // Initial value
   const total = Math.floor(cardData.length / Number(selectedSize))
@@ -303,8 +329,8 @@ const JobSeekerHome = () => {
                             
                           }}
                         >
-                          {cardData.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => (
-                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img = {card.img} />
+                          {message.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => (
+                            <JSCard key={index} title={card.jobTitle} content={card.jobDescription.split('.')[0]} location={card.company.location.split(',')[0]} company={card.company.companyName} type = {type} img = {card.img} id={card.id}   />
                           ))}
                           
                         
@@ -324,9 +350,9 @@ const JobSeekerHome = () => {
                            
                          }}
                        >
-                         {cardData.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => (
-                           <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} />
-                         ))}
+                        {message.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => (
+                            <JSCard key={index} title={card.jobTitle} content={card.jobDescription} location={card.company.location.split(',')[0]} company={card.company.companyName} type = {type} img = {card.img}  />
+                          ))}
                          
                         
                         

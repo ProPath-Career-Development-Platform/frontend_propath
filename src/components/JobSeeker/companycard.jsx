@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -30,15 +30,44 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import InfoIcon from '@mui/icons-material/Info';
 import { jsx } from '@emotion/react';
 
-const Companycard = () => {
-    const companyDetails = [['Founded In :', '06 March 2006'] , ['Organization type :' , 'Private Company'] ,
-                            ['Company Size : ', '20 - 300 employees '] , ['Phone', '+76 548 7514'] , ['Email :' , 'maniltenuka@gmail.com'],
-                            ['Website','www.wso2.com']]
+const Companycard = ({phone , email, website , about , location , name , expire}) => {
+    const companyDetails = [['Location : ' , location ],
+                            ['Company Size : ', '20 - 300 employees '] , ['Phone', phone] , ['Email :' , email],
+                            ['Website',website]]
+
+    const timer = () => {
+       
+
+        const today = new Date()
+        const future = new Date(expire)
+        const difference = future - today
+
+     
+        let seconds = Math.floor(difference / 1000); 
+        let minutes = Math.floor(seconds / 60); 
+        let hours = Math.floor(minutes / 60); 
+        let days = Math.floor(hours / 24); 
+
+        
+        seconds = seconds % 60;
+        minutes = minutes % 60;
+        hours = hours % 24;
+        days = days;
+
+        return days+ " : " + hours + " : " + minutes + " : " + seconds
+         
+
+    }
+
+    const [timeLeft , setTimeLeft] = useState(timer())
+    console.log("Functsion :" , {phone})
    return(
 
             <Box sx={{ border: '2px solid #e0e0e0' , marginTop : '10px'}}>
+            <Box sx={{display: 'flex' ,marginTop: '15px' , marginBottom: '15px'}}>
             <Box sx={{marginTop:'10px' , marginLeft : '15px' , display : 'flex'}}>
                 <img 
                     src={wso2} 
@@ -51,35 +80,51 @@ const Companycard = () => {
                     }} 
                 />
 
-                <Box sx={{display: 'flex' , flexDirection : 'column' , marginLeft : '10px'}}>
-                    <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '15px'} , marginBottom : '4px'}}>WS02</Typography>
-                    <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '10px'} , marginBottom : '4px'}}>IT and Cosultancy Service</Typography>
+                <Box sx={{display: 'flex'  , marginLeft : '20px' , alignItems: 'center' ,width:'100%'}}>
+                    <Box>
+                    <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '30px'} , marginBottom : '4px'}}>{name}</Typography>
+                    </Box>
+                   
+                  
                 </Box>
                
                 
             </Box>
+            </Box>
                 <Box sx = {{marginLeft : '16px' , marginTop : '16px' , position : 'relative'}}>
-
-                {companyDetails.map((item) => (
+                <Typography sx ={{display:'flex' , marginBottom: '30px' , marginRight : '10px'}} ><InfoIcon/>{about}</Typography>
+                {companyDetails.map((item, index) => (
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' , flexDirection : {sm : 'column' , xs:  'column' , md : 'row'
 
                                 } }}>
                                     <Typography>{item[0]}</Typography>
-                                    <Typography sx={{ marginRight : 1 , fontWeight : 500}}>{item[1]}</Typography>
+                                    {index === companyDetails.length - 1 ? (
+                                            <a href={website}>
+                                                <Typography sx={{ marginRight: 1, fontWeight: 500 }}>{item[1]}</Typography>
+                                            </a>
+                                            ) : (
+                                            <Typography sx={{ marginRight: 1, fontWeight: 500 }}>{item[1]}</Typography>
+                                     )}
+                                                                                
+                                        
+                                    
+                                    
+                                    
                                 </Box>
 
                 ) )
                 }
 
                 </Box>
-                <Box sx={{marginTop: '16px', marginLeft : '16px' , marginBottom : '16px'}}>
-                    <Stack spacing={2}  direction={'row'}>
-                    <InstagramIcon/>
-                    <FacebookIcon/>
-                    <XIcon/>
-                    <YouTubeIcon/>
-                    </Stack>
+                <Box sx={{ marginTop: '25px', marginBottom: '16px' , display:'flex' ,justifyContent: 'center'}}>
+                <Stack spacing={2} direction={'row'}>
+                    <InstagramIcon sx={{ fontSize: 25 , color: "#E1306C"}} />
+                    <FacebookIcon sx={{ fontSize: 25 , color: "blue"}} />
+                    <XIcon sx={{ fontSize: 25 , color: "black"}} />
+                    <YouTubeIcon sx={{ fontSize: 25 , color: "red" }} />
+                </Stack>
                 </Box>
+
             </Box>
             
    )

@@ -15,11 +15,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import wso2img from '/wso2img.png'
 import sysco from '/jobs/sysco.png'
 
-export default function JSCard({ title, content, location, company, type , img }) {
+export default function JSCard({ title, content, location, company, type , img , id }) {
   const navigate = useNavigate();
 
   const handleApplyNowClick = () => {
-    navigate('/JobSeeker/JobDetails/' , { state: { title } });
+    navigate(`/JobSeeker/JobDetails/${id}` , { state: { id } });
   };
 
   if (type === 1) {

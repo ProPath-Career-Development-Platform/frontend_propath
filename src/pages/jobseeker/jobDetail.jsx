@@ -1,4 +1,5 @@
 import React , {useState , useEffect} from 'react';
+import axios from 'axios';
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -33,7 +34,36 @@ import ApplyJob from '../../components/JobSeeker/applyJob';
 import AppliedCard from '../../components/JobSeeker/appliedcard';
 import Interviewcart from '../../components/JobSeeker/interviewcart';
 import CircularProgress from '@mui/joy/CircularProgress';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import { getToken } from '../Auth/Auth';
+import { useParams } from 'react-router-dom';
+import Timer from '../../components/JobSeeker/Timer';
+
 const JobDetails = () => {
+
+  const [message, setMessage] = useState({});
+
+  const { id } = useParams(); 
+ 
+  console.log("id : " + id)
+
+  useEffect(async () => {
+    let res=await axios.get('http://localhost:8080/jobseeker/getJobById', {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+      },
+      params: {
+        Id: id// This is where you pass the request parameter `id=1`
+      },
+    })
+    let data=await res.data
+    setMessage(data);
+
+  }, [id]);
+  
+  console.log(message.expiryDate)
+ 
+
 
   const responsibilities = [
     "Quisque semper gravida est et consectetur.",
@@ -55,10 +85,6 @@ const JobDetails = () => {
     { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' ,img : '/jobs/codegen.png' },
     { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' ,img : '/jobs/microsoft.png' }
   ]
-
-  var amount = 6
-  const location = useLocation();
-  const { title } = location.state || {}
   
   const [Submit , setSubmit] = useState(0)
   const applyhandleChange = (value)=> {
@@ -76,6 +102,7 @@ const JobDetails = () => {
       return () => clearTimeout(timer); // Cleanup timeout if the component unmounts or Submit changes
     }
   }, [Submit]);
+
   return (
     <Box
       component="main"
@@ -177,13 +204,14 @@ const JobDetails = () => {
         justifyContent: 'center', 
         height: '75%'}}
         >
-        <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '30px'} , marginBottom : '4px'}}>{title}</Typography>
+        <Typography sx={{fontWeight:'bold' , fontSize: {xs: 'auto' , sm : 'auto' , md: '30px'} , marginBottom : '4px'}}>{message.jobTitle}</Typography>
         <Box sx={{display:'flex' , gap: {xs: 1 , sm: 1 , md : 1 , lg: 2} ,
                   flexDirection: {xs:'column' , sm:'column' , md:'column' , lg: 'row'}
         }}>
-            <Typography><LinkIcon/>WWW.Instagram.com</Typography>
-            <Typography><LocalPhoneIcon/>+94 76 2 777 952</Typography>
-            <Typography><EmailIcon/>maniltenuka@gmail.com</Typography>
+           
+            <Typography><LocationCityIcon/>{message.company?.companyName}</Typography>
+            <Typography><LocationOnIcon/>{message.company?.location}</Typography>
+           
         
         </Box>
     
@@ -192,12 +220,13 @@ const JobDetails = () => {
       
       <Box 
       sx={{alignItems:'center' , justifyContent:'center' , height: '95%' , display: 'flex' , flexDirection: 'column' ,position:'absolute' , right: 0 }}>
-      <Stack direction={{xs:'column' , sm: 'column' , md: 'column' , lg: 'row'}} spacing={2}>
+      <Stack direction={{xs:'row' , sm: 'row' , md: 'row' , lg: 'row'}} spacing={2}>
       <Button variant="contained" sx={{backgroundColor:'blue' , height: '42px' , width:{xs : '50px', sm: '50px' , md : '50px' , lg : 'auto'} }} >
          <BookmarkBorderIcon sx={{color:'white' }}/>
       </Button>
       {Submit == 0 && (
-        <ApplyJob title = {title} callback={applyhandleChange}></ApplyJob>
+        <ApplyJob title = {message.jobTitle} callback={applyhandleChange}></ApplyJob>
+      
       )}
 
       {Submit == 1 && (
@@ -233,8 +262,8 @@ const JobDetails = () => {
      
       
       </Stack>
-      <Typography sx={{ fontSize: '12px', marginTop: '3px' , display: 'flex' , flexDirection: {xs: 'column' , sm: 'row' }}}>
-        Job expires in : <span style={{ color: 'red' }}>30 June 2021</span>
+      <Typography sx={{ fontSize: '12px', marginTop: '15px' , display: 'flex' , flexDirection: {xs: 'column' , sm: 'row' }}}>
+        Job expires in : <span style={{ color: 'red' }}><Timer expiryDate={message.expiryDate}/></span>
       </Typography>
 
       </Box>
@@ -246,10 +275,12 @@ const JobDetails = () => {
         <Box sx={{maxWidth : '60%'}} >
           <Stack direction={'column'} sx={{}}>
               <Typography sx={{fontSize:'18px' , fontWeight: '500' , marginTop: '13px'}}>Job description</Typography>
-              <Typography sx = {{fontSize: '16px'}}>Integer aliquet pretium consequat. Donec et sapien id leo accumsan pellentesque eget maximus tellus. Duis et est ac leo rhoncus tincidunt vitae vehicula augue. Donec in suscipit diam. Pellentesque quis justo sit amet arcu commodo sollicitudin. Integer finibus blandit condimentum. Vivamus sit amet ligula ullamcorper, pulvinar ante id, tristique erat. Quisque sit amet aliquam urna. Maecenas blandit felis id massa sodales finibus. Integer bibendum eu nulla eu sollicitudin. Sed lobortis diam tincidunt accumsan faucibus. Quisque blandit augue quis turpis auctor, dapibus euismod ante ultricies. Ut non felis lacinia turpis feugiat euismod at id magna. Sed ut orci arcu. Suspendisse sollicitudin faucibus aliquet.
+              <Typography sx={{ fontSize: '16px' }}>
+              <div
+                dangerouslySetInnerHTML={{ __html: message.jobDescription }}
+              />
+            </Typography>
 
-                          Nam dapibus consectetur erat in euismod. Cras urna augue, mollis venenatis augue sed, porttitor aliquet nibh. Sed tristique dictum elementum. Nulla imperdiet sit amet quam eget lobortis. Etiam in neque sit amet orci interdum tincidunt.
-              </Typography>
               <Typography sx={{fontSize:'18px' , fontWeight: '500' , marginTop: '13px'}}>Responsibilities</Typography>
               <ul>
                 {responsibilities.map((item, index) => (
@@ -273,8 +304,10 @@ const JobDetails = () => {
          
 
         )}
-        <Jobcard/>
-        <Companycard/>
+        
+        
+        <Jobcard jobPostedDate={message.postedIn} jobExpiresIn ={message.expiryDate} minSalary = {message.minSalary} maxSalary = {message.maxSalary} education = {message.education} jobType = {message.jobType} location = {message.company?.location} experience={message.experience} />
+        <Companycard phone= {message.company?.contactNumber} email = {message.company?.email} website = {message.company?.companyWebsite} about = {message.company?.aboutUs} location={message.company?.location} name = {message.company?.companyName}  expire = {message.expiryDate}/>
         </Box>
       </Box>
 
@@ -293,7 +326,7 @@ const JobDetails = () => {
                           }}
                         >
                           {cardData.slice(0,6).map((card, index) => (
-                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {1} img = {card.img} />
+                            <JSCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {1} img = {card.img} phone = {message.company?.contactNumber} />
                           ))}
                           
                         
