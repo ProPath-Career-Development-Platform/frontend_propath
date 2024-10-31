@@ -1,0 +1,55 @@
+.topnavbar {
+    background-color: #ffffff;
+    color: #1b1b1b;
+    font-weight: 500;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .topnavbar ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .topnavbar a {
+    text-decoration: none;
+    height: 100%;
+    display: flex;
+    padding: 0.75rem;
+    color: inherit; /* Ensure the text color is inherited */
+  }
+  
+  .topnavbar li:hover {
+    color: #6756a8;
+  }
+  
+  
+  @media (max-width: 600px) {
+    .topnavbar {
+      display: none;
+    }
+  }
+  
+  .navbar-end .btn:hover {
+    background-color: white;
+    color: #3f067a;
+    border-color: #3f067a;
+  }
+  
+  .navlink:hover,
+  .navlink:focus {
+    background-color: white !important;
+    color: #3f067a !important;
+  }
+  
+  .navlink.nav-active {
+    background-color: white;
+    color: #3f067a;
+    font-weight: 700;
+  }
+  
