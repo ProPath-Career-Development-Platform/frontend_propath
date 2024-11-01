@@ -9,11 +9,30 @@ import { Avatar } from '@mui/joy';
 import Box from '@mui/joy/Box';
 import Typography from '@mui/joy/Typography';
 import OpenInNew from '@mui/icons-material/OpenInNew';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { getToken } from '../../../pages/Auth/Auth';
 export default function ProfileSelect() {
+
+  const [seekerdetails, setSeekerDetails] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/jobseeker/getUserDetails', {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+      },
+    }).then((response) => {
+      setSeekerDetails(response.data); // Store the response data in state
+      console.log("Response Data: ", response.data); // Log the response data
+    }).catch((error) => {
+      console.error('Error fetching data:', error.response ? error.response.data : error.message);
+    });
+  }, []);
+
   const details = [
-                    { label: 'Name:', value: 'Santhush Fernando' },
-                    { label: 'Email:', value: 'Email Address' },
-                    { label: 'Status:', value: 'Active' },
+                    { label: 'Name:', value: seekerdetails.user?.name },
+                    { label: 'Email:', value: seekerdetails.user?.email },
+                    { label: 'Status:', value: seekerdetails.user?.enabled == true ? "Active" : "Not Active" },
                   ]
   const [type, setType] = React.useState(1);
   return (
@@ -34,21 +53,21 @@ export default function ProfileSelect() {
          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 3, backgroundColor: '#EDF3FC', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', width: '400px', margin: '0 auto' }}>
           <Avatar src={seba} sx={{ width: '150px', height: '150px', borderRadius: '50%', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
           <Box sx={{ mt: '20px', mb: '20px', textAlign: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Santhush Fernando</Typography>
-          <Typography variant="body1" sx={{  fontSize: '13px' }}>SFernando@gmail.com</Typography>
-          <Typography variant="body1" sx={{  fontSize: '13px'  }}>Sri Lanka</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{seekerdetails.user?.name}</Typography>
+          <Typography variant="body1" sx={{  fontSize: '13px' }}>{seekerdetails.user?.email}</Typography>
+          <Typography variant="body1" sx={{  fontSize: '13px'  }}>{seekerdetails.user?.email}</Typography>
         </Box>
         </Box>
           <Box sx={{width: '500px' }}>
           {details.map((item, index)=> (
               
-              <Box sx={{display: 'flex' , flexDirection: 'row' , borderRadius: '8px' , backgroundColor: (index%2) == 0 ? '#EDF3FC' : 'white', justifyContent: 'space-around'}}>
-              <Box sx={{}}>
+              <Box sx={{display: 'flex' , flexDirection: 'row' , borderRadius: '8px' , backgroundColor: (index%2) == 0 ? '#EDF3FC' : 'white', justifyContent: 'space-between'}}>
+              <Box sx={{marginLeft:'50px' }}>
               
               <Typography sx={{lineHeight: '50px'}}>{item.label} </Typography>
               </Box>
-              <Box sx={{ display: 'flex' }}>
-              <Typography sx={{lineHeight: '50px'}}>{item.value} </Typography>
+              <Box sx={{ display: 'flex' ,  flexDirection: 'row' ,justifyContent: 'center'}}>
+              <Typography sx={{lineHeight: '50px' }}>{item.value} </Typography>
               </Box>
             
               </Box>

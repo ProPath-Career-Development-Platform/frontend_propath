@@ -47,21 +47,25 @@ const JobDetails = () => {
  
   console.log("id : " + id)
 
-  useEffect(async () => {
-    let res=await axios.get('http://localhost:8080/jobseeker/getJobById', {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Include the token in the headers
-      },
-      params: {
-        Id: id// This is where you pass the request parameter `id=1`
-      },
-    })
-    let data=await res.data
-    setMessage(data);
+  useEffect( () => {
+    const fetchData = async () => {
+      let res=await axios.get('http://localhost:8080/jobseeker/getJobById', {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+        },
+        params: {
+          Id: id// This is where you pass the request parameter `id=1`
+        },
+      })
+      let data=await res.data
+      setMessage(data);
 
+    }
+    
+    fetchData();
   }, [id]);
   
-  console.log(message.expiryDate)
+  console.log(message)
  
 
 
@@ -186,7 +190,7 @@ const JobDetails = () => {
       }}>
       <Box sx={{marginTop:'10px'}}>
             <img 
-                src={wso2} 
+                src={message?.company?.bannerImg} 
                 alt="Logo" 
                 style={{ 
                 width: '100px', // Adjust the size as needed
@@ -307,7 +311,7 @@ const JobDetails = () => {
         
         
         <Jobcard jobPostedDate={message.postedIn} jobExpiresIn ={message.expiryDate} minSalary = {message.minSalary} maxSalary = {message.maxSalary} education = {message.education} jobType = {message.jobType} location = {message.company?.location} experience={message.experience} />
-        <Companycard phone= {message.company?.contactNumber} email = {message.company?.email} website = {message.company?.companyWebsite} about = {message.company?.aboutUs} location={message.company?.location} name = {message.company?.companyName}  expire = {message.expiryDate}/>
+        <Companycard phone= {message.company?.contactNumber} email = {message.company?.email} website = {message.company?.companyWebsite} about = {message.company?.aboutUs} location={message.company?.location} name = {message.company?.companyName}  expire = {message?.expiryDate}/>
         </Box>
       </Box>
 

@@ -77,7 +77,7 @@ import EmployerSite from "../pages/landingPage/EmployerSite";
 //security
 import  ProtectedRoute  from "../components/ProtectedRoute";
 import AdminLayout from '../layout/AdminLayout';
-
+import Event from '../pages/jobseeker/event';
 
 
 
@@ -344,6 +344,11 @@ const router = createBrowserRouter([
         path:"JobScore",
         element:<JobScore/>
       },
+
+      {
+        path:"event",
+        element:<Event/>
+      }
 
       
     ],

@@ -26,7 +26,7 @@ const AppliedCard = ({status}) => {
       setState(2)
     } 
 
-    const companyDetails = [['Applied Date:', '06 March 2006'] , ['Status :' , status] , 
+    const companyDetails = [['Applied Date:', new Date().toString().split(" ").splice(1,3).join(" ") , Date] , ['Status :' , status] , 
     ]
   return (
    

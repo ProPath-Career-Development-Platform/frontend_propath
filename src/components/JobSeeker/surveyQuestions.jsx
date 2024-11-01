@@ -18,10 +18,12 @@ const surveyJson = {
     type: "text"
   },
   {
-    name: "LastName",
-    title: "Enter your last name:",
+    name: "Experience",
+    title: "How many years of experience do you have :",
     type: "text"
   },
+  
+  
  
   
 ]
@@ -38,7 +40,10 @@ function SurveyQuestions({callback}) {
 
   return (
   <Box sx={{display:'flex' , justifyContent: 'center' , alignItems: 'center', flexDirection: 'column'}}>
+  
     <Survey model={survey} />
+  
+    
     <Button sx={{width: '80px' , margin: '30px 0 10px 0'}} onClick={()=> (callback(2))} >Next</Button>
   </Box>)
 

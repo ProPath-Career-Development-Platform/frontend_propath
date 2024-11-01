@@ -103,9 +103,16 @@ export default function JSCard({ title, content, location, company, type , img ,
               position: 'relative',
             }}
           >
-            <div>
-              <BakeryDiningIcon color="warning" sx={{ fontSize: '2.5rem' }} />
-            </div>
+            <Box
+            component="img"
+            src={img}
+            alt="content image"
+            sx={{
+              width: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+          />
           </AspectRatio>
         </CardOverflow>
         <Box
@@ -133,12 +140,13 @@ export default function JSCard({ title, content, location, company, type , img ,
           >
             <Button
               variant="solid"
-              color="warning"
+              
               sx={{
                 maxWidth: '20%',
                 position: 'absolute',
                 right: '10px',
                 top: '14px',
+                backgroundColor: '#3f067a'
               }}
               onClick={handleApplyNowClick}
             >

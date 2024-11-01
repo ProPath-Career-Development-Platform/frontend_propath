@@ -38,9 +38,9 @@ const ProfileDropdown = () => {
     <div className="relative ml-4" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="relative flex items-center p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+        className="relative flex items-center p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
       >
-        <img src={seba} alt="icon" style={{ height: '24px', width: '24px' , borderRadius: '12px'}} />
+        <img src={seba} alt="icon" style={{ height: '35px', width: '55px' , borderRadius: '50%'}} />
       </button>
 
       {isOpen && (

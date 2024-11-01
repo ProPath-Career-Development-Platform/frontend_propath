@@ -183,13 +183,13 @@ const Courses = () => {
                     }}
                       >
                         
-                        <Box sx={{ display: 'flex', gap : 2  }}>
-                           <JSDropDown name = {"Job Type "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1' />
-                           <JSDropDown name = {"Modality "} sizes = {['Inoffice', 'Remote'  ]} proptype = '1'/>
-                           <JSDropDown name = {"Job Type "} sizes = {['Srilanka', 'Bangladesh' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1'/>
-                           <JSDropDown name = {"Salary "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '0'/> 
-                         
-                        </Box>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <JSDropDown name={"Course Type"} sizes={['Full Course', 'Short Course', 'Workshop', 'Seminar']} proptype='1' />
+                        <JSDropDown name={"Level"} sizes={['Beginner', 'Intermediate', 'Advanced']} proptype='1' />
+                        <JSDropDown name={"Location"} sizes={['Online', 'On-Campus', 'Hybrid']} proptype='1' />
+                        <JSDropDown name={"Duration"} sizes={['1 Week', '1 Month', '3 Months', '6 Months', '1 Year']} proptype='0' />
+                      </Box>
+
                         <Box
                               sx={{
                                         display: 'flex',

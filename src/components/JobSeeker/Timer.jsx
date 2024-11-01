@@ -21,8 +21,10 @@ const Timer = ({expiryDate}) => {
         minutes = minutes % 60;
         hours = hours % 24;
         days = days;
-        
-        if(days >= 1){
+        if(seconds<0){
+          return "Job has expired"
+        }
+        else if(days >= 1){
             return days + " days " + hours + " hours " + minutes + " minutes "
         }
         else if (hours >=1 ) {

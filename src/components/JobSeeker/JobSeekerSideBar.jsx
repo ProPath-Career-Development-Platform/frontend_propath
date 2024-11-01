@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
-
+import React, { useState , useContext} from "react";
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
@@ -34,11 +32,13 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import GroupsIcon from "@mui/icons-material/Groups";
 
 import Typography from "@mui/joy/Typography";
-
+import UserContext from "../../utils/userContext";
+import { useNavigate } from "react-router-dom";
 console.log("Current pathname:", location.pathname);
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = useState(defaultExpanded);
+ 
   return (
     <>
       {renderToggle({ open, setOpen })}
@@ -59,7 +59,8 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 }
 
 function JobSeekerSideBar() {
-
+ const navigate = useNavigate()
+  
   return (
     <>
       <Box
@@ -183,7 +184,7 @@ function JobSeekerSideBar() {
             </ListItemButton>
           </ListItem>
         </List>
-
+          
         {/* <Card
           invertedColors
           variant="soft"
@@ -221,7 +222,13 @@ function JobSeekerSideBar() {
           <Typography level="title-sm">Santhush F.</Typography>
           <Typography level="body-xs">Santhush@gmail.com</Typography>
         </Box>
-        <IconButton size="sm" variant="plain" color="neutral">
+        <IconButton 
+          size="sm" 
+          variant="plain" 
+          color="neutral" 
+          onClick={() => navigate('/')} 
+        >
+          
           <LogoutRoundedIcon />
         </IconButton>
     </Box>

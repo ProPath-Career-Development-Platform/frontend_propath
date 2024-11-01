@@ -145,7 +145,7 @@ const JobSeekerDashboard= () => {
                         
                       
                         <Box sx={{ display: 'flex' }}>
-                            <JSSearch/>
+                            <JSSearch  />
                             <Alert />
                             <ProfileDropdown />
                            

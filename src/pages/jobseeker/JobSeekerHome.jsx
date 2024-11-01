@@ -54,6 +54,9 @@ import ApplyATS from '../../components/JobSeeker/applyATS';
 import { Navigate } from 'react-router-dom';
 import { getToken } from '../Auth/Auth';
 import { useNavigate } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
+
+import Modal from '@mui/joy/Modal';
 const cardData = [
   { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
   { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
@@ -114,29 +117,60 @@ const cardData = [
 const JobSeekerHome = () => {
   const navigate = useNavigate()
   if(getToken() == null){
-    console.log("Token doesnt exist")
+   
     navigate('/');
   }
 
   const [message, setMessage] = useState([]);
-
+  const [isNetwork, setIsNetwork] = useState(-1); //0 for notconnected , 1 for connected 
+  const [paginationLength , setPaginationLength] = useState([]);
 
 
   useEffect(() => {
-    axios.get('http://localhost:8080/jobseeker/getCompany', {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Include the token in the headers
-      },
-    }).then((response) => {
-      setMessage(response.data); // Store the response data in state
-      console.log("Response Data: ", response.data); // Log the response data
-    }).catch((error) => {
-      console.error('Error fetching data:', error.response ? error.response.data : error.message);
-    });
-  }, []);
+    const fetchData = async () => {
+      let res = await axios.get('http://localhost:8080/jobseeker/getCompany', {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+        },
+      }).then((response) => {
+        setMessage(response.data); // Store the response data in state
+        
+       
+        if(isNetwork === 0){
+          setIsNetwork(2);
+          setTimeout(()=>setIsNetwork(1),1000)
+        }
+        if(isNetwork ===1){
+          setIsNetwork(1);
+        }
+       
+        
+        // Log the response data
+      }).catch((error) => {
+       
+      
+        if (isNetwork !== 0) {
+          setIsNetwork(0); // Set to disconnected only if it’s not already 0
+        }
+     
+      });
+    }
+    
+    fetchData();
+    const interval = setInterval(fetchData,5000)
+    return () => clearInterval(interval);
+    console.log(message)
+  }, [isNetwork]);
+  
 
-  console.log("JTTOKEN: " + getToken());
 
+  
+
+ 
+  useEffect(()=>{
+    setPaginationLength(message.length)}
+    
+  ,[message])
   
   const [type, setType] = useState(1);
   const people = ["Bob", "Lisa", "Anika", "Obi", "Sara"];
@@ -147,25 +181,27 @@ const JobSeekerHome = () => {
   const handlePageChange = (event, newValue) => {
     const newPage = 12// Extract the number from the selected value
     setPage(newPage);
-    console.log(page)
+   
+    
   };
   
-  
-  
+
    
   const [selectedSize, setSelectedSize] = useState(12); // Initial value
-  const total = Math.floor(cardData.length / Number(selectedSize))
+  const total = Math.floor(paginationLength / Number(selectedSize))
   const [PageNumber , setPageNumber] = useState(0)
   const handleSizeChange = (event, newValue) => {
     const x = newValue.split(" ")
     setSelectedSize(x[0]);
-    console.log(selectedSize)
+    
   };
 
   const getValuefromChild = (value)=> {
         setPageNumber(value)
-        console.log('page Num' , PageNumber)
+        
   }
+
+ 
   return (
 
     
@@ -193,6 +229,52 @@ const JobSeekerHome = () => {
               },
             }}
           >
+          {isNetwork == 0 && (
+            <Box open ={open}
+            sx={{
+              display:'flex',
+              justifyContent: 'center',
+              margin: '0px 0px 0px 0px',
+            
+              height: 'fit-content'
+
+            }}>
+              <Box sx={{padding: '20px 20px 20px 20px' ,  display: 'flex' , gap: 3 , alignItems: 'center'}}>
+              <Typography sx={{display:'flex', alignitems: 'center' , color: 'red'}}>
+                Unable to connect to network
+              </Typography>
+              <CircularProgress/>
+                
+            
+              </Box>
+        
+            </Box>
+            
+          )
+          }
+          {
+            isNetwork == 2 && (
+              <Modal open ={open}
+              sx={{
+                display:'flex',
+                justifyContent: 'center',
+              
+                height: 'fit-content'
+  
+              }}>
+                <Box sx={{padding: '20px 20px 20px 20px' , display: 'flex' , gap: 3 , alignItems: 'center'}}>
+                <Typography sx={{display:'flex', alignitems: 'center' , color: 'green'}}>
+                  Connected Successfully
+                </Typography>
+               
+                  
+              
+                </Box>
+          
+              </Modal>
+            )
+          }
+  
            
             <Box
             sx={{
@@ -213,7 +295,7 @@ const JobSeekerHome = () => {
                         
                       
                         <Box sx={{ display: 'flex' }}>
-                            <JSSearch/>
+                            <JSSearch message={message}/>
                             <Alert />
                             <ProfileDropdown />
                            
@@ -329,9 +411,15 @@ const JobSeekerHome = () => {
                             
                           }}
                         >
-                          {message.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => (
-                            <JSCard key={index} title={card.jobTitle} content={card.jobDescription.split('.')[0]} location={card.company.location.split(',')[0]} company={card.company.companyName} type = {type} img = {card.img} id={card.id}   />
-                          ))}
+                          {message.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => {
+                       
+                          
+                            return(
+
+                              <JSCard key={index} title={card.jobTitle} content={card?.jobDescription?.split('<p>')[1]?.split('</p>')[0] == undefined ? card.jobDescription.split(',')[0] : card?.jobDescription?.split('<p>')[1]?.split('</p>')[0]} location={card?.company?.location.split(',')[0]} company={card?.company?.companyName} type = {type} img = {card?.company?.bannerImg} id={card.id}   />
+
+                            )
+})}
                           
                         
                       </Box>
@@ -351,7 +439,7 @@ const JobSeekerHome = () => {
                          }}
                        >
                         {message.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((card, index) => (
-                            <JSCard key={index} title={card.jobTitle} content={card.jobDescription} location={card.company.location.split(',')[0]} company={card.company.companyName} type = {type} img = {card.img}  />
+                            <JSCard key={index} title={card?.jobTitle} content={card?.jobDescription?.split('<p>')[1]?.split('</p>')[0] == undefined ? card?.jobDescription?.split(',')[0] : card?.jobDescription?.split('<p>')[1]?.split('</p>')[0]} location={card?.company?.location.split(',')[0]} company={card?.company?.companyName} type = {type} img = {card?.company?.bannerImg}  />
                           ))}
                          
                         
