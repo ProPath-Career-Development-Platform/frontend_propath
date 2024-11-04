@@ -147,11 +147,11 @@ const JobSeekerHome = () => {
           />
           <JSDropDown
             name={"Modality "}
-            sizes={["Inoffice", "Remote"]}
+            sizes={["Onsite", "Remote", "Hybrid"]}
             proptype="1"
           />
           <JSDropDown
-            name={"Job Type "}
+            name={"Job Role"}
             sizes={[
               "Srilanka",
               "Bangladesh",
@@ -162,7 +162,7 @@ const JobSeekerHome = () => {
             proptype="1"
           />
           <JSDropDown
-            name={"Salary "}
+            name={"Job Title"}
             sizes={["Fulltime", "Contract", "Internship", "PartTime", "Casual"]}
             proptype="0"
           />
@@ -230,13 +230,27 @@ const JobSeekerHome = () => {
             )
             .map((job, index) => (
               <JSCard
-              key={job.id}
+              jobId={job.id}
               title={job.jobTitle} 
               content={job.jobDescription} 
-              location={job.jobLocation} 
+              location={job.location} 
               company={job.companyName} 
               type={type}
-              img={job.image}
+              img={job.bannerImg}
+              customizedForm = {job.customizedForm}
+              applicantCount={job.applicantCount}
+              education={job.education}
+              experience={job.experience}
+              expiryDate={job.expiryDate}
+              jobType={job.jobType}
+              jobLevel={job.jobLevel}
+              jobRole={job.jobRole}
+              logoImg={job.logoImg}
+              maxSalary={job.maxSalary}
+              minSalary={job.minSalary}
+              postedIn={job.postedIn}
+              tags={job.tags}
+              user={job.user}
               />
             ))}
         </Box>
@@ -251,13 +265,27 @@ const JobSeekerHome = () => {
             )
             .map((job, index) => (
               <JSCard
-              key={job.id}
+              jobId={job.id}
               title={job.jobTitle} // Updated
               content={job.jobDescription} // Updated
-              location={job.jobLocation} // Updated
+              location={job.location} // Updated
               company={job.companyName || 'N/A'} // Handle case where companyName might be undefined
               type={type}
-              img={job.image}
+              img={job.bannerImg}
+              customizedForm = {job.customizedForm}
+              applicantCount={job.applicantCount}
+              education={job.education}
+              experience={job.experience}
+              expiryDate={job.expiryDate}
+              jobType={job.jobType}
+              jobLevel={job.jobLevel}
+              jobRole={job.jobRole}
+              logoImg={job.logoImg}
+              maxSalary={job.maxSalary}
+              minSalary={job.minSalary}
+              postedIn={job.postedIn}
+              tags={job.tags}
+              user={job.user}
               />
             ))}
         </Box>

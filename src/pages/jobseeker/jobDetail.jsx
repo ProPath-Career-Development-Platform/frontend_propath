@@ -33,7 +33,7 @@ const JobDetails = ({
   content,
   location,
   company,
-  customQuestion,
+  customizedForm,
   education,
   experience,
   expiryDate,
@@ -48,6 +48,8 @@ const JobDetails = ({
   postedIn,
   type,
   img,
+  logoImg,
+  status,
 }) => {
 
   const responsibilities = [
@@ -122,10 +124,23 @@ const JobDetails = ({
   const [jobDetails, setJobDetails] = useState(null);
   const [Submit, setSubmit] = useState(0);
   const [jobs, setJobs] = useState([]);
-
+  function decodeJWT(token) {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+  
+    return JSON.parse(jsonPayload);
+  }
+  
   const { jobId } = useParams();
   console.log("Job ID2:", jobId);
-
   const token = localStorage.getItem("token");
 
   const fetchJobDetails = async () => {
@@ -139,6 +154,7 @@ const JobDetails = ({
         }
       );
       setJobDetails(response.data);
+      console.log("Fetched job details:", response.data);
     } catch (error) {
       console.error("Error fetching job details:", error);
     }
@@ -153,7 +169,7 @@ const JobDetails = ({
   var amount = 6
   const location1 = useLocation();
   const { title } = location1.state || {}
-  
+  console.log("location", location1);
 
   const applyhandleChange = (value)=> {
 
@@ -366,7 +382,7 @@ const JobDetails = ({
               flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            Job expires in : <span style={{ color: "red" }}>{expiryDate}</span>
+            Job expires in : <span style={{ color: "red" }}>{jobDetails.expiryDate}</span>
           </Typography>
         </Box>
       </Box>
@@ -380,22 +396,7 @@ const JobDetails = ({
               Job description
             </Typography>
             <Typography sx={{ fontSize: "16px" }}>
-              Integer aliquet pretium consequat. Donec et sapien id leo accumsan
-              pellentesque eget maximus tellus. Duis et est ac leo rhoncus
-              tincidunt vitae vehicula augue. Donec in suscipit diam.
-              Pellentesque quis justo sit amet arcu commodo sollicitudin.
-              Integer finibus blandit condimentum. Vivamus sit amet ligula
-              ullamcorper, pulvinar ante id, tristique erat. Quisque sit amet
-              aliquam urna. Maecenas blandit felis id massa sodales finibus.
-              Integer bibendum eu nulla eu sollicitudin. Sed lobortis diam
-              tincidunt accumsan faucibus. Quisque blandit augue quis turpis
-              auctor, dapibus euismod ante ultricies. Ut non felis lacinia
-              turpis feugiat euismod at id magna. Sed ut orci arcu. Suspendisse
-              sollicitudin faucibus aliquet. Nam dapibus consectetur erat in
-              euismod. Cras urna augue, mollis venenatis augue sed, porttitor
-              aliquet nibh. Sed tristique dictum elementum. Nulla imperdiet sit
-              amet quam eget lobortis. Etiam in neque sit amet orci interdum
-              tincidunt.
+              {jobDetails.jobDescription}
             </Typography>
             <Typography
               sx={{ fontSize: "18px", fontWeight: "500", marginTop: "13px" }}

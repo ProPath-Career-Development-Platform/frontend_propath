@@ -312,8 +312,8 @@ const router = createBrowserRouter([
       },
       
       {
-        path: "JobDetails",
-        element: <JobDetail />,
+        path: "JobDetails/:jobId",
+      element: <JobDetail />,
       },
 
       {
