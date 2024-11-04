@@ -124,20 +124,6 @@ const JobDetails = ({
   const [jobDetails, setJobDetails] = useState(null);
   const [Submit, setSubmit] = useState(0);
   const [jobs, setJobs] = useState([]);
-  function decodeJWT(token) {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join("")
-    );
-  
-    return JSON.parse(jsonPayload);
-  }
   
   const { jobId } = useParams();
   console.log("Job ID2:", jobId);
@@ -415,7 +401,7 @@ const JobDetails = ({
             </ul>
           </Stack>
         </Box>
-        <Box sx={{ marginLeft: "16px", minWidth: "40%" }}>
+        <Box sx={{ marginLeft: "150px", minWidth: "40%" }}>
           {Submit == 1 && <AppliedCard></AppliedCard>}
           <Jobcard />
           <Companycard />
