@@ -21,6 +21,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import Grid from '@mui/joy/Grid';
 import GroupsSharpIcon from '@mui/icons-material/GroupsSharp';
 import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
 
 export default function Meetingview() {
     const time =["7.30am","8.30am","9.30am","10.30am","11.30am"]
@@ -28,9 +29,14 @@ export default function Meetingview() {
     const [selectedDate, setSelectedDate] = useState(-1); 
     const [selectedTime, setSelectedTime] = useState(-1);
     const [datenum, setDatenum] = useState(0);
+    const [open,setOpen] = useState(true);
+    const datetime = {
+      1: ["7.30am", "8.30am", "9.30am", "10.30am", "11.30am"],
+      
+    };
 
   return (
-    <Modal open={open} sx={{display:'flex' , justifyContent: 'center' , alignItems: 'center'}}>
+    <Modal open={open} onClose={() =>setOpen(false)} sx={{display:'flex' , justifyContent: 'center' , alignItems: 'center'}}>
     <Card
       variant="outlined"
       sx={{
@@ -43,6 +49,8 @@ export default function Meetingview() {
     >
       
       <CardContent>
+      
+
       <Box sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -50,6 +58,7 @@ export default function Meetingview() {
         }} >
         <GroupsSharpIcon sx={{fontSize:'50px', color:'#814DDE'}}/>
         </Box>
+        <ModalClose/>
         <Typography sx={{marginLeft:'10px'}} level="title-lg">30 minute call with David Bromberg</Typography>
         <Typography sx={{marginLeft:'10px'}} level="body-sm">
         Let's schedule a quick call and jamp on the potential between
