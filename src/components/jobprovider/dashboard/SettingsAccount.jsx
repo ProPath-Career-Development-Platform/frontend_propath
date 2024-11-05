@@ -1,4 +1,4 @@
-import React ,{useState,useEffect}from 'react'
+import React ,{useState,useEffect,useContext}from 'react'
 
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
@@ -30,10 +30,20 @@ import DialogActions from '@mui/joy/DialogActions';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import UserContext from '../../../utils/userContext';
+import { useNavigate } from 'react-router-dom';
+import CircularProgress from '@mui/joy/CircularProgress';
+import ErrorIcon from '@mui/icons-material/Error';
+import Tooltip from '@mui/joy/Tooltip';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 
 function SettingsAccount() {
+
+  const {logout} = useContext(UserContext);
+  const navigate = useNavigate();
   
   const [contactFormData, setContactFormData] = useState({
     mapLocation: '',
@@ -46,6 +56,12 @@ function SettingsAccount() {
     newPassword: '',
     confirmPassword: ''
     
+  });
+
+  const [personalFormData, setPersonalFormData] = useState({
+    userName: '',
+    pEmail: '',
+    newEmail:''
   });
 
   const jwtToken = localStorage.getItem('token');
@@ -65,7 +81,17 @@ function SettingsAccount() {
     error:false,
     password: false,
     delete: false,
+
+    personalError:false,
+    personal:false,
+    personalBoth:false
   });
+
+  const [personalCheck,setPersonalCheck] = useState({
+    username:false,
+    email:false,
+    emailLoad:false
+  })
 
 
 useEffect(()=> {
@@ -85,8 +111,18 @@ useEffect(()=> {
           mapLocation: response.data.location,
           phone:response.data.contactNumber,
           email: response.data.email,
+        
 
         }));
+
+        setPersonalFormData(
+          (prev) => ({
+            ...prev,
+            userName: response.data.user.username,
+            pEmail: response.data.user.email,
+            newEmail: response.data.user.email
+          
+          }));
         setDataLoad(false);
     }
     ).catch((error) => {
@@ -139,6 +175,28 @@ useEffect(()=> {
     
   };
 
+  const handleChangeForPersonal = (e) => {
+    const { name, value } = e.target;
+
+    if (errors[name]) {
+      setErrors((prevState) => {
+        const newErrors = { ...prevState };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+
+    setPersonalFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+    setPersonalCheck((prevState) => ({
+      ...prevState,
+      username: false
+    }));
+  };
+
   
   const validateForm = (form) => {
     const newErrors = {};
@@ -184,6 +242,17 @@ useEffect(()=> {
 
       }
 
+    }else if(form === 'personal'){
+
+      if (!personalFormData.userName) {
+        newErrors.userName = 'User Name is required';
+      }
+
+      if (!personalFormData.newEmail) {
+        newErrors.newEmail = 'Email is required';
+      }else if (!/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/.test(personalFormData.newEmail)) {
+        newErrors.newEmail = 'Email is invalid';
+      }
     }
 
   return newErrors;
@@ -219,7 +288,7 @@ useEffect(()=> {
         }
 
         try {
-          axios.put('http://localhost:8080/jobprovider/company', data, {
+          axios.put('http://localhost:8080/jobprovider/settings/contactInfo', data, {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
             },
@@ -322,6 +391,196 @@ useEffect(()=> {
         }
 
 
+      }else if(formId == 'personal'){
+
+        if(personalFormData.pEmail === personalFormData.newEmail){
+
+          const name = {
+            username: personalFormData.userName,
+          };
+          
+          try {
+            axios
+              .post('http://localhost:8080/jobprovider/update/personal/name', name, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+          
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  personal: true,
+                }));
+
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  username: true,
+                }));
+
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  // Network error or no response from the server
+                  console.error("Network error or no response from the server:", error.message);
+                  setSnackbar((prevState) => ({
+                    ...prevState,
+                    error: true,
+                  }));
+                } else {
+                  // Handle the error based on the status code
+                  console.error("Error response code:", error.response.status);
+          
+                  if (error.response.status === 401) {
+                    setSnackbar((prevState) => ({
+                      ...prevState,
+                      pError: true,
+                    }));
+                  }
+                }
+              })
+              .finally(() => {
+                
+              });
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+          
+        
+
+
+        }else{
+
+          //send verification email to new email
+
+          //1st req to name
+
+          setPersonalCheck((prevState) => ({
+            ...prevState,
+            emailLoad: true,
+            
+          }));
+
+          const name = {
+            username: personalFormData.userName,
+          };
+          
+          try {
+            axios
+              .post('http://localhost:8080/jobprovider/update/personal/name', name, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+          
+                
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  personalBoth: true,
+                }));
+
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  username: true,
+                  
+                }));
+
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  // Network error or no response from the server
+                  console.error("Network error or no response from the server:", error.message);
+                  setSnackbar((prevState) => ({
+                    ...prevState,
+                    error: true,
+                  }));
+                } else {
+                  // Handle the error based on the status code
+                  console.error("Error response code:", error.response.status);
+          
+                  if (error.response.status === 401) {
+                    setSnackbar((prevState) => ({
+                      ...prevState,
+                      pError: true,
+                    }));
+                  }
+                }
+              })
+              .finally(() => {
+                
+              });
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+
+
+          //2nd req to send email, 
+
+          const email ={
+            newEmail : personalFormData.newEmail
+          }
+
+          try {
+            axios
+              .post('http://localhost:8080/jobprovider/send/v-email', email, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+          
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  personalBoth: true,
+                }));
+
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  
+                  email:true,
+                }));
+
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  // Network error or no response from the server
+                  console.error("Network error or no response from the server:", error.message);
+                  setSnackbar((prevState) => ({
+                    ...prevState,
+                    error: true,
+                  }));
+                } else {
+                  // Handle the error based on the status code
+                  console.error("Error response code:", error.response.status);
+          
+                  if (error.response.status === 401) {
+                    setSnackbar((prevState) => ({
+                      ...prevState,
+                      pError: true,
+                    }));
+                  }
+                }
+              })
+              .finally(() => {
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  emailLoad: false,
+                  
+                }));
+              });
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+
+
+          
+        }
+
+
       }
       
     }
@@ -346,8 +605,7 @@ useEffect(()=> {
       }).then((response) => {
         console.log(response);
 
-        localStorage.removeItem('token');
-        window.location.href = '/login';
+        logout(navigate);
       }
       ).catch((error) => {
         console.error(error);
@@ -374,6 +632,112 @@ useEffect(()=> {
           py: { xs: 2, md: 3 },
         }}
       >
+
+<form
+     onSubmit={handleSubmit}
+    >
+        <Card>
+            
+            <CardContent>
+
+                <Box
+                    sx={{
+                        display: { xs: 'block', sm: 'grid',}, 
+                        gap:'2'
+
+                        
+                    }}
+                >
+
+                 <Typography sx={{ mb:2}} level='title-lg'>Personal Account Info</Typography>
+
+                 <Input sx={{display:'none'}} name='form' value='personal' />
+
+                <FormControl
+                    sx={{
+                        mb:2
+                        
+                      }}
+
+                    error={Boolean(errors.userName)}
+                >
+                    <FormLabel>User Name</FormLabel>
+                    <Skeleton loading={dataLoad}  >
+                    <Input
+                        name='userName'
+                        startDecorator={<Button disabled><AccountCircleIcon/></Button>}
+                        placeholder='Enter User Name'
+                        value={personalFormData.userName}
+                        onChange={handleChangeForPersonal}
+                        endDecorator={personalCheck.username ? <Tooltip title="Updated" ><CheckCircleIcon size="sm" color="success"/></Tooltip> : ''}
+
+                       // onInputChange={handleChangeForContact}
+                      
+                    />
+                    </Skeleton>
+
+                    {errors.userName && (
+                        <FormHelperText error>{errors.userName}</FormHelperText>
+                    )}
+                </FormControl>
+
+                
+
+                <FormControl
+                    sx={{
+                        mb: 2
+                      }}
+                    
+                    error={Boolean(errors.newEmail)}
+                >
+                    <FormLabel>Email</FormLabel>
+                    <Skeleton loading={dataLoad}  >
+                    <Input
+                        name='newEmail'
+                        startDecorator={<Button disabled><EmailIcon/></Button>}
+                        placeholder='Enter Email'
+                        onChange={handleChangeForPersonal}
+                        value={personalFormData.newEmail}
+                        endDecorator={
+                          personalCheck.emailLoad ? (
+                            <CircularProgress size="sm" />
+                          ) : personalCheck.email ? (
+                            <Tooltip title="Please verify your email">
+                              <ErrorIcon color="warning" />
+                            </Tooltip>
+                          ) : null
+                        }
+                        
+                    />
+                    </Skeleton>
+
+                    {errors.newEmail && (
+                        <FormHelperText error>{errors.newEmail}</FormHelperText>
+                    )}
+                </FormControl>
+
+
+                </Box>
+
+
+
+
+            </CardContent>
+
+            <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+            <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
+              <Button onClick={resetForm} size="sm" variant="outlined" color="neutral">
+                Cancel
+              </Button>
+              <Button disabled={dataLoad} type="submit" size="sm" variant="solid">
+                Save
+              </Button>
+            </CardActions>
+       
+          </CardOverflow>
+
+        </Card>
+    </form> 
 
     <form
      onSubmit={handleSubmit}
@@ -773,6 +1137,56 @@ useEffect(()=> {
   <Box sx={{display: 'flex' , flexDirection:'column'}}>
 
   Password Updated.
+  </Box>
+</Snackbar>
+
+
+<Snackbar
+  variant="soft"
+  color="success"
+  open={snackbar.personal}
+  onClose={() => setSnackbar({...snackbar, personal:false})}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<CheckCircleOutlineIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({...snackbar, personal:false})}
+      size="sm"
+      variant="soft"
+      color="success"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  Personal Information Updated.
+  </Box>
+</Snackbar>
+
+
+<Snackbar
+  variant="soft"
+  color="warning"
+  open={snackbar.personalBoth}
+  onClose={() => setSnackbar({...snackbar, personalBoth:false})}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<CheckCircleOutlineIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({...snackbar, personalBoth:false})}
+      size="sm"
+      variant="soft"
+      color="success"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  Please check your inbox to verify your new email address.
   </Box>
 </Snackbar>
 

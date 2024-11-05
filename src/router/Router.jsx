@@ -29,6 +29,8 @@ import JpUpdateEvent from "../pages/jobprovider/dashboard/UpdateEvent"
 import JpError from "../pages/jobprovider/dashboard/Page404"
 import JpUpdateJob from "../pages/jobprovider/dashboard/UpdateJob"
 
+import JpVemail from "../pages/jobprovider/dashboard/emailVerification"
+
 
 import JobDetails from "../pages/jobseeker/jobDetail";
 
@@ -248,6 +250,10 @@ const router = createBrowserRouter([
       {
         path:"error/404",
         element:<JpError/>
+      },
+      {
+        path:"verify-email",
+        element:<JpVemail/>
       }
 
     ]
