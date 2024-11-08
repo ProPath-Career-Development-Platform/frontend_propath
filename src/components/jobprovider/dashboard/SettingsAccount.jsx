@@ -755,7 +755,7 @@ useEffect(()=> {
                     }}
                 >
 
-                 <Typography sx={{ mb:2}} level='title-lg'>Contact Info</Typography>
+                 <Typography sx={{ mb:2}} level='title-lg'>Company Contact Info</Typography>
 
                  <Input sx={{display:'none'}} name='form' value='contact' />
 
@@ -767,12 +767,12 @@ useEffect(()=> {
 
                     error={Boolean(errors.mapLocation)}
                 >
-                    <FormLabel>Map Location</FormLabel>
+                    <FormLabel>Address</FormLabel>
                     <Skeleton loading={dataLoad}  >
                     <Input
                         name='mapLocation'
                         startDecorator={<Button disabled><LocationOnIcon/></Button>}
-                        placeholder='Enter your map location'
+                        placeholder='Enter your address'
                         value={contactFormData.mapLocation}
                         onChange={handleChangeForContact}
 
