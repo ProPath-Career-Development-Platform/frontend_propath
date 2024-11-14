@@ -91,8 +91,8 @@ const CompanyTable = () => {
       </Table>
 
  
-      <Modal size='3xl' placement='auto' isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent style={{ marginLeft: '15rem' }}>
+      <Modal size='4xl' placement='auto' isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent style={{ marginLeft: '18rem' }}>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 text-purple1 text-2xl">Company Details</ModalHeader>

@@ -97,14 +97,31 @@ export default function NavigationPanel() {
 
   const {logUser,setLogUser} = useContext(UserContext);
 
-  const uploadImage = async (file) => {
+  const uploadLogo = async (file, companyName) => {
     try {
       const response = await imagekit.upload({
         file: file, // the file you want to upload
-        fileName: file.name, // file name you want to save as
+        fileName: companyName, // file name you want to save as
       });
   
       // Return the uploaded image URL
+      console.error(response.url);
+      return response.url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null; // Return null in case of an error
+    }
+  };
+
+  const uploadBusinessRegistration = async (file, companyName) => {
+    try {
+      const response = await imagekit.upload({
+        file: file, // the file you want to upload
+        fileName: `${companyName}_BusinessRegistration`, // file name you want to save as
+      });
+  
+      // Return the uploaded image URL
+      console.error(response.url);
       return response.url; 
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -420,8 +437,8 @@ const handleBannerUpload = (event) => {
 
         setFormLoad(true);
 
-        const logoURL =  await uploadImage(formData.logoImgFile);
-        const bannerURL = await uploadImage(formData.bannerImgFile);
+        const logoURL =  await uploadLogo(formData.logoImgFile, formData.companyName);
+        const bannerURL = await uploadBusinessRegistration(formData.bannerImgFile, formData.companyName);
 
         const companyData = {
           companyName: formData.companyName,
