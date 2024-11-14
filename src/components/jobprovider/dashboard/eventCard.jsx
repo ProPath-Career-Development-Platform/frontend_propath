@@ -26,10 +26,34 @@ import Button from '@mui/joy/Button';
 import {Link as RouterLink} from 'react-router-dom';
 import MovingIcon from '@mui/icons-material/Moving';
 import Skeleton from '@mui/joy/Skeleton';
+import axios from 'axios';
 export default function EventCard(props) {
   const { eventId,status,eventName,eventImage,eventLocation,eventParticipants,eventDate,keywords , skeleton} = props;
 
   const [isLoaded, setIsLoaded] = React.useState(true);
+  const [userData, setUserData] = React.useState([]);
+
+  const token = localStorage.getItem('token');
+
+  React.useEffect(() => {
+
+    //axios get request to fetch the event details ,token
+    axios.get(`http://localhost:8080/jobprovider/event/register/${eventId}`,{
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    }).then((response) => {
+      setUserData(response.data);
+    }
+    ).catch((error) => {
+      console.log(error);
+    }
+    )
+    
+
+  },[]);
+
+    
 
   
   return (
@@ -267,10 +291,22 @@ export default function EventCard(props) {
     
     
             <AvatarGroup size='md'>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-              <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-              <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-              <Avatar>+3</Avatar>
+
+            {userData.length > 5 ? (
+                  <>
+                    {userData.slice(0, 4).map((user) => (
+                      <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                    ))}
+                    <Avatar>+{userData.length - 4}</Avatar>
+                  </>
+                ) : (
+                  userData.map((user) => (
+                    <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                  ))
+                )}
+
+              
+              
             </AvatarGroup>
             
             <Button 

@@ -64,6 +64,8 @@ import ViewOnlyMap from '../../../components/jobprovider/dashboard/ViewOnlyMap';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DeleteButton from '../../../components/jobprovider/dashboard/DeleteButton';
 
+import EventParticipantTable from '../../../components/jobprovider/dashboard/EventParticipantTable'
+
 
 
 
@@ -82,6 +84,7 @@ function JobPreview() {
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState([]);
   const [snackOpen, setSnackOpen] = useState(false);
+  const [userData, setUserData] = useState([]);
 
 
   const getJwtToken = () => {
@@ -101,6 +104,20 @@ function JobPreview() {
       console.error('Error fetching events:', error);
       navigate('/jobprovider/error/404');
     });
+
+    axios.get(`http://localhost:8080/jobprovider/event/register/${id}`,{
+      headers:{
+        'Authorization': `Bearer ${getJwtToken()}`
+      }
+    }).then((response) => {
+      setUserData(response.data);
+    }
+    ).catch((error) => {
+      console.log(error);
+    }
+    )
+
+
   }, []);
 
   const ogURL = window.location.href;
@@ -360,36 +377,37 @@ function JobPreview() {
 
               <AvatarGroup sx={{display:{xs:'flex',sm:'none'}}}>
  
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar>+3</Avatar>
+                
+
+                {userData.length > 10 ? (
+                  <>
+                    {userData.slice(0, 9).map((user) => (
+                      <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                    ))}
+                    <Avatar>+{userData.length - 9}</Avatar>
+                  </>
+                ) : (
+                  userData.map((user) => (
+                    <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                  ))
+                )}
 
               </AvatarGroup>
 
               <AvatarGroup sx={{display:{xs:'none',sm:'flex'}}}>
  
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                <Avatar>+3</Avatar>
+              {userData.length > 15 ? (
+                  <>
+                    {userData.slice(0, 14).map((user) => (
+                      <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                    ))}
+                    <Avatar>+{userData.length - 14}</Avatar>
+                  </>
+                ) : (
+                  userData.map((user) => (
+                    <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                  ))
+                )}
 
               </AvatarGroup>
 
@@ -527,7 +545,7 @@ function JobPreview() {
 
               <CardContent>
 
-                <EventStatsBarChart />
+                <EventStatsBarChart  userData= {userData}/>
               
               </CardContent>
             </Card>
@@ -600,6 +618,16 @@ function JobPreview() {
           
 
 
+
+          </TabPanel>
+
+          <TabPanel value={3}>
+
+            
+
+            <EventParticipantTable eventId={id} userData={userData} loading = {loading} />
+
+              
 
           </TabPanel>
 

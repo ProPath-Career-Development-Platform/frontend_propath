@@ -243,7 +243,7 @@
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid,GridActionsCellItem } from '@mui/x-data-grid';
 import { Experimental_CssVarsProvider as CssVarsProvider, experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -253,8 +253,9 @@ import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
 import { rowsStateInitializer } from '@mui/x-data-grid/internals';
+import Tooltip from '@mui/material/Tooltip';
 
-const token = localStorage.getItem('token');
+
 
 const getLightTheme = () => extendTheme({
   palette: {
@@ -323,6 +324,8 @@ const getDarkTheme = () => extendTheme({
 
 export default function CandidateTable({ filteredRows , setFilteredRows, criteria, rowSelectionModel, setRowSelectionModel,jobId }) {
 
+  const token = localStorage.getItem('token');
+
   const columns = [
   
          { field: 'col0', headerName: '#', width: 10, type: 'number', },
@@ -360,18 +363,29 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
         { field: 'col4', headerName: 'Applied Date', width: 150 },
         { field: 'col5', headerName: 'Expirenced Level', width: 150 },
       
-       { field: 'col6',
-          headerName: 'Actions',
-           headerAlign: 'center',
-          width: 150,
-           renderCell: (params) => (
-             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' , gap:1 ,p:1}}>
-            <Button variant="contained" size="small"><VisibilityIcon/></Button>
-            <Button variant="contained"  size='small'><DownloadIcon/></Button>
-            </Box>
-         )
-         
-        },
+       { field: 'col6', headerName: 'Actions', width: 150,type: 'actions',
+
+          getActions: (params) => [
+              <Tooltip title="View Applications">
+              <GridActionsCellItem
+                icon={<VisibilityIcon />}
+                label="Delete"
+               onClick={()=> navigate(`/jobprovider/my-jobs/${params.id}/applications`)}
+              />
+              </Tooltip>
+              ,
+              <GridActionsCellItem
+            
+                icon={<DownloadIcon />}
+                label="Preview Job"
+               // onClick={toggleAdmin(params.id)}
+               
+              />,
+
+              
+          
+            ],
+          },
       
        ];
 
