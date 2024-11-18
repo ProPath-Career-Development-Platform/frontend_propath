@@ -254,6 +254,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
 import { rowsStateInitializer } from '@mui/x-data-grid/internals';
 import Tooltip from '@mui/material/Tooltip';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 
 
@@ -366,21 +367,25 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
        { field: 'col6', headerName: 'Actions', width: 150,type: 'actions',
 
           getActions: (params) => [
-              <Tooltip title="View Applications">
+              <Tooltip title="View CV">
               <GridActionsCellItem
-                icon={<VisibilityIcon />}
+                icon={<DownloadIcon />}
                 label="Delete"
-               onClick={()=> navigate(`/jobprovider/my-jobs/${params.id}/applications`)}
+              // onClick={()=> navigate(`/jobprovider/my-jobs/${params.id}/applications`)}
               />
               </Tooltip>
               ,
+              
               <GridActionsCellItem
             
-                icon={<DownloadIcon />}
-                label="Preview Job"
+                icon={<TextSnippetIcon />}
+                label="View Response"
+                showInMenu
                // onClick={toggleAdmin(params.id)}
                
-              />,
+              />
+             
+              ,
 
               
           
