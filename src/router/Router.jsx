@@ -30,6 +30,8 @@ import JpError from "../pages/jobprovider/dashboard/Page404"
 import JpUpdateJob from "../pages/jobprovider/dashboard/UpdateJob"
 
 import JpVemail from "../pages/jobprovider/dashboard/emailVerification"
+import JpPaymentSuccess from "../pages/jobprovider/dashboard/PaymentSuccess"
+import JpPaymentFail from "../pages/jobprovider/dashboard/PaymentFailed"
 
 
 import JobDetails from "../pages/jobseeker/jobDetail";
@@ -220,7 +222,7 @@ const router = createBrowserRouter([
         element:<JpPlansAndBilling/>
       },
       {
-        path:"plan-and-billing/changePlan",
+        path:"plans-and-billing/changePlan",
         element:<JpChangePlan/>
       },
       {
@@ -254,6 +256,14 @@ const router = createBrowserRouter([
       {
         path:"verify-email",
         element:<JpVemail/>
+      },
+      {
+        path: "plans-and-billing/payment/success",
+        element: <JpPaymentSuccess />
+      },
+      {
+        path: "plans-and-billing/payment/failed",
+        element: <JpPaymentFail />
       }
 
     ]

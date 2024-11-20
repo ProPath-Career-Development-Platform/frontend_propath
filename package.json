@@ -32,6 +32,8 @@
     "@mui/x-date-pickers": "^7.11.0",
     "@nextui-org/react": "^2.4.6",
     "@react-spring/web": "^9.7.4",
+    "@stripe/react-stripe-js": "^2.9.0",
+    "@stripe/stripe-js": "^4.10.0",
     "apexcharts": "^3.53.0",
     "axios": "^1.7.2",
     "boxicons": "^2.1.4",

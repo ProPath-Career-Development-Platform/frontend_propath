@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Box from '@mui/joy/Box';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -21,11 +21,41 @@ import BlockIcon from '@mui/icons-material/Block';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import DownloadIcon from '@mui/icons-material/Download';
-
+import CircularProgress from '@mui/joy/CircularProgress';
 import {Link as RouterLink} from 'react-router-dom';
-
+import axios from 'axios';
+import Skeleton from '@mui/joy/Skeleton';
+import { loadStripe } from '@stripe/stripe-js';
+import BillTable from '../../../components/jobprovider/dashboard/BillTable';
 
 function PlanAndBilling() {
+
+  const token = localStorage.getItem('token');
+  const [loading, setLoading] = useState(true);
+  const [butLoad,setButLoad] = useState(false);
+  const [subscription, setSubscription] = useState([]);
+
+  useEffect(() => {
+
+
+    axios.get('http://localhost:8080/jobprovider/subscription', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then((response) => {
+      setSubscription(response.data);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    
+  
+
+  
+
+  }, [])
 
   function createData(name, calories, fat, carbs,) {
     return { name, calories, fat, carbs };
@@ -38,6 +68,40 @@ function PlanAndBilling() {
     createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
     createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
   ];
+
+  const handlePayment = async () => {
+
+    
+
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  
+    try {
+      setButLoad(true);
+      // Send the request to create a checkout session
+      const response = await axios.get('http://localhost:8080/jobprovider/create-checkout-session-monthly', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      // Extract the session ID from the response
+      const { sessionId } = response.data;
+  
+      if (sessionId) {
+        // Redirect to Stripe Checkout
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+        if (error) {
+          console.error("Error redirecting to checkout: ", error);
+        }
+      } else {
+        console.error("No session ID received from backend.");
+      }
+    } catch (error) {
+      // Log and handle errors from the request
+      console.error("Error creating checkout session: ", error);
+    }
+  };
+  
   
 
 
@@ -121,11 +185,20 @@ function PlanAndBilling() {
 
 
                   <Card  sx={{ borderRadius: 10, maxWidth: '100%',  }}>
-                        
-                        <CardContent>
+                    <CardContent>
 
-                          <Typography level="body-sm" fontWeight="lg">Current Plan</Typography>
-                         <Typography level="h2" fontSize="xlg" sx={{mt:1,mb:1}}>BASIC</Typography>
+                    {loading ? (
+
+                        <Box sx={{display: 'flex', justifyContent:'center',alignItems:'center', m:'auto'}}>
+                        <CircularProgress  />
+                        </Box>
+                      
+                    ) : (
+
+                        <>
+                         <Typography level="body-sm" fontWeight="lg">Current Plan</Typography>
+                        
+                         <Typography level="h2" fontSize="xlg" sx={{mt:1,mb:1}}>{subscription.planName}</Typography>
 
                           <Typography level="body-sm">
                           The Basic Plan is ideal for individual job seekers and small businesses needing to post a few job listings, offering essential features at an affordable price.
@@ -154,10 +227,10 @@ function PlanAndBilling() {
                               variant="solid" 
                               size ="md"
                               component= {RouterLink}
-                              to = "/jobprovider/plan-and-billing/changePlan"
+                              to = "/jobprovider/plans-and-billing/changePlan"
                               >
                                Change Plan </Button>
-                              <Button variant="soft" size="md">Cancel Plan</Button>
+                              
 
                             </Box>
 
@@ -166,6 +239,13 @@ function PlanAndBilling() {
                           
 
                           </CardActions>
+                          </>
+
+
+                    )
+                    }
+                        
+                        
 
 
 
@@ -177,10 +257,32 @@ function PlanAndBilling() {
 
                         <CardContent>
 
+                        {loading ? (
 
+                            <Box sx={{display: 'flex', justifyContent:'center',alignItems:'center', m:'auto'}}>
+                            <CircularProgress  />
+                            </Box>
+
+                            ) : (
+
+                              <>
+
+   {subscription.planName === "BASIC" ? (
+                                <>
+                                <Typography level="body-sm" fontWeight="lg">No Payment Required</Typography>
+                                <Typography color='primary' level="h2" fontSize="xlg" sx={{mt:1}}>FREE</Typography>
+                                
+                                </>
+                              ) : (
+                                <>
                                 <Typography level="body-sm" fontWeight="lg">Next Invoice</Typography>
-                                <Typography color='primary' level="h2" fontSize="xlg" sx={{mt:1}}>LKR 10,000</Typography>
-                                <Typography  level="title-lg"  sx={{mb:0.5}}>Nov 28, 2024</Typography>
+                                <Typography color='primary' level="h2" fontSize="xlg" sx={{mt:1}}>LKR {subscription.planPrice}</Typography>
+                                <Typography  level="title-lg"  sx={{mb:0.5}}>{subscription.planEndDate}</Typography>
+                                </>
+                              )
+                              }
+
+                               
 
                                 <Typography  level="body-md"  sx={(theme)=>({
                                   
@@ -194,14 +296,30 @@ function PlanAndBilling() {
                                 })}
                                   
                                   
-                                  >Package Started: <Typography fontWeight="md">Jan 28, 2024</Typography></Typography>
+                                  >Package Started: <Typography fontWeight="md">{subscription.planCreatedAt}</Typography></Typography>
+
+                                  {subscription.planName === "BASIC" ? (
+                                    <Button 
+                                    variant="solid" size ="md" endDecorator={<PaymentIcon/>}  
+                                    component= {RouterLink}
+                                    to = "/jobprovider/plan-and-billing/Paynow" disabled>
+                                      Pay Now 
+                                    </Button>
+                                  ) : (
 
                                 <Button 
                                 variant="solid" size ="md" endDecorator={<PaymentIcon/>}  
-                                component= {RouterLink}
-                                to = "/jobprovider/plan-and-billing/Paynow">
+                                 disabled={subscription.paidStatus === "success"}
+                                onClick={()=>handlePayment()}
+                                loading = {butLoad}
+                                >
                                   Pay Now 
                                 </Button>
+                                  )
+                                    }
+
+                                </>
+                            )}
 
                         </CardContent>
 
@@ -343,38 +461,9 @@ function PlanAndBilling() {
           
     <Typography  level="h4" sx={{ mt:2 }} >Latest Invoices</Typography>
 
+    <BillTable/>
 
-    <Sheet variant="outlined" sx={{ pt: 1, borderRadius: 'lg' , }}>
-      <Table
-        size="lg"
-        hoverRow
-        
-      >
-        
-        <thead>
-          <tr>
-            <th >#ID</th>
-            <th>Date</th>
-            <th>Plan</th>
-            <th>Amount</th>
-            <th>Action</th>
-           
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.name}>
-              <td>{row.name}</td>
-              <td>{row.calories}</td>
-              <td>{row.fat}</td>
-              <td>{row.carbs}</td>
-              <td><Button size='sm'><DownloadIcon/></Button></td>
-          
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </Sheet>
+
           
 
 
