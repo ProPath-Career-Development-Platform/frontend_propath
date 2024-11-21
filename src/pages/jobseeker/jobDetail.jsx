@@ -11,7 +11,6 @@ import Alert from "../../components/JobSeeker/alert";
 import JSSearch from "../../components/JobSeeker/search";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import wso2 from "../../assets/wso2.png";
 import LinkIcon from "@mui/icons-material/Link";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import EmailIcon from "@mui/icons-material/Email";
@@ -25,9 +24,10 @@ import Companycard from "../../components/JobSeeker/companycard";
 import ApplyJob from "../../components/JobSeeker/applyJob";
 import axios from "axios";
 import { useParams, useLocation } from "react-router-dom";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import Jobcard from '../../components/JobSeeker/jobcard';
-import JSCard from '../../components/JobSeeker/card';
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import Jobcard from "../../components/JobSeeker/jobcard";
+import JSCard from "../../components/JobSeeker/card";
+import RenderRichText from "../../components/jobprovider/dashboard/RenderRichText";
 
 const JobDetails = ({
   content,
@@ -44,95 +44,33 @@ const JobDetails = ({
   maxSalary,
   salaryType,
   vacancies,
-  tags,
   postedIn,
   type,
   img,
   logoImg,
   status,
 }) => {
-
-  const responsibilities = [
-    "Quisque semper gravida est et consectetur.",
-    "Curabitur blandit lorem velit, vitae pretium leo placerat eget.",
-    "Morbi mattis in ipsum ac tempus.",
-    "Curabitur eu vehicula libero. Vestibulum sed purus ullamcorper, lobortis lectus nec.",
-    "Vulputate turpis. Quisque ante odio, iaculis a porttitor sit amet.",
-    "Lobortis vel lectus. Nulla at risus ut diam.",
-    "Commodo feugiat. Nullam laoreet, diam placerat dapibus tincidunt.",
-    "Odio metus posuere lorem, id condimentum erat velit nec neque.",
-    "Dui sodales ut. Curabitur tempus augue.",
-  ];
-
-  const cardData = [
-    {
-      title: "UI/UX Designer",
-      content:
-        "Responsible for designing user interfaces and improving user experience.",
-      location: "Colombo",
-      company: "ABC Design",
-    },
-    {
-      title: "Senior UI/UX Designer",
-      content: "Leads design projects and mentors junior designers.",
-      location: "Galle",
-      company: "Creative Solutions",
-    },
-    {
-      title: "Technical Support Specialist",
-      content: "Provides technical assistance and support to clients.",
-      location: "Kandy",
-      company: "Tech Support Co.",
-    },
-    {
-      title: "Junior Graphic Designer",
-      content: "Creates visual content under the guidance of senior designers.",
-      location: "Jaffna",
-      company: "Graphic World",
-    },
-    {
-      title: "Front End Developer",
-      content: "Develops and implements front-end web applications.",
-      location: "Negombo",
-      company: "Web Solutions",
-    },
-    {
-      title: "Backend Developer",
-      content: "Handles server-side logic and database management.",
-      location: "Matara",
-      company: "Data Masters",
-    },
-    {
-      title: "Project Manager",
-      content: "Oversees project planning, execution, and completion.",
-      location: "Trincomalee",
-      company: "Project Pros",
-    },
-    {
-      title: "QA Engineer",
-      content: "Ensures the quality and functionality of software products.",
-      location: "Anuradhapura",
-      company: "Quality Assurance Inc.",
-    },
-    {
-      title: "Data Scientist",
-      content: "Analyzes and interprets complex data to provide insights.",
-      location: "Batticaloa",
-      company: "Data Insights",
-    },
-  ];
   const [jobDetails, setJobDetails] = useState(null);
   const [Submit, setSubmit] = useState(0);
   const [jobs, setJobs] = useState([]);
-  
+  const [companyDetails, setCompanyDetails] = useState(null);
+  const [relatedJobs, setRelatedJobs] = useState([]);
+
   const { jobId } = useParams();
   console.log("Job ID2:", jobId);
   const token = localStorage.getItem("token");
 
+  var amount = 6;
+  const location1 = useLocation();
+  const { title } = location1.state || {};
+  console.log("location", location1);
+  // Parse the tags from the URL
+  const searchParams = new URLSearchParams(location1.search);
+  const tags = searchParams.get("tags")?.split(",") || []; // Convert comma-separated tags back to an array
   const fetchJobDetails = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/jobseeker/jobDetails/${jobId}`, 
+        `http://localhost:8080/jobseeker/jobDetails/${jobId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -146,23 +84,65 @@ const JobDetails = ({
     }
   };
 
-  useEffect(() => {
-    if (jobId) {
-      fetchJobDetails();
+  const fetchCompanyDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCompanyDetails(response.data);
+      console.log("Fetched company details:", response.data);
+    } catch (error) {
+      console.error("Error fetching company details:", error);
     }
-  }, [jobId]);
+  };
 
-  var amount = 6
-  const location1 = useLocation();
-  const { title } = location1.state || {}
-  console.log("location", location1);
+  // Fetch related jobs
+  const fetchRelatedJobs = async () => {
+    if (!tags || tags.length === 0) {
+      console.error("No tags provided for related jobs search.");
+      return;
+    }
 
-  const applyhandleChange = (value)=> {
+    try {
+      const encodedTags = tags.map((tag) => encodeURIComponent(tag)).join(",");
+      const response = await axios.get(
+        `http://localhost:8080/jobseeker/related-jobs?tags=${encodedTags}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setRelatedJobs(response.data);
+      console.log("Fetched related jobs:", response.data);
+    } catch (error) {
+      if (error.response) {
+        console.error(
+          "Error fetching related jobs:",
+          error.response.data,
+          error.response.status
+        );
+      } else {
+        console.error("Error fetching related jobs:", error.message);
+      }
+    }
+  };
 
-    setSubmit(value)
-    console.log(Submit)
+  useEffect(() => {
+    if (jobId && token) {
+      fetchCompanyDetails();
+      fetchJobDetails();
+      fetchRelatedJobs();
+    } else {
+      console.warn("Job ID or token is missing.");
+    }
+  }, [jobId, token]);
 
-  }
+  const applyhandleChange = (value) => {
+    setSubmit(value);
+    console.log(Submit);
+  };
 
   if (!jobDetails) {
     return <Typography>Loading...</Typography>;
@@ -175,7 +155,6 @@ const JobDetails = ({
       sx={{
         px: { xs: 2, md: 6 },
         pt: {
-
           xs: "calc(12px + var(--Header-height))",
           sm: "calc(12px + var(--Header-height))",
 
@@ -193,7 +172,6 @@ const JobDetails = ({
         overflow: "auto ",
         "&::-webkit-scrollbar": {
           display: "none",
-
         },
       }}
     >
@@ -239,7 +217,6 @@ const JobDetails = ({
         </Box>
 
         <Box sx={{ display: "flex" }}>
-
           <JSSearch />
           <Alert />
           <ProfileDropdown />
@@ -256,16 +233,18 @@ const JobDetails = ({
         }}
       >
         <Box sx={{ marginTop: "10px" }}>
-          <img
-            src={img}
-            alt="Logo"
-            style={{
-              width: "100px", // Adjust the size as needed
-              height: "100px", // Adjust the size as needed
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          />
+          {companyDetails && companyDetails.logoImg && (
+            <img
+              src={companyDetails.logoImg}
+              alt="Logo"
+              style={{
+                width: "100px", // Adjust the size as needed
+                height: "100px", // Adjust the size as needed
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          )}
         </Box>
 
         <Box
@@ -298,18 +277,24 @@ const JobDetails = ({
               },
             }}
           >
-            <Typography>
-              <LinkIcon />
-              WWW.Instagram.com
-            </Typography>
-            <Typography>
-              <LocalPhoneIcon />
-              +94 76 2 777 952
-            </Typography>
-            <Typography>
-              <EmailIcon />
-              jobapplication@gmail.com
-            </Typography>
+            {companyDetails ? (
+              <>
+                <Typography>
+                  <LinkIcon />
+                  {companyDetails.companyWebsite}
+                </Typography>
+                <Typography>
+                  <LocalPhoneIcon />
+                  {companyDetails.contactNumber}
+                </Typography>
+                <Typography>
+                  <EmailIcon />
+                  {companyDetails.email}
+                </Typography>
+              </>
+            ) : (
+              <Typography>No company details available.</Typography>
+            )}
           </Box>
         </Box>
 
@@ -368,7 +353,8 @@ const JobDetails = ({
               flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            Job expires in : <span style={{ color: "red" }}>{jobDetails.expiryDate}</span>
+            Job expires in :{" "}
+            <span style={{ color: "red" }}>{jobDetails.expiryDate}</span>
           </Typography>
         </Box>
       </Box>
@@ -381,24 +367,8 @@ const JobDetails = ({
             >
               Job description
             </Typography>
-            <Typography sx={{ fontSize: "16px" }}>
-              {jobDetails.jobDescription}
-            </Typography>
-            <Typography
-              sx={{ fontSize: "18px", fontWeight: "500", marginTop: "13px" }}
-            >
-              Responsibilities
-            </Typography>
-            <ul>
-              {responsibilities.map((item, index) => (
-                <Typography key={index} sx={{ fontSize: "16px" }}>
-                  <FiberManualRecordIcon
-                    sx={{ fontSize: "10px", marginRight: "8px" }}
-                  />
-                  {item}
-                </Typography>
-              ))}
-            </ul>
+            {/* Use RenderRichText to render HTML content safely */}
+            <RenderRichText text={jobDetails.jobDescription} />
           </Stack>
         </Box>
         <Box sx={{ marginLeft: "150px", minWidth: "40%" }}>
@@ -431,13 +401,14 @@ const JobDetails = ({
             gap: 2,
           }}
         >
-          {cardData.slice(0, 6).map((card, index) => (
+          {relatedJobs.map((job, index) => (
             <JSCard
               key={index}
-              title={card.title}
-              content={card.content}
-              location={card.location}
-              company={card.company}
+              jobId={job.id}
+              title={job.jobTitle}
+              content={removeHtmlTags(job.jobDescription)}
+              location={location}
+              company={job.company}
               type={1}
             />
           ))}

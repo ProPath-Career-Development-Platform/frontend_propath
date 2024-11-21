@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 
 const Jobcard = () => {
   const [jobDetails, setJobDetails] = useState(null);
+  const [companyDetails, setCompanyDetails] = useState(null);
   const { jobId } = useParams();
   const token = localStorage.getItem("token");
 
@@ -27,14 +28,33 @@ const Jobcard = () => {
         }
       );
       setJobDetails(response.data);
+      console.log("Job Details: ", response.data);
     } catch (error) {
       console.error("Error fetching job details:", error);
+    }
+  };
+
+  const fetchCompanyDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCompanyDetails(response.data);
+      console.log("Fetched company details:", response.data);
+    } catch (error) {
+      console.error("Error fetching company details:", error);
     }
   };
 
   useEffect(() => {
     if (jobId) {
       fetchJobDetails();
+      fetchCompanyDetails();
     }
   }, [jobId]);
 
@@ -71,7 +91,7 @@ const Jobcard = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <WalletIcon sx={{ width: 32, height: 32, color: 'blue' }} />
           <Typography>Salary</Typography>
-          <Typography sx={{ fontWeight: '700', fontSize: '13px' }}>{jobDetails.salary || 'N/A'}</Typography>
+          <Typography sx={{ fontWeight: '700', fontSize: '13px' }}>Upto ${jobDetails.maxSalary || 'N/A'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <WorkIcon sx={{ width: 32, height: 32, color: 'blue' }} />
@@ -81,7 +101,7 @@ const Jobcard = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <LocationOnIcon sx={{ width: 32, height: 32, color: 'blue' }} />
           <Typography>Location</Typography>
-          <Typography sx={{ fontWeight: '700', fontSize: '13px' }}>{jobDetails.location || 'N/A'}</Typography>
+          <Typography sx={{ fontWeight: '700', fontSize: '13px' }}>{companyDetails?.location || 'N/A'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <WorkHistoryIcon sx={{ width: 32, height: 32, color: 'blue' }} />

@@ -48,19 +48,55 @@ const JobSeekerHome = () => {
     setSelectedSize(parseInt(x[0], 10));
   };
 
+  function removeHtmlTags(htmlString) {
+    const div = document.createElement("div");
+    div.innerHTML = htmlString;
+    return div.textContent || div.innerText || "";
+  }
+  const [companyDetails, setCompanyDetails] = useState(null);
+  const fetchCompanyDetails = async (jobId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response.data; // Return the company details for the job
+    } catch (error) {
+      console.error(
+        `Error fetching company details for jobId ${jobId}:`,
+        error
+      );
+      return { location: "Unknown" }; // Fallback value
+    }
+  };
+
   const fetchJobs = async () => {
     try {
       const response = await axios.get(
         "http://localhost:8080/jobseeker/all-jobs",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Fetched job data:", response.data);
-      setJobs(response.data);
-      setTotalPages(Math.ceil(response.data.length / selectedSize));
+      const currentDate = new Date();
+      const validJobs = response.data.filter((job) => {
+        const expiryDate = new Date(job.expiryDate);
+        return expiryDate >= currentDate;
+      });
+
+      // Fetch company details for each job
+      const jobsWithCompanyDetails = await Promise.all(
+        validJobs.map(async (job) => {
+          const companyDetails = await fetchCompanyDetails(job.id);
+          return { ...job, companyDetails }; // Add company details to the job object
+        })
+      );
+
+      console.log("Jobs with company details:", jobsWithCompanyDetails);
+      setJobs(jobsWithCompanyDetails);
+      setTotalPages(Math.ceil(validJobs.length / selectedSize)-1);
     } catch (error) {
       console.error("Error fetching job data:", error);
     }
@@ -68,6 +104,7 @@ const JobSeekerHome = () => {
 
   useEffect(() => {
     fetchJobs();
+    fetchCompanyDetails();
   }, [selectedSize, pageNumber]);
 
   const handlePageChange = (value) => {
@@ -124,7 +161,7 @@ const JobSeekerHome = () => {
 
       <Box sx={{ marginTop: "40px", marginBottom: "20px" }}>
         <Typography sx={{ fontSize: "25px", fontWeight: 500 }}>
-          Related Jobs
+          All Jobs
         </Typography>
       </Box>
 
@@ -230,27 +267,31 @@ const JobSeekerHome = () => {
             )
             .map((job, index) => (
               <JSCard
-              jobId={job.id}
-              title={job.jobTitle} 
-              content={job.jobDescription} 
-              location={job.location} 
-              company={job.companyName} 
-              type={type}
-              img={job.bannerImg}
-              customizedForm = {job.customizedForm}
-              applicantCount={job.applicantCount}
-              education={job.education}
-              experience={job.experience}
-              expiryDate={job.expiryDate}
-              jobType={job.jobType}
-              jobLevel={job.jobLevel}
-              jobRole={job.jobRole}
-              logoImg={job.logoImg}
-              maxSalary={job.maxSalary}
-              minSalary={job.minSalary}
-              postedIn={job.postedIn}
-              tags={job.tags}
-              user={job.user}
+                jobId={job.id}
+                title={job.jobTitle}
+                content={removeHtmlTags(job.jobDescription)}
+                location={
+                  job.companyDetails?.location || "Location not available"
+                } // Pass location from companyDetails
+                company={
+                  job.companyDetails?.companyName || "Company not available"
+                } // Pass companyName from companyDetails
+                type={type}
+                img={job.companyDetails?.bannerImg}
+                customizedForm={job.customizedForm}
+                applicantCount={job.applicantCount || 0} // Default value if null
+                education={job.education}
+                experience={job.experience}
+                expiryDate={job.expiryDate}
+                jobType={job.jobType}
+                jobLevel={job.jobLevel}
+                jobRole={job.jobRole}
+                logoImg={job.companyDetails?.logoImg || job.logoImg} // Use company logo if available
+                maxSalary={job.maxSalary}
+                minSalary={job.minSalary}
+                postedIn={job.postedIn}
+                tags={job.tags}
+                user={job.user}
               />
             ))}
         </Box>
@@ -265,27 +306,31 @@ const JobSeekerHome = () => {
             )
             .map((job, index) => (
               <JSCard
-              jobId={job.id}
-              title={job.jobTitle} // Updated
-              content={job.jobDescription} // Updated
-              location={job.location} // Updated
-              company={job.companyName || 'N/A'} // Handle case where companyName might be undefined
-              type={type}
-              img={job.bannerImg}
-              customizedForm = {job.customizedForm}
-              applicantCount={job.applicantCount}
-              education={job.education}
-              experience={job.experience}
-              expiryDate={job.expiryDate}
-              jobType={job.jobType}
-              jobLevel={job.jobLevel}
-              jobRole={job.jobRole}
-              logoImg={job.logoImg}
-              maxSalary={job.maxSalary}
-              minSalary={job.minSalary}
-              postedIn={job.postedIn}
-              tags={job.tags}
-              user={job.user}
+                jobId={job.id}
+                title={job.jobTitle}
+                content={removeHtmlTags(job.jobDescription)}
+                location={
+                  job.companyDetails?.location || "Location not available"
+                } // Pass location from companyDetails
+                company={
+                  job.companyDetails?.companyName || "Company not available"
+                } // Pass companyName from companyDetails
+                type={type}
+                img={job.companyDetails?.bannerImg}
+                customizedForm={job.customizedForm}
+                applicantCount={job.applicantCount || 0} // Default value if null
+                education={job.education}
+                experience={job.experience}
+                expiryDate={job.expiryDate}
+                jobType={job.jobType}
+                jobLevel={job.jobLevel}
+                jobRole={job.jobRole}
+                logoImg={job.companyDetails?.logoImg || job.logoImg} // Use company logo if available
+                maxSalary={job.maxSalary}
+                minSalary={job.minSalary}
+                postedIn={job.postedIn}
+                tags={job.tags}
+                user={job.user}
               />
             ))}
         </Box>

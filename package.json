@@ -37,7 +37,7 @@
     "boxicons": "^2.1.4",
     "chart.js": "^4.4.3",
     "dayjs": "^1.11.12",
-    "dompurify": "^3.1.6",
+    "dompurify": "^3.2.1",
     "framer-motion": "^11.3.19",
     "imagekit": "^5.1.0",
     "imagekit-javascript": "^3.0.2",
