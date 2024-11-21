@@ -25,8 +25,28 @@ import SettingsCompanyInfo from '../../../components/jobprovider/dashboard/Setti
 import SettingsFoundingInfo from '../../../components/jobprovider/dashboard/SettingsFoundingInfo';
 import SettingsAccount from '../../../components/jobprovider/dashboard/SettingsAccount';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
 
 const Settings = () => {
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
+
+
   return (
     
     <Box
@@ -176,7 +196,7 @@ const Settings = () => {
             
         
 
-
+        <PaymentModel open={paymentOpen} />
 
            
 

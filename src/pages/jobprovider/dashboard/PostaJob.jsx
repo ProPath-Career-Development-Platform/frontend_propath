@@ -42,6 +42,9 @@ import "survey-creator-core/survey-creator-core.css";
 import { useNavigate } from 'react-router-dom';
 import { generateQuestions } from '../../../services/generativeAi';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
 
 
 const formatDate = (date) => {
@@ -78,6 +81,21 @@ const NumericFormatAdapter = React.forwardRef(
 
 
 const Dashboard = () => {
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -1170,7 +1188,7 @@ const Dashboard = () => {
                   </Snackbar>
                 </React.Fragment>
 
-                
+                <PaymentModel open={paymentOpen} />
           </Box>
 
   )

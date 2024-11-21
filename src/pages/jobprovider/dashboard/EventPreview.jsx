@@ -66,7 +66,8 @@ import DeleteButton from '../../../components/jobprovider/dashboard/DeleteButton
 
 import EventParticipantTable from '../../../components/jobprovider/dashboard/EventParticipantTable'
 
-
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
 
 
 
@@ -90,6 +91,22 @@ function JobPreview() {
   const getJwtToken = () => {
     return localStorage.getItem('token');
   };
+
+  const [paymentOpen,setPaymentOpen] = useState(false);
+
+  useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
+
 
   useEffect(() => {
     axios.get(`http://localhost:8080/jobprovider/event/${id}`, {
@@ -640,7 +657,7 @@ function JobPreview() {
 
              
 
-
+        <PaymentModel open={paymentOpen} />
 
 
 

@@ -50,7 +50,25 @@ import ImageKit from "imagekit";
 import axios from 'axios';
 import RichText from '../../../components/jobprovider/dashboard/RichText';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
 function CreateAnEvent() {
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
   const imagekit = new ImageKit({
    
@@ -1410,7 +1428,7 @@ function CreateAnEvent() {
 
              
 
-
+                <PaymentModel open={paymentOpen} />
 
   
 
