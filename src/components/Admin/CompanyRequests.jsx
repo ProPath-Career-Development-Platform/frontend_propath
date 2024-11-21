@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Card, CardBody, Button, Tooltip, Chip, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter} from "@nextui-org/react";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Card, CardBody, Button, Tooltip, Chip, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, Pagination} from "@nextui-org/react";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 import { getToken } from '../../pages/Auth/Auth';
 
 const CompanyRequests = () => {
+    const rowsPerPage = 7; 
+  const [currentPage, setCurrentPage] = useState(1);
     const { isOpen, onOpenChange } = useDisclosure();
     const [requests, setRequests] = useState([]);
     const [selectedRequest, setSelectedRequest] = useState(null); 
@@ -74,9 +76,17 @@ const CompanyRequests = () => {
 
   return (
     <Card>
-        <CardBody className='px-4 pt-6 pb-3'>
+        <CardBody className='px-4 pt-6 pb-3' style={{height: '450px'}}>
             <div className="flex flex-col gap-3">
-                <h1 className='font-bold text-xl pl-4 pb-3'>New Company Requests</h1>              
+                <div className='flex justify-between'>
+                    <h1 className='font-bold text-xl pl-4 pb-3'>New Company Requests</h1>  
+                    <Pagination 
+                        color='secondary' 
+                        total={Math.ceil(requests.length / rowsPerPage)} 
+                        initialPage={currentPage} 
+                        onChange={page => setCurrentPage(page)}
+                    />    
+                </div>        
                 <Table>
                     <TableHeader>
                     <TableColumn>NAME</TableColumn>
@@ -167,25 +177,6 @@ const CompanyRequests = () => {
                     )}
                     </ModalContent>
                 </Modal>
-
-                <div className="flex justify-between">
-                    <Button
-                    size="sm"
-                    variant="flat"
-                    color="default"
-                    onPress={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
-                    >
-                    Previous
-                    </Button>
-                    <Button
-                    size="sm"
-                    variant="flat"
-                    color="default"
-                    onPress={() => setCurrentPage((prev) => (prev < 10 ? prev + 1 : prev))}
-                    >
-                    Next
-                    </Button>
-                </div>
             </div>
         </CardBody>
     </Card>
