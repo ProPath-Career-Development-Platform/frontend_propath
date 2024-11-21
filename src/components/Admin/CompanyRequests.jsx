@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Card, CardBody, Button, Tooltip, Chip, useDisclosure} from "@nextui-org/react";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Card, CardBody, Button, Tooltip, Chip, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter} from "@nextui-org/react";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
@@ -28,6 +28,7 @@ const CompanyRequests = () => {
             return response.json();
           })
           .then(data => {
+            console.log('Response body:', data); 
             setRequests(data);
           })
           .catch(error => {
@@ -36,12 +37,40 @@ const CompanyRequests = () => {
       }, []);
     
       
+    const handleApprove = (id) => {
+        const token = getToken();
+
+        fetch(`http://localhost:8080/admin/companyRequests/${id}/approve`, {
+            method: 'PUT',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to approve company');
+            }
+            return response.json();
+            })
+            .then(() => {
+            setRequests(prevRequests =>
+                prevRequests.map(request =>
+                request.id === id ? { ...request, status: 'approved' } : request
+                )
+            );
+            })
+            .catch(error => {
+            console.error('Error approving company:', error);
+            });
+    };
+
+    
       const handleOpen = (request) => {
-        setSelectedRequest(request);  
-        onOpenChange(true); 
-      };
-
-
+    setSelectedRequest(request);  
+    onOpenChange(true); 
+    };
+  
 
   return (
     <Card>
@@ -60,19 +89,34 @@ const CompanyRequests = () => {
                             <TableRow key={index + 1}>
                             <TableCell>{request.companyName}</TableCell>
                             <TableCell>{request.location}</TableCell>
-                            <TableCell><Chip color="warning" variant="flat">{request.status}</Chip></TableCell>
+                            <TableCell>
+                                <Chip
+                                    color={
+                                    request.status === "approved"
+                                        ? "success"
+                                        : request.status === "rejected"
+                                        ? "danger"
+                                        : "warning"
+                                    }
+                                    variant="flat"
+                                >
+                                    {request.status}
+                                </Chip>
+                            </TableCell>
                             <TableCell>
                                 <div className="relative flex items-center gap-2">
                                 <Tooltip content="Details">
                                     <span
                                     className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                                    onClick={() => handleOpen(request)} 
+                                    onClick={() => handleOpen(request.id)} 
                                     >
                                     <FaRegEye />
                                     </span>
                                 </Tooltip>
-                                <Tooltip color="success" content="Reject Company">
-                                    <span className="text-lg text-success cursor-pointer active:opacity-50">
+                                <Tooltip color="success" content="Accept Company">
+                                    <span 
+                                    className="text-lg text-success cursor-pointer active:opacity-50"
+                                    onClick={() => handleApprove(request.id)}>
                                     <FaRegCheckCircle />
                                     </span>
                                 </Tooltip>
@@ -97,19 +141,24 @@ const CompanyRequests = () => {
                             <div className='w-1/2'>
                                 {selectedRequest && (
                                 <>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Company Name:<br/></span> {selectedRequest.companyName}</p>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Industry:<br/></span> {selectedRequest.industryType}</p>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Business Reg No:<br/></span> {selectedRequest.regNo}</p>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Email:<br/></span> {selectedRequest.email}</p>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Website:<br/></span> <a className='text-blue-600' href={selectedRequest.companyWebsite} target="_blank" rel="noopener noreferrer">Click Here</a></p>
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Company Name:<br/></span> {selectedRequest.companyName}</p>
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Industry:<br/></span> {selectedRequest.industryType}</p>
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Company Location:<br/></span> {selectedRequest.location}</p>
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Contact Number:<br/></span> {selectedRequest.contactNumber}</p>
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Email:<br/></span> {selectedRequest.email}</p>
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Website:<br/></span> <a className='text-blue-600' href={selectedRequest.companyWebsite} target="_blank" rel="noopener noreferrer">Click Here</a></p>
+                                    <p><span className='text-purple2 font-medium text-sm'>Company Logo:<br/></span>
+                                        <img src={selectedRequest.logoImg} alt="Company Logo" style={{ height: '150px', width: 'auto' }} />
+                                    </p>
                                 </>
                                 )}
                             </div>
                             <div className='w-1/2'>
                                 {selectedRequest && (
-                                <>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Company Logo:<br/></span> {selectedRequest.companyName}</p>
-                                    <p className='mb-3'><span className='text-purple2 font-medium'>Business Registration:<br/></span> {selectedRequest.industryType}</p>
+                                <>                       
+                                    <p className='mb-3'><span className='text-purple2 font-medium text-sm'>Business Registration:<br/></span>
+                                        <img src={selectedRequest.bannerImg} alt="Company Logo" style={{ height: '500px', width: 'auto' }} />
+                                    </p>
                                 </>
                                 )}
                             </div>                
