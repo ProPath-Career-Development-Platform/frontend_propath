@@ -5,6 +5,8 @@ import { MdDeleteOutline } from "react-icons/md";
 import { getToken } from '../../pages/Auth/Auth';
 
 const CompanyTable = () => {
+  const rowsPerPage = 10; 
+  const [currentPage, setCurrentPage] = useState(1);
   const { isOpen, onOpenChange } = useDisclosure();
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null); 
@@ -45,7 +47,12 @@ const CompanyTable = () => {
     <div className="flex flex-col gap-3 my-16">
       <div className='flex justify-between'>
         <h1 className='font-bold text-xl pb-3'>Registered Companies</h1>
-        <Pagination color='secondary' total={10} initialPage={1} />
+        <Pagination 
+          color='secondary' 
+          total={Math.ceil(companies.length / rowsPerPage)} 
+          initialPage={currentPage} 
+          onChange={page => setCurrentPage(page)}
+        />
       </div>
       <Table>
         <TableHeader>
