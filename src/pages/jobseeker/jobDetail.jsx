@@ -28,6 +28,15 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Jobcard from "../../components/JobSeeker/jobcard";
 import JSCard from "../../components/JobSeeker/card";
 import RenderRichText from "../../components/jobprovider/dashboard/RenderRichText";
+import Card from "@mui/joy/Card";
+import CardActions from "@mui/joy/CardActions";
+import CardContent from "@mui/joy/CardContent";
+import CardOverflow from "@mui/joy/CardOverflow";
+import AspectRatio from "@mui/joy/AspectRatio";
+import BakeryDiningIcon from "@mui/icons-material/BakeryDining";
+import BusinessIcon from "@mui/icons-material/Business";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+import { useNavigate } from "react-router-dom";
 
 const JobDetails = ({
   content,
@@ -55,6 +64,7 @@ const JobDetails = ({
   const [jobs, setJobs] = useState([]);
   const [companyDetails, setCompanyDetails] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
+  const navigate = useNavigate();
 
   const { jobId } = useParams();
   console.log("Job ID2:", jobId);
@@ -66,7 +76,6 @@ const JobDetails = ({
   console.log("location", location1);
   // Parse the tags from the URL
   const searchParams = new URLSearchParams(location1.search);
-  const tags = searchParams.get("tags")?.split(",") || []; // Convert comma-separated tags back to an array
   const fetchJobDetails = async () => {
     try {
       const response = await axios.get(
@@ -82,6 +91,12 @@ const JobDetails = ({
     } catch (error) {
       console.error("Error fetching job details:", error);
     }
+  };
+
+  const handleApplyNowClick = (id) => {
+    navigate(`/JobSeeker/JobDetails/${id}`, {
+      state: { title },
+    });
   };
 
   const fetchCompanyDetails = async () => {
@@ -103,29 +118,26 @@ const JobDetails = ({
 
   // Fetch related jobs
   const fetchRelatedJobs = async () => {
-    if (!tags || tags.length === 0) {
-      console.error("No tags provided for related jobs search.");
+    if (!jobId || !token) {
+      console.error("Missing jobId or token");
       return;
     }
 
     try {
-      const encodedTags = tags.map((tag) => encodeURIComponent(tag)).join(",");
       const response = await axios.get(
-        `http://localhost:8080/jobseeker/related-jobs?tags=${encodedTags}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `http://localhost:8080/jobseeker/related-jobs/${jobId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      setRelatedJobs(response.data);
+      setRelatedJobs(response.data || []);
       console.log("Fetched related jobs:", response.data);
     } catch (error) {
-      if (error.response) {
-        console.error(
-          "Error fetching related jobs:",
-          error.response.data,
-          error.response.status
-        );
-      } else {
-        console.error("Error fetching related jobs:", error.message);
-      }
+      console.error(
+        "Error fetching related jobs:",
+        error.response || error.message
+      );
+      setRelatedJobs([]); // Set to an empty array on failure to prevent mapping issues
     }
   };
 
@@ -263,7 +275,7 @@ const JobDetails = ({
               marginBottom: "4px",
             }}
           >
-            {title}
+            {jobDetails.jobTitle}
           </Typography>
           <Box
             sx={{
@@ -401,17 +413,85 @@ const JobDetails = ({
             gap: 2,
           }}
         >
-          {relatedJobs.map((job, index) => (
-            <JSCard
-              key={index}
-              jobId={job.id}
-              title={job.jobTitle}
-              content={removeHtmlTags(job.jobDescription)}
-              location={location}
-              company={job.company}
-              type={1}
-            />
-          ))}
+          {relatedJobs.length > 0 ? (
+            relatedJobs.map((job, index) => (
+              <Card
+                key={index}
+                data-resizable
+                sx={{
+                  textAlign: "center",
+                  alignItems: "center",
+                  width: 300,
+                  overflow: "auto",
+                  resize: "horizontal",
+                  "--icon-size": "60px",
+                  marginBottom: "15px",
+                }}
+              >
+                <CardOverflow>
+                  <AspectRatio
+                    sx={{ minWidth: 200, height: 90, marginBottom: "10px" }}
+                  >
+                    <img
+                      src={job.company?.logoImg} // Corrected to use job object
+                      loading="lazy"
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </AspectRatio>
+                </CardOverflow>
+                <Typography
+                  level="title-lg"
+                  sx={{ mt: "calc(var(--icon-size) / 0.8)" }}
+                >
+                  {job.jobTitle} {/* Corrected to use job.jobTitle */}
+                </Typography>
+                <Typography>
+                  <BusinessIcon /> {job.company?.companyName}{" "}
+                  {/* Corrected to use job object */}
+                  <LocationOnIcon /> {job.company?.location}{" "}
+                  {/* Corrected to use job object */}
+                </Typography>
+                <CardContent sx={{ fontSize: "17px" }}>
+                  {job.jobLevel}
+                </CardContent>{" "}
+                {/* Corrected to use job object */}
+                <CardActions
+                  orientation="vertical"
+                  buttonFlex={1}
+                  sx={{
+                    "--Button-radius": "40px",
+                    width: "clamp(min(100%, 120px), 50%, min(100%, 160px))",
+                  }}
+                >
+                  <Button
+                    variant="solid"
+                    sx={{ backgroundColor: "#3f067a" }}
+                    onClick={() => handleApplyNowClick(job.id)} 
+                  >
+                    Apply Now <ArrowRightAltIcon sx={{ marginLeft: "3px" }} />
+                  </Button>
+                </CardActions>
+              </Card>
+            ))
+          ) : (
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: "18px",
+                color: "gray",
+                marginTop: "20px",
+                gridColumn: "span 3", // Make it span across all columns in the grid
+              }}
+            >
+              No related jobs found.
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

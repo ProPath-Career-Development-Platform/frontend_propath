@@ -43,11 +43,17 @@ export default function JSCard({
 
   const handleApplyNowClick = () => {
     console.log("Job ID: ", jobId);
-    const tagsParam = tags.join(","); // Convert tags array to a comma-separated string
-    navigate(
-      `/JobSeeker/JobDetails/${jobId}?tags=${encodeURIComponent(tagsParam)}`,
-      { state: { title } }
-    );
+
+    // Ensure tags is an array and join them into a comma-separated string
+    const tagsParam = Array.isArray(tags) ? tags.join(",") : "";
+
+    // Encode the tags for safe inclusion in the URL
+    const encodedTags = encodeURIComponent(tagsParam);
+
+    // Navigate to the JobDetails page with the jobId and tags
+    navigate(`/JobSeeker/JobDetails/${jobId}`, {
+      state: { title },
+    });
   };
 
   const [companyDetails, setCompanyDetails] = useState(null);
