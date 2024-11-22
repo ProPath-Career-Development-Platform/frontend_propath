@@ -24,6 +24,19 @@ export function getJobRole() {
     return null; // Return null if token is invalid or expired
 }
 
+export function getUserId() {
+    const token = localStorage.getItem('token'); // Adjust if the token is stored elsewhere
+    if (token && !isTokenExpired(token)) {
+        try {
+            const decoded = jwtDecode(token);
+            return decoded.user_id; // Assuming `id` is the key for user ID in the token payload
+        } catch (error) {
+            return null; // Return null if there's an error decoding the token
+        }
+    }
+    return null; // Return null if token is invalid or expired
+}
+
 export function isAuthenticated() {
     const token = localStorage.getItem('token'); // Adjust if the token is stored elsewhere
     return token && !isTokenExpired(token);

@@ -22,11 +22,15 @@ import JpCreateEvent from "../pages/jobprovider/dashboard/CreateAnEvent"
 import JpChangePlan from "../pages/jobprovider/dashboard/ChangePlan";
 import JpSettings from "../pages/jobprovider/dashboard/Settings"
 import JpInterviewSchedule from "../pages/jobprovider/dashboard/InterviewSchedule";
+import JpInterviews from "../pages/jobprovider/dashboard/MyInterviews";
 
 import JpCheckout from "../pages/jobprovider/dashboard/chekout/Checkout"
 import JpEventPreview from "../pages/jobprovider/dashboard/EventPreview"
 import JpUpdateEvent from "../pages/jobprovider/dashboard/UpdateEvent"
 import JpError from "../pages/jobprovider/dashboard/Page404"
+import JpUpdateJob from "../pages/jobprovider/dashboard/UpdateJob"
+
+import JpVemail from "../pages/jobprovider/dashboard/emailVerification"
 
 
 import JobDetails from "../pages/jobseeker/jobDetail";
@@ -152,7 +156,7 @@ const router = createBrowserRouter([
 
     children: [
       {
-        path:"Setup",
+        path:"setup",
         element:<JPCompnaySetup1/>
       }
     ]
@@ -197,6 +201,10 @@ const router = createBrowserRouter([
         element:<JpPostAJob/>
       },
       {
+        path:"my-jobs/update-job/:jobId",
+        element:<JpUpdateJob/>
+      },
+      {
         path:"my-jobs",
         element:<JpMyJobs/>
       },
@@ -205,7 +213,7 @@ const router = createBrowserRouter([
         element:<JpApplications/>
       },
       {
-        path:"my-jobs/shedule-interview",
+        path:"my-jobs/:jobId/shedule-interview",
         element:<><JpInterviewSchedule/></>
       },
       {
@@ -229,6 +237,10 @@ const router = createBrowserRouter([
         element:<JpCreateEvent/>
       },
       {
+        path:"Interviews",
+        element:<JpInterviews/>
+      },
+      {
         path:"settings",
         element:<JpSettings/>
       },
@@ -243,6 +255,10 @@ const router = createBrowserRouter([
       {
         path:"error/404",
         element:<JpError/>
+      },
+      {
+        path:"verify-email",
+        element:<JpVemail/>
       }
 
     ]

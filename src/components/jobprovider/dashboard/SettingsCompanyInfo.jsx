@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect ,useContext} from 'react';
 
 import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
@@ -16,6 +16,7 @@ import CardActions from '@mui/joy/CardActions';
 import CardOverflow from '@mui/joy/CardOverflow';
 import CardContent from '@mui/joy/CardContent'
 import Snackbar from '@mui/joy/Snackbar';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -25,10 +26,17 @@ import CircularProgress from '@mui/joy/CircularProgress';
 import Badge from '@mui/joy/Badge';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import Typography from '@mui/joy/Typography';
-
+import axios from 'axios';
+import ImageKit from "imagekit";
+import Skeleton from '@mui/joy/Skeleton';
+import UserContext from '../../../utils/userContext'
 
 
 function SettingsCompanyInfo() {
+
+  const jwtToken = localStorage.getItem('token');
+
+  const {logUser,setLogUser} = useContext(UserContext);
 
   const VisuallyHiddenInput = styled('input')`
   clip: rect(0 0 0 0);
@@ -42,20 +50,120 @@ function SettingsCompanyInfo() {
   width: 1px;
 `;
 
-  const initialValues = {  // this is for reseting the form
-    companyName: '',
-    aboutUs: '',
-    bannerImg: 'https://images.unsplash.com/photo-1532614338840-ab30cf10ed36?auto=format&fit=crop&w=318',
-    logoImg: 'https://th.bing.com/th/id/R.3d6a2ad56bc3403c5cfcc3efe09b741b?rik=7w0mZmIMOAqbkQ&pid=ImgRaw&r=0',
-  };
 
   const [formData, setFormData] = useState({
     companyName: '',
     aboutUs: '',
     bannerImg: '',
     logoImg: '',
+    bannerUrl: false,
+    logoImgUrl : false
 
   });
+
+  const [loadForm,setFormLoad] = useState(false);
+  const [dataLoad,setDataLoad] = useState(true);
+  const [responseStat,setResponseStat] = useState(false);
+
+  const[change,setChnage] = useState(
+    {bannerImg:false,
+    logoImg:false,
+    reset:false}
+  );
+
+ 
+
+  useEffect(()=> {
+
+    //setDataLoad(true);
+
+    axios.get('http://localhost:8080/jobprovider/company', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+
+      
+      setFormData(
+        (prev) => ({
+          ...prev,
+          companyName: response.data.companyName,
+          aboutUs:response.data.aboutUs,
+          bannerImg: response.data.bannerImg,
+          logoImg: response.data.logoImg,
+
+        }));
+        setDataLoad(false);
+    }
+    ).catch((error) => {
+      console.error(error);
+    });
+
+  },[])
+
+  useEffect(()=> {
+
+    //setDataLoad(true);
+
+    axios.get('http://localhost:8080/jobprovider/company', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+
+      
+      setFormData(
+        (prev) => ({
+          ...prev,
+          companyName: response.data.companyName,
+          aboutUs:response.data.aboutUs,
+          bannerImg: response.data.bannerImg,
+          logoImg: response.data.logoImg,
+
+        }));
+        setDataLoad(false);
+    }
+    ).catch((error) => {
+      console.error(error);
+    });
+
+  },[change.reset])
+
+  const imagekit = new ImageKit({
+   
+    urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+    publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+    privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY
+   
+  });
+
+  const uploadImage = async (file) => {
+    try {
+      const response = await imagekit.upload({
+        file: file, // the file you want to upload
+        fileName: file.name, // file name you want to save as
+      });
+  
+      // Return the uploaded image URL
+      return response.url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null; // Return null in case of an error
+    }
+  };
+
+  const initialValues = {  // this is for reseting the form
+    companyName: formData.companyName,
+    aboutUs:formData.aboutUs,
+    bannerImg:formData.bannerImg,
+    logoImg: formData.logoImg,
+    bannerUrl:false,
+    logoImgUrl:false
+    
+   // bannerImg: 'https://images.unsplash.com/photo-1532614338840-ab30cf10ed36?auto=format&fit=crop&w=318',
+   // logoImg: 'https://th.bing.com/th/id/R.3d6a2ad56bc3403c5cfcc3efe09b741b?rik=7w0mZmIMOAqbkQ&pid=ImgRaw&r=0',
+  };
+
 
   const [error, setError] = useState({});
   const [loading, setLoading] = useState({
@@ -64,6 +172,7 @@ function SettingsCompanyInfo() {
   }); // State for loading status
 
   const [imgSnackOpen, setImgSnackOpen] = useState(false);
+  const [errorPut,setErrorPut] = useState(false);
 
 
   const handleChange = (e) => {
@@ -101,7 +210,7 @@ function SettingsCompanyInfo() {
   }
 
 
-  const handleSubmit = (event) =>{
+  const handleSubmit = async (event) =>{
     event.preventDefault();
     
     const validationErrors = validateForm();
@@ -109,11 +218,79 @@ function SettingsCompanyInfo() {
       setError(validationErrors);
     } else {
       alert(JSON.stringify(formData));
+
+      //form loading
+
+      setFormLoad(true);
+
+
+
+     
+        const LinkBannerImg = await uploadImage(change.bannerImg ? formData.bannerImgUrl : null);
+      
+
+     
+        const LinkLogoImg = await uploadImage(change.logoImg ? formData.logoImgUrl : null);
+      
+
+      const companyInfo = {
+
+        companyName : formData.companyName,
+        aboutUs : formData.aboutUs,
+        bannerImg : LinkBannerImg != null ? LinkBannerImg  : formData.bannerImg,
+        logoImg : LinkLogoImg != null ?  LinkLogoImg : formData.logoImg,
+      }
+
+      console.log(companyInfo);
+
+      try {
+        const response = await axios.put(
+          'http://localhost:8080/jobprovider/settings/company',
+          companyInfo,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        console.log('Settings updated successfully:', response.data);
+        //update LocalStorage company info
+        setLogUser((prev) => {
+          const updatedLogUser = {
+            ...prev,
+            companyName: companyInfo.companyName,
+            logoImg: companyInfo.logoImg,
+          };
+          
+          // Update local storage
+          localStorage.setItem('logUser', JSON.stringify(updatedLogUser));
+      
+          return updatedLogUser;
+        });
+        setResponseStat(true);
+      } catch (error) {
+        console.error('Error changing setting:', error);
+        setErrorPut(true);
+      } finally {
+        // Optionally, you can perform any cleanup actions here if necessary
+        setFormLoad(false);
+      }
+      
+
+     
+
+
     }
   }
 
   const resetForm = () => {
-    setFormData(initialValues);
+    setChnage((prev) => ({
+      bannerImg: false,
+      reset: !change.reset,
+      logoImg: false,
+
+    }));
     setError({});
   }
 
@@ -156,6 +333,28 @@ function SettingsCompanyInfo() {
       ); // Stop loading
     };
 
+    if(inputTagName === "logoImg"){
+      setFormData((prev) => ({
+        ...prev,
+        logoImgUrl: file,
+      }));
+
+      setChnage((prev) => ({
+        ...prev,
+        logoImg: true,
+      }));
+    }else if (inputTagName === "bannerImg"){
+      setFormData((prev) => ({
+        ...prev,
+        bannerImgUrl: file,
+      }));
+
+      setChnage((prev) => ({
+        ...prev,
+        bannerImg: true,
+      }));
+    }
+
     reader.readAsDataURL(file);
   };
 
@@ -189,20 +388,15 @@ function SettingsCompanyInfo() {
              objectFit='cover'
              >
 
+
                 {loading.bannerImg ? (
-                        
-                          <CircularProgress />
+                  
+                  <CircularProgress />
                        
                       ) : (
-                        !formData.bannerImg ? (
-                          <img
-                            src={initialValues.bannerImg}
-                            
-                            loading="lazy"
-                            alt="Initial Banner"
-                            
-                          />
-                        ) : (
+                        
+                        <Skeleton animation="wave" loading={dataLoad}>
+                        
                           <img
                             src={formData.bannerImg}
                             
@@ -210,8 +404,10 @@ function SettingsCompanyInfo() {
                             alt="New Banner"
                             
                           />
+                  </Skeleton>
                         )
-                      )}
+                      }
+
              
              
            </AspectRatio>
@@ -234,7 +430,7 @@ function SettingsCompanyInfo() {
         >
           <Tooltip title="Change Banner"  placement='right'>
 
-            {formData.bannerImg && formData.bannerImg != initialValues.bannerImg ? (
+            {change.bannerImg ? (
                 <Badge>
                 <EditRoundedIcon />
                 </Badge>
@@ -286,15 +482,9 @@ function SettingsCompanyInfo() {
                         <CircularProgress />
                      
                     ) : (
-                      !formData.logoImg ? (
-                        <img
-                          src={initialValues.logoImg}
-                          
-                          loading="lazy"
-                          alt="Initial Banner"
-                          
-                        />
-                      ) : (
+
+                      <Skeleton animation="wave" loading={dataLoad}>
+                      
                         <img
                           src={formData.logoImg}
                           
@@ -302,11 +492,13 @@ function SettingsCompanyInfo() {
                           alt="New Banner"
                           
                         />
-                      )
+                      </Skeleton>
+                      
                     )}
                 
                   
                 </AspectRatio>
+                
                 <IconButton
                   component="label"
                   size="sm"
@@ -327,7 +519,7 @@ function SettingsCompanyInfo() {
                   })}
                 >
                   <Tooltip title="Change Logo"  placement='right'>
-                  {formData.logoImg && formData.logoImg != initialValues.logoImg ? (
+                  {change.logoImg ? (
                     <Badge>
                     <EditRoundedIcon />
                     </Badge>
@@ -362,7 +554,9 @@ function SettingsCompanyInfo() {
                     }}
                 error={Boolean(error.companyName)}>
                 <FormLabel>Company Name</FormLabel>
+                <Skeleton animation="wave" loading={dataLoad}>
                 <Input name="companyName" placeholder="Company Name" value={formData.companyName} onChange={handleChange} />
+                </Skeleton>
                 {error.companyName && (
                         <FormHelperText>
                             <InfoOutlined /> {error.companyName}
@@ -372,6 +566,7 @@ function SettingsCompanyInfo() {
 
               <FormControl error={Boolean(error.aboutUs)}>
                 <FormLabel>About Us</FormLabel>
+                <Skeleton animation="wave" loading={dataLoad}>
                 <Textarea
                   name = "aboutUs"
                   placeholder="Type in here…"
@@ -380,6 +575,7 @@ function SettingsCompanyInfo() {
                   maxRows={8}
                   onChange={handleChange}
                 />
+                </Skeleton>
                 {error.aboutUs && (
                         <FormHelperText>
                             <InfoOutlined /> {error.aboutUs}
@@ -395,10 +591,10 @@ function SettingsCompanyInfo() {
 
           <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
             <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-              <Button onClick={resetForm} size="sm" variant="outlined" color="neutral">
+              <Button disabled={loadForm} onClick={resetForm} size="sm" variant="outlined" color="neutral">
                 Cancel
               </Button>
-              <Button type="submit" size="sm" variant="solid">
+              <Button loading={loadForm} disabled={dataLoad} type="submit" size="sm" variant="solid">
                 Save
               </Button>
             </CardActions>
@@ -438,6 +634,55 @@ function SettingsCompanyInfo() {
 
                     <Typography level='title-md' textAlign={'left'}>Remember to Save</Typography>
                     <Typography level='body-sm'>Click the Save button to finalize your banner or logo modifications.</Typography>
+                    </Box>
+                  </Snackbar>
+
+                  <Snackbar
+                    variant="soft"
+                    color="warning"
+                    open={errorPut}
+                    onClose={() => setErrorPut(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<WarningAmberIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() => setErrorPut(false)}
+                        size="sm"
+                        variant="soft"
+                        color="warning"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                    <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                    <Typography level='title-md' textAlign={'left'}>Error</Typography>
+                    <Typography level='body-sm'>Please Try again later.</Typography>
+                    </Box>
+                  </Snackbar>
+
+                  <Snackbar
+                    variant="soft"
+                    color="success"
+                    open={responseStat}
+                    onClose={() => setResponseStat(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<CheckCircleOutlineIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() => setResponseStat(false)}
+                        size="sm"
+                        variant="soft"
+                        color="success"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                    <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                    Company Info Updated
                     </Box>
                   </Snackbar>
                 </React.Fragment>

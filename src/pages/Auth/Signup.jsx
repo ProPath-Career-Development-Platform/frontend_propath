@@ -105,7 +105,9 @@ function Signup() {
       if (role === 'JobSeeker') {
         navigate("/login");
       } else if (role === 'JobProvider') {
-        navigate("/login");
+
+        navigate("/jobprovider/dashboard/");
+
       }
     } catch (error) {
       console.error('Signup failed:', error);

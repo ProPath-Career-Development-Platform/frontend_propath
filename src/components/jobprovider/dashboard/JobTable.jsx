@@ -23,8 +23,9 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import {getUserId} from '../../../utils/auth';
 
-const token = localStorage.getItem('token');
+
 
 
 
@@ -98,10 +99,11 @@ const getDarkTheme = () => extendTheme({
 export default function JobTable({markAsExpire,change,setChange,loading,setLoading,count}) {
 
     const navigate = useNavigate();
+   const token = localStorage.getItem('token');
 
   const columns = [
   
-         { field: 'col0', headerName: '#', width: 10, type: 'number', },
+         { field: 'col0', headerName: '', width: 10, type: 'number', },
          { field: 'col1', headerName: 'Job Title', width: '250',},
          { field: 'col2', headerName: 'Job Type', width: '150',},
          { field: 'col3', headerName: 'Created At', width: '150',},
@@ -144,10 +146,10 @@ export default function JobTable({markAsExpire,change,setChange,loading,setLoadi
                 />,
 
                 <GridActionsCellItem
-              
+                disabled={params.row.col5.status === 'expire'}
                 icon={<EditIcon />}
                 label="Edit"
-               // onClick={toggleAdmin(params.id)}
+                onClick={()=> navigate(`/jobprovider/my-jobs/update-job/${params.id}`)}
                 showInMenu
               />,
 
@@ -171,6 +173,7 @@ export default function JobTable({markAsExpire,change,setChange,loading,setLoadi
   const { mode } = useColorScheme();
   const [theme, setTheme] = useState(getLightTheme);
   const [rows, setRows] = useState([]);
+  
  
 
 

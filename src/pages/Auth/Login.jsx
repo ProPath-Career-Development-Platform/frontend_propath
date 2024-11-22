@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext  } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import JobNav from '../../components/landingPage/navbar/JobNav'
+import UserContext from '../../utils/userContext'
 
 
  function decodeJWT(token) {
@@ -22,6 +23,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  const { logUser, jobProviderLogin, logout } = useContext(UserContext);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
@@ -93,6 +95,8 @@ function Login() {
       if (role === 'JobSeeker') {
         navigate("/jobseeker/home/");
       } else if (role === 'JobProvider') {
+
+        jobProviderLogin(localStorage.getItem('token'),navigate);
         navigate("/jobprovider/dashboard/");
       } else if (role === 'Admin') {
         navigate("/admin/home/");

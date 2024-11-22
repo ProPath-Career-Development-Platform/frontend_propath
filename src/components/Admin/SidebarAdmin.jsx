@@ -13,6 +13,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { CssVarsProvider } from '@mui/joy/styles';
 import ColorSchemeToggle from '../dashboard/ColorSchemeToggle';
 import { closeSidebar } from '../../utils/sidebarUtils';
+import { getToken } from '../../pages/Auth/Auth';
 
 
 import List from '@mui/joy/List';
@@ -60,6 +61,35 @@ function Toggler({
 export default function SidebarAdmin() {
     const location = useLocation();
   const [stackState, setStackState] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState(0);
+
+
+  useEffect(() => {
+    const token = getToken();
+    console.log(token);
+
+    fetch('http://localhost:8080/admin/numberofPendingReq', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch companies');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Response body:', data); 
+        setPendingRequests(data);
+      })
+      .catch(error => {
+        console.log('Error fetching companies:', error);
+      });
+  }, []);
+
 
   useEffect(() => {
     const savedState = sessionStorage.getItem('planCardState');
@@ -202,7 +232,7 @@ export default function SidebarAdmin() {
                         <Typography level="title-sm">Registered Companies</Typography>
                         </ListItemContent>
                         <Chip size="sm" color="primary" variant="solid">
-                            1
+                            {pendingRequests}
                         </Chip>
                     </ListItemButton>
                     </ListItem>
@@ -223,7 +253,7 @@ export default function SidebarAdmin() {
                     <ListItem>
                     <ListItemButton
                         component={RouterLink}
-                        to="/admin/RegisterdUsers/"
+                        to="/admin/Postedjobs/"
                         selected={location.pathname === "/admin/Jobs/"}
                     >
                         <WorkIcon />

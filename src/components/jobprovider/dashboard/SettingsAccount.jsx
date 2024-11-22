@@ -1,4 +1,4 @@
-import React ,{useState}from 'react'
+import React ,{useState,useEffect,useContext}from 'react'
 
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
@@ -10,12 +10,7 @@ import Input from '@mui/joy/Input';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import FormHelperText from '@mui/joy/FormHelperText';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import LanguageIcon from '@mui/icons-material/Language';
 import Button from '@mui/joy/Button';
-import Textarea from '@mui/joy/Textarea';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Typography from '@mui/joy/Typography';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CallIcon from '@mui/icons-material/Call';
@@ -23,11 +18,32 @@ import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 import LinearProgress from '@mui/joy/LinearProgress';
 import LockIcon from '@mui/icons-material/Lock';
-import Autocomplete from '@mui/joy/Autocomplete';
+import axios from 'axios';
+import Skeleton from '@mui/joy/Skeleton';
+import Snackbar from '@mui/joy/Snackbar';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import Divider from '@mui/joy/Divider';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+import DialogActions from '@mui/joy/DialogActions';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import UserContext from '../../../utils/userContext';
+import { useNavigate } from 'react-router-dom';
+import CircularProgress from '@mui/joy/CircularProgress';
+import ErrorIcon from '@mui/icons-material/Error';
+import Tooltip from '@mui/joy/Tooltip';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 
 function SettingsAccount() {
+
+  const {logout} = useContext(UserContext);
+  const navigate = useNavigate();
   
   const [contactFormData, setContactFormData] = useState({
     mapLocation: '',
@@ -41,6 +57,79 @@ function SettingsAccount() {
     confirmPassword: ''
     
   });
+
+  const [personalFormData, setPersonalFormData] = useState({
+    userName: '',
+    pEmail: '',
+    newEmail:''
+  });
+
+  const jwtToken = localStorage.getItem('token');
+  
+  const [dataLoad, setDataLoad] = useState(true);
+  const [formLoad, setFormLoad] = useState({
+    contact: false,
+    password: false
+
+  });
+
+  
+  const [snackbar, setSnackbar] = useState({
+    contact: false,
+    cError: false,
+    pError:false,
+    error:false,
+    password: false,
+    delete: false,
+
+    personalError:false,
+    personal:false,
+    personalBoth:false
+  });
+
+  const [personalCheck,setPersonalCheck] = useState({
+    username:false,
+    email:false,
+    emailLoad:false
+  })
+
+
+useEffect(()=> {
+
+    //setDataLoad(true);
+
+    axios.get('http://localhost:8080/jobprovider/company', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+
+      
+      setContactFormData(
+        (prev) => ({
+          ...prev,
+          mapLocation: response.data.location,
+          phone:response.data.contactNumber,
+          email: response.data.email,
+        
+
+        }));
+
+        setPersonalFormData(
+          (prev) => ({
+            ...prev,
+            userName: response.data.user.username,
+            pEmail: response.data.user.email,
+            newEmail: response.data.user.email
+          
+          }));
+        setDataLoad(false);
+    }
+    ).catch((error) => {
+      console.error(error);
+    });
+
+  },[])
 
   
 
@@ -84,6 +173,28 @@ function SettingsAccount() {
     }));
 
     
+  };
+
+  const handleChangeForPersonal = (e) => {
+    const { name, value } = e.target;
+
+    if (errors[name]) {
+      setErrors((prevState) => {
+        const newErrors = { ...prevState };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+
+    setPersonalFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+    setPersonalCheck((prevState) => ({
+      ...prevState,
+      username: false
+    }));
   };
 
   
@@ -131,6 +242,17 @@ function SettingsAccount() {
 
       }
 
+    }else if(form === 'personal'){
+
+      if (!personalFormData.userName) {
+        newErrors.userName = 'User Name is required';
+      }
+
+      if (!personalFormData.newEmail) {
+        newErrors.newEmail = 'Email is required';
+      }else if (!/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/.test(personalFormData.newEmail)) {
+        newErrors.newEmail = 'Email is invalid';
+      }
     }
 
   return newErrors;
@@ -153,8 +275,312 @@ function SettingsAccount() {
 
       if(formId === 'contact'){
         alert(JSON.stringify(contactFormData));
+
+        setFormLoad((prevState) => ({
+          ...prevState,
+          contact: true
+        }));
+
+        const data = {
+          location: contactFormData.mapLocation,
+          contactNumber: contactFormData.phone,
+          email: contactFormData.email
+        }
+
+        try {
+          axios.put('http://localhost:8080/jobprovider/settings/contactInfo', data, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }).then((response) => {
+            console.log(response);
+
+
+            setSnackbar((prevState) => ({
+              ...prevState,
+              contact: true
+            }));
+
+          }) .catch((error)=>{
+
+            setSnackbar((prevState) => ({
+              ...prevState,
+              error:true
+            }))
+          });
+        }
+        catch (error) {
+          console.error(error);
+
+          setSnackbar((prevState) => ({
+            ...prevState,
+            error: true
+          }));
+
+        }finally{
+          setFormLoad((prevState) => ({
+            ...prevState,
+            contact: false
+          }));
+        }
+
+
+
+
+
       }else if(formId === 'password'){
-        alert(JSON.stringify(passwordFormData));
+       // alert(JSON.stringify(passwordFormData));
+
+        setFormLoad((prevState) => ({
+          ...prevState,
+          password: true
+        }));
+
+
+
+        const pwd ={
+          pwd: passwordFormData.currentPassword,
+          newPwd: passwordFormData.newPassword
+        }
+
+        //check password correct
+
+        try {
+          axios.post('http://localhost:8080/jobprovider/settings/password', pwd, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }).then((response) => {
+            console.log(response);
+
+
+            setSnackbar((prevState) => ({
+              ...prevState,
+              password: true
+            }));
+
+          }) .catch((error)=>{
+
+            if (!error.response) {
+              // Network error or no response from the server
+              console.error("Network error or no response from the server:", error.message);
+              setSnackbar((prevState) => ({
+                ...prevState,
+                error:true
+              }))
+            } else {
+              // Handle the error based on the status code
+              console.error("Error response code:", error.response.status);
+
+              if(error.response.status === 401){
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  pError:true
+                }))
+              }
+            }
+
+           
+          });
+          
+        }finally{
+          setFormLoad((prevState) => ({
+            ...prevState,
+            password: false
+          }));
+        }
+
+
+      }else if(formId == 'personal'){
+
+        if(personalFormData.pEmail === personalFormData.newEmail){
+
+          const name = {
+            username: personalFormData.userName,
+          };
+          
+          try {
+            axios
+              .post('http://localhost:8080/jobprovider/update/personal/name', name, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+          
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  personal: true,
+                }));
+
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  username: true,
+                }));
+
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  // Network error or no response from the server
+                  console.error("Network error or no response from the server:", error.message);
+                  setSnackbar((prevState) => ({
+                    ...prevState,
+                    error: true,
+                  }));
+                } else {
+                  // Handle the error based on the status code
+                  console.error("Error response code:", error.response.status);
+          
+                  if (error.response.status === 401) {
+                    setSnackbar((prevState) => ({
+                      ...prevState,
+                      pError: true,
+                    }));
+                  }
+                }
+              })
+              .finally(() => {
+                
+              });
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+          
+        
+
+
+        }else{
+
+          //send verification email to new email
+
+          //1st req to name
+
+          setPersonalCheck((prevState) => ({
+            ...prevState,
+            emailLoad: true,
+            
+          }));
+
+          const name = {
+            username: personalFormData.userName,
+          };
+          
+          try {
+            axios
+              .post('http://localhost:8080/jobprovider/update/personal/name', name, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+          
+                
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  personalBoth: true,
+                }));
+
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  username: true,
+                  
+                }));
+
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  // Network error or no response from the server
+                  console.error("Network error or no response from the server:", error.message);
+                  setSnackbar((prevState) => ({
+                    ...prevState,
+                    error: true,
+                  }));
+                } else {
+                  // Handle the error based on the status code
+                  console.error("Error response code:", error.response.status);
+          
+                  if (error.response.status === 401) {
+                    setSnackbar((prevState) => ({
+                      ...prevState,
+                      pError: true,
+                    }));
+                  }
+                }
+              })
+              .finally(() => {
+                
+              });
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+
+
+          //2nd req to send email, 
+
+          const email ={
+            newEmail : personalFormData.newEmail
+          }
+
+          try {
+            axios
+              .post('http://localhost:8080/jobprovider/send/v-email', email, {
+                headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+          
+                setSnackbar((prevState) => ({
+                  ...prevState,
+                  personalBoth: true,
+                }));
+
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  
+                  email:true,
+                }));
+
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  // Network error or no response from the server
+                  console.error("Network error or no response from the server:", error.message);
+                  setSnackbar((prevState) => ({
+                    ...prevState,
+                    error: true,
+                  }));
+                } else {
+                  // Handle the error based on the status code
+                  console.error("Error response code:", error.response.status);
+          
+                  if (error.response.status === 401) {
+                    setSnackbar((prevState) => ({
+                      ...prevState,
+                      pError: true,
+                    }));
+                  }
+                }
+              })
+              .finally(() => {
+                setPersonalCheck((prevState) => ({
+                  ...prevState,
+                  emailLoad: false,
+                  
+                }));
+              });
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+
+
+          
+        }
+
+
       }
       
     }
@@ -168,15 +594,31 @@ function SettingsAccount() {
     setErrors({});
   }
 
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 }
-  ];
+  const handleDelete = () =>{
+
+    try {
+
+      axios.delete('http://localhost:8080/jobprovider/company', {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }).then((response) => {
+        console.log(response);
+
+        logout(navigate);
+      }
+      ).catch((error) => {
+        console.error(error);
+      }
+      );
+
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  
   return (
     <>
     
@@ -190,6 +632,112 @@ function SettingsAccount() {
           py: { xs: 2, md: 3 },
         }}
       >
+
+<form
+     onSubmit={handleSubmit}
+    >
+        <Card>
+            
+            <CardContent>
+
+                <Box
+                    sx={{
+                        display: { xs: 'block', sm: 'grid',}, 
+                        gap:'2'
+
+                        
+                    }}
+                >
+
+                 <Typography sx={{ mb:2}} level='title-lg'>Personal Account Info</Typography>
+
+                 <Input sx={{display:'none'}} name='form' value='personal' />
+
+                <FormControl
+                    sx={{
+                        mb:2
+                        
+                      }}
+
+                    error={Boolean(errors.userName)}
+                >
+                    <FormLabel>User Name</FormLabel>
+                    <Skeleton loading={dataLoad}  >
+                    <Input
+                        name='userName'
+                        startDecorator={<Button disabled><AccountCircleIcon/></Button>}
+                        placeholder='Enter User Name'
+                        value={personalFormData.userName}
+                        onChange={handleChangeForPersonal}
+                        endDecorator={personalCheck.username ? <Tooltip title="Updated" ><CheckCircleIcon size="sm" color="success"/></Tooltip> : ''}
+
+                       // onInputChange={handleChangeForContact}
+                      
+                    />
+                    </Skeleton>
+
+                    {errors.userName && (
+                        <FormHelperText error>{errors.userName}</FormHelperText>
+                    )}
+                </FormControl>
+
+                
+
+                <FormControl
+                    sx={{
+                        mb: 2
+                      }}
+                    
+                    error={Boolean(errors.newEmail)}
+                >
+                    <FormLabel>Email</FormLabel>
+                    <Skeleton loading={dataLoad}  >
+                    <Input
+                        name='newEmail'
+                        startDecorator={<Button disabled><EmailIcon/></Button>}
+                        placeholder='Enter Email'
+                        onChange={handleChangeForPersonal}
+                        value={personalFormData.newEmail}
+                        endDecorator={
+                          personalCheck.emailLoad ? (
+                            <CircularProgress size="sm" />
+                          ) : personalCheck.email ? (
+                            <Tooltip title="Please verify your email">
+                              <ErrorIcon color="warning" />
+                            </Tooltip>
+                          ) : null
+                        }
+                        
+                    />
+                    </Skeleton>
+
+                    {errors.newEmail && (
+                        <FormHelperText error>{errors.newEmail}</FormHelperText>
+                    )}
+                </FormControl>
+
+
+                </Box>
+
+
+
+
+            </CardContent>
+
+            <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+            <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
+              <Button onClick={resetForm} size="sm" variant="outlined" color="neutral">
+                Cancel
+              </Button>
+              <Button disabled={dataLoad} type="submit" size="sm" variant="solid">
+                Save
+              </Button>
+            </CardActions>
+       
+          </CardOverflow>
+
+        </Card>
+    </form> 
 
     <form
      onSubmit={handleSubmit}
@@ -207,7 +755,7 @@ function SettingsAccount() {
                     }}
                 >
 
-                 <Typography sx={{ mb:2}} level='title-lg'>Contact Info</Typography>
+                 <Typography sx={{ mb:2}} level='title-lg'>Company Contact Info</Typography>
 
                  <Input sx={{display:'none'}} name='form' value='contact' />
 
@@ -219,28 +767,19 @@ function SettingsAccount() {
 
                     error={Boolean(errors.mapLocation)}
                 >
-                    <FormLabel>Map Location</FormLabel>
-                    <Autocomplete
+                    <FormLabel>Address</FormLabel>
+                    <Skeleton loading={dataLoad}  >
+                    <Input
                         name='mapLocation'
                         startDecorator={<Button disabled><LocationOnIcon/></Button>}
-                        placeholder='Enter your map location'
-                        options={top100Films}
-                        onChange={(event, newValue) => {
-
-                          if (errors.mapLocation) {
-                            setErrors((prevState) => {
-                              const newErrors = { ...prevState };
-                              delete newErrors.mapLocation;
-                              return newErrors;
-                            });
-                          }
-
-                          setContactFormData({...contactFormData, mapLocation: newValue});
-                        }}
+                        placeholder='Enter your address'
+                        value={contactFormData.mapLocation}
+                        onChange={handleChangeForContact}
 
                        // onInputChange={handleChangeForContact}
                       
                     />
+                    </Skeleton>
 
                     {errors.mapLocation && (
                         <FormHelperText error>{errors.mapLocation}</FormHelperText>
@@ -255,13 +794,16 @@ function SettingsAccount() {
                     error={Boolean(errors.phone)}
                 >
                     <FormLabel>Phone</FormLabel>
+                    <Skeleton loading={dataLoad}  >
                     <Input
                         name='phone'
                         startDecorator={<Button disabled><CallIcon/></Button>}
                         placeholder='Enter your phone number'
                         onChange={handleChangeForContact}
+                        value={contactFormData.phone}
 
                     />
+                    </Skeleton>
 
                     {errors.phone && (
                         <FormHelperText error>{errors.phone}</FormHelperText>
@@ -276,12 +818,15 @@ function SettingsAccount() {
                     error={Boolean(errors.email)}
                 >
                     <FormLabel>Email</FormLabel>
+                    <Skeleton loading={dataLoad}  >
                     <Input
                         name='email'
                         startDecorator={<Button disabled><EmailIcon/></Button>}
                         placeholder='Enter your phone number'
                         onChange={handleChangeForContact}
+                        value={contactFormData.email}
                     />
+                    </Skeleton>
 
                     {errors.email && (
                         <FormHelperText error>{errors.email}</FormHelperText>
@@ -301,7 +846,7 @@ function SettingsAccount() {
               <Button onClick={resetForm} size="sm" variant="outlined" color="neutral">
                 Cancel
               </Button>
-              <Button type="submit" size="sm" variant="solid">
+              <Button disabled={dataLoad} type="submit" size="sm" variant="solid">
                 Save
               </Button>
             </CardActions>
@@ -340,13 +885,16 @@ function SettingsAccount() {
                     error={Boolean(errors.currentPassword)}
                     >
                     <FormLabel>Current Password</FormLabel>
+                    <Skeleton loading={dataLoad}  >
                     <Input
                         name='currentPassword'
                         startDecorator={<Button disabled><LockIcon /></Button>}
                         placeholder='Enter your current password'
                         onChange={handleChangeForPassword}
+                        type="password"
                        
                     />
+                    </Skeleton>
 
                     {errors.currentPassword && (
                         <FormHelperText error>{errors.currentPassword}</FormHelperText>
@@ -367,6 +915,7 @@ function SettingsAccount() {
                             error={Boolean(errors.newPassword)}
                         >
                          <FormLabel>New Password</FormLabel>
+                         <Skeleton loading={dataLoad}>
                         <Input
                             type="password"
                             name="newPassword"
@@ -390,6 +939,7 @@ function SettingsAccount() {
 
                             }}
                         />
+                        </Skeleton>
                         {errors.newPassword && (
                             <FormHelperText error>{errors.newPassword}</FormHelperText>
                         )  
@@ -410,7 +960,8 @@ function SettingsAccount() {
                             level="body-xs"
                             sx={{ alignSelf: 'flex-end', color: 'hsl(var(--hue) 80% 30%)' }}
                             >
-                            {value.length < 3 && 'Very weak'}
+                            {value.length == 0 && ''}
+                            {value.length < 3 && value.length != 0 && 'Very weak'}
                             {value.length >= 3 && value.length < 6 && 'Weak'}
                             {value.length >= 6 && value.length < 10 && 'Strong'}
                             {value.length >= 10 && 'Very strong'}
@@ -426,6 +977,7 @@ function SettingsAccount() {
                     error={Boolean(errors.confirmPassword)}
                     >
                     <FormLabel>Confirm Password</FormLabel>
+                    <Skeleton loading={dataLoad}  >
                     <Input
                         type='password'
                         name='confirmPassword'
@@ -435,6 +987,7 @@ function SettingsAccount() {
                           handleChangeForPassword
                         }
                     />
+                    </Skeleton>
 
                     {errors.confirmPassword && (
                         <FormHelperText error>{errors.confirmPassword}</FormHelperText>
@@ -450,7 +1003,7 @@ function SettingsAccount() {
                         <Button type="reset" size="sm" variant="outlined" color="neutral">
                             Cancel
                         </Button>
-                        <Button type="submit" size="sm" variant="solid">
+                        <Button loading={formLoad.password} disabled={dataLoad} type="submit" size="sm" variant="solid">
                             Save
                         </Button>
                     </CardActions>
@@ -477,13 +1030,189 @@ function SettingsAccount() {
 
             <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                     <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-                    <Button variant='solid' color='danger'>Delete Account</Button>
+                    <Button disabled={dataLoad} variant='solid' color='danger' onClick={()=> setSnackbar({...snackbar,delete:true})}>Delete Account</Button>
                     </CardActions>
             
             </CardOverflow>
         </Card>
 
     </Stack>
+
+    <React.Fragment>
+
+<Snackbar
+  variant="soft"
+  color="warning"
+  open={snackbar.pError}
+  onClose={() => setSnackbar({ ...snackbar, pError: false })}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<WarningAmberIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({ ...snackbar, pError: false })}
+      size="sm"
+      variant="soft"
+      color="warning"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  <Typography level='title-md' textAlign={'left'}>Error</Typography>
+  <Typography level='body-sm'>Current Password Not Matched.</Typography>
+  </Box>
+</Snackbar>
+
+<Snackbar
+  variant="soft"
+  color="warning"
+  open={snackbar.error}
+  onClose={() => setSnackbar({ ...snackbar, error: false })}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<WarningAmberIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({ ...snackbar, error: false })}
+      size="sm"
+      variant="soft"
+      color="warning"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  <Typography level='title-md' textAlign={'left'}>Error</Typography>
+  <Typography level='body-sm'>Please try again later.</Typography>
+  </Box>
+</Snackbar>
+
+
+
+<Snackbar
+  variant="soft"
+  color="success"
+  open={snackbar.contact}
+  onClose={() => setSnackbar({...snackbar, contact:false})}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<CheckCircleOutlineIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({...snackbar, contact:false})}
+      size="sm"
+      variant="soft"
+      color="success"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  Company Contact Info Updated
+  </Box>
+</Snackbar>
+
+<Snackbar
+  variant="soft"
+  color="success"
+  open={snackbar.password}
+  onClose={() => setSnackbar({...snackbar, password:false})}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<CheckCircleOutlineIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({...snackbar, password:false})}
+      size="sm"
+      variant="soft"
+      color="success"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  Password Updated.
+  </Box>
+</Snackbar>
+
+
+<Snackbar
+  variant="soft"
+  color="success"
+  open={snackbar.personal}
+  onClose={() => setSnackbar({...snackbar, personal:false})}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<CheckCircleOutlineIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({...snackbar, personal:false})}
+      size="sm"
+      variant="soft"
+      color="success"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  Personal Information Updated.
+  </Box>
+</Snackbar>
+
+
+<Snackbar
+  variant="soft"
+  color="warning"
+  open={snackbar.personalBoth}
+  onClose={() => setSnackbar({...snackbar, personalBoth:false})}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  startDecorator={<CheckCircleOutlineIcon />}
+  endDecorator={
+    <Button
+      onClick={() => setSnackbar({...snackbar, personalBoth:false})}
+      size="sm"
+      variant="soft"
+      color="success"
+    >
+      Dismiss
+    </Button>
+  }
+> 
+  <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+  Please check your inbox to verify your new email address.
+  </Box>
+</Snackbar>
+
+
+<Modal open={snackbar.delete} onClose={() => setSnackbar({...snackbar,delete:false})}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>
+            <WarningRoundedIcon />
+            Confirmation
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to remove the company?
+          </DialogContent>
+          <DialogActions>
+            <Button  variant="solid" color="danger" onClick={() => {setSnackbar({...snackbar,delete:false}); handleDelete()}}>
+              Remove
+            </Button>
+            <Button variant="outlined" color="neutral" onClick={() => setSnackbar({...snackbar,delete:false})}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
+
+</React.Fragment>
     
     
     </>

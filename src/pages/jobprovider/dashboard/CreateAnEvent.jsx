@@ -181,11 +181,11 @@ function CreateAnEvent() {
           newErrors.bannerImg = 'Event Banner is required';
         }
 
-        //setError(newErrors);
+        setError(newErrors);
 
-       //return newErrors;
+       return newErrors;
 
-       return [];
+       //return [];
 
     
         
@@ -218,11 +218,11 @@ function CreateAnEvent() {
           newErrors.mapLocation = 'Event Location is required';
         }
 
-        //setError(newErrors);
+        setError(newErrors);
 
-       //return newErrors;
+       return newErrors;
 
-       return [];
+      // return [];
     
 
       }

@@ -28,6 +28,7 @@ import Input from '@mui/joy/Input';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import FormHelperText from '@mui/joy/FormHelperText';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { useParams } from 'react-router-dom';
 
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
@@ -39,6 +40,8 @@ import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react";
 import "survey-core/defaultV2.css";
 import "survey-creator-core/survey-creator-core.css";
+import LinearProgress from '@mui/joy/LinearProgress';
+import Skeleton from '@mui/joy/Skeleton';
 import { useNavigate } from 'react-router-dom';
 import { generateQuestions } from '../../../services/generativeAi';
 
@@ -77,13 +80,16 @@ const NumericFormatAdapter = React.forwardRef(
 
 
 
-const Dashboard = () => {
+const UpdateJob = () => {
 
-  const navigate = useNavigate();
+  
+ const navigate = useNavigate();
 
   const today = new Date();
   const nextMonth = new Date(today);
   nextMonth.setMonth(today.getMonth() + 1);
+
+  const jwtToken = localStorage.getItem('token');
 
   const [formData, setFormData] = useState({
     jobTitle: '',
@@ -99,7 +105,7 @@ const Dashboard = () => {
     expirationDate: '',
     jobLevel: '',
     description: '',
-    customizedForm: '',
+   /// customizedForm: '',
     isCustomizedFormNeeded: false,
   });
 
@@ -109,7 +115,10 @@ const Dashboard = () => {
   let [creator, setCreator] = useState();
   const [surveyOpen, setsurveyOpen] = React.useState(false);  // error1
   const [errorsurveyOpen, setErrorSurveyOpen] = React.useState(false); // error2
-  const [surLoad,setSurLoad] = React.useState(true);
+  const [errorPost, setErrorPost] = React.useState(false);
+
+  const [formloading,setFormLoading] = React.useState(true);
+  const [readySvy,SetReadySvy] =React.useState(false);
 
    /* auto complete*/
 
@@ -118,8 +127,67 @@ const Dashboard = () => {
    const [inputValue, setInputValue] = React.useState('');
    const [loading, setLoading] = React.useState(false);
    const[text,setText] = React.useState('');
-   const [emptyDescription, setEmptyDescription] = React.useState(true);
+   const [emptyDescription, setEmptyDescription] = React.useState(false);
    const [response, setResponse] = React.useState(false);
+   const [surLoad,setSurLoad] = React.useState(true);
+
+   //fetch job details by id
+   const {jobId} = useParams();
+
+   React.useEffect(() => {
+    axios.get(`http://localhost:8080/jobprovider/job/${jobId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+
+      if(response.data.status ==="expire"){
+        navigate('/jobprovider/error/404');
+      }
+      setFormData(
+        (prev) => ({
+          ...prev,
+          jobTitle: response.data.jobTitle,
+          jobRole: response.data.jobRole,
+          minSalary: response.data.minSalary,
+          maxSalary: response.data.maxSalary,
+          salaryType: response.data.salaryType,
+          education: response.data.education,
+          experience: response.data.experience,
+          jobType: response.data.jobType,
+          vacancies: response.data.vacancies,
+          expirationDate: response.data.expiryDate,
+          tags: response.data.tags.map((tag) => ({ word: tag })),
+          jobLevel: response.data.jobLevel,
+          description: response.data.jobDescription,
+          customizedForm: response.data.customizedForm,
+          isCustomizedFormNeeded: response.data.customizedForm != null,
+
+
+        })
+
+      );
+
+      setText(response.data.jobDescription);
+      setFormLoading(false);
+      
+      
+     
+      
+    }).catch((error) => {
+      console.error('Error fetching events:', error);
+      navigate('/jobprovider/error/404');
+    });
+  }, []);
+
+
+  React.useEffect(() => {
+    if (formData.customizedForm != null) {
+     
+      checkCreator(formData.jobTitle);
+    }
+  }, [formData.customizedForm]);
+  
 
 
   
@@ -181,81 +249,89 @@ const Dashboard = () => {
 
   //suevey creator start===========================
 
-  const handleBlur = async (event) => {
-    const jobTitle = event.target.value; // Get the job title from the input field
-    console.log("User finished typing:", jobTitle);
-    setSurLoad(true);
   
-    // Generate questions based on the job title
-    const questionBank = await generateQuestions(jobTitle);
+
+
+const checkCreator = async (jobTitle) => {
+
+
+  const questionBank = await generateQuestions(jobTitle);
   
-    // Check if the creator is initialized
-    if (creator === undefined) {
-      let options = {
-        showLogicTab: false,
-        showTranslationTab: false,
-        showJSONEditorTab: false,
-        showEmbededSurveyTab: false,
-        isAutoSave: true,
-      };
-  
-      creator = new SurveyCreator(options);
-  
-      // Add each question from the bank to the toolbox
-      questionBank.forEach((question, index) => {
-        creator.toolbox.addItem({
-          name: question.name,
-          iconName: "icon-default",
-          title: question.title,
-          json: question,
-          category: "Custom", // Optional: Organize in a specific category
-        });
-      });
-  
-      creator.saveSurveyFunc = (saveNo, callback) => {
-        callback(saveNo, true);
-  
-        saveSurveyJson(creator.JSON, saveNo, callback);
-      };
-  
-    } else {
-      const customItems = creator.toolbox.items.filter(item => item.category === "Custom");
-      customItems.forEach(item => {
-      creator.toolbox.removeItem(item.name); // Remove the item by name
-    });
-      // If creator already exists, add new questions to the toolbox
-      questionBank.forEach((question) => {
-        creator.toolbox.addItem({
-          name: question.name,
-          iconName: "icon-default",
-          title: question.title,
-          json: question,
-          category: "Custom",
-        });
-      });
-    }
-    setCreator(creator); // Update the state with the creator instance
-    setSurLoad(false);
+if (creator === undefined) {
+  let options = { 
+    showLogicTab: false, 
+    showTranslationTab: false,
+    showJSONEditorTab: false, 
+    showEmbededSurveyTab: false, 
+    isAutoSave: true
   };
+  
+  creator = new SurveyCreator(options);
 
-  //creator.JSON = props.json;
+  // Add each question from the bank to the toolbox
+  questionBank.forEach((question) => {
+    creator.toolbox.addItem({
+      name: question.name,
+      iconName: "icon-default",
+      title: question.title,
+      json: question,
+      category: "Custom" // Optional: Organize in a specific category
+    });
+  });
 
-  function saveSurveyJson( json, saveNo, callback) {
-    const jsonDataString = JSON.stringify(json); // Convert JSON object to string
-    const dataToSend = {
-      jsonData: jsonDataString // Wrap JSON string within quotes
-    };
-
-    // Update formData using functional state update to ensure correctness
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      customizedForm: jsonDataString,
-    }));
-
-    callback(saveNo, true);
+  // Load existing survey JSON to modify it
+  if (formData.customizedForm) {
+    creator.text = formData.customizedForm; // Load the existing survey JSON into the creator
   }
 
-  //survey js over===========================
+  creator.saveSurveyFunc = (saveNo, callback) => {
+    callback(saveNo, true);
+
+    saveSurveyJson(creator.JSON, saveNo, callback);
+  };
+
+
+  
+}else{
+
+  const customItems = creator.toolbox.items.filter(item => item.category === "Custom");
+   customItems.forEach(item => {
+   creator.toolbox.removeItem(item.name); // Remove the item by name
+ });
+   // If creator already exists, add new questions to the toolbox
+   questionBank.forEach((question) => {
+     creator.toolbox.addItem({
+       name: question.name,
+       iconName: "icon-default",
+       title: question.title,
+       json: question,
+       category: "Custom",
+     });
+   });
+ }
+ setCreator(creator);
+ setChecked(true); // Update the state with the creator instance
+ setSurLoad(false);
+}
+
+
+
+function saveSurveyJson(json, saveNo, callback) {
+  const jsonDataString = JSON.stringify(json); // Convert JSON object to string
+  const dataToSend = {
+    jsonData: jsonDataString // Wrap JSON string within quotes
+  };
+
+  // Update formData using functional state update to ensure correctness
+  setFormData(prevFormData => ({
+    ...prevFormData,
+    customizedForm: jsonDataString,
+  }));
+
+  callback(saveNo, true);
+}
+
+// Survey creator over ===========================
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -416,7 +492,7 @@ const Dashboard = () => {
 
         setResponse(true);
 
-        const jwtToken = localStorage.getItem('token');
+     
         // Transform keywords to the desired format
          const formattedTags = formData.tags.map(keyword => keyword.word);
 
@@ -438,14 +514,14 @@ const Dashboard = () => {
             jobLevel: formData.jobLevel,
             jobDescription: formData.description,
             customizedForm: formData.isCustomizedFormNeeded ?  formData.customizedForm : null,
-            postedIn: dayjs().format('YYYY-MM-DD'),
-            delete: false,
-            status: "active"
+           // postedIn: dayjs().format('YYYY-MM-DD'),
+           // delete: false,
+            //status: "active"
           }
 
           try {
 
-            axios.post('http://localhost:8080/jobprovider/job', data, {
+            axios.put(`http://localhost:8080/jobprovider/job/update/${jobId}`, data, {
               headers: {
                 Authorization: `Bearer ${jwtToken}`,
                 'Content-Type': 'application/json'
@@ -453,19 +529,17 @@ const Dashboard = () => {
               },
             }).then((response) => {
               console.log(response.data);
-
               navigate('/jobprovider/my-jobs/');
-              sessionStorage.setItem('jobPostSuc', true);
-
+              sessionStorage.setItem('jobUpdateSuc', true);
             }
             ).catch((error) => {
               console.log(error);
+              setErrorPost(true);
             });
 
           } catch (error) {
             console.error('Error posting job:', error);
-
-          
+            setErrorPost(true);
 
             
           
@@ -528,7 +602,6 @@ const Dashboard = () => {
   };
 
 
-
   return (
     
     <Box
@@ -576,9 +649,30 @@ const Dashboard = () => {
                 >
                   Dashboard
                 </Link>
+
+                <Link
+                  underline="hover"
+                  color="neutral"
+                  href="#some-link"
+                  fontSize={12}
+                  fontWeight={500}
+                >
+                  My Jobs
+                  
+                </Link>
+                
+
+                <Link
+                  underline="none"
+                  color="neutral"
+                  href="#some-link"
+                  aria-label="Home"
+                  >
                 <Typography color="primary" fontWeight={500} fontSize={12}>
-                  Post A Job
+                  Update Job
                 </Typography>
+                </Link>
+
               </Breadcrumbs>
             </Box>
             <Box
@@ -593,7 +687,7 @@ const Dashboard = () => {
               }}
             >
               <Typography level="h2" component="h1">
-                Post A Job
+                Update Job
               </Typography>
               
             </Box>
@@ -608,19 +702,40 @@ const Dashboard = () => {
                 minWidth: '100%',
                 mx: 'auto',
                 backgroundColor: 'transparent',
+                position: 'relative',
+                
               }}
             >
+
+             
+              
                 <Typography level="title-lg" startDecorator={<WorkOutlineOutlinedIcon />}>
                   Enter Details of the Job
                 </Typography>
                 <Divider inset="none" />
                 <CardContent>
 
-                <Typography level="title-lg" sx={{marginBottom: '1rem',}} >Job Informations</Typography>
+              
+                
+
+                <Typography level="title-lg" sx={{marginBottom: '1rem',}} >
+                  
+              
+                  Job Informations
+              
+                  
+                </Typography>
+
 
                   <FormControl sx={{ gridColumn: '1/-1', marginBottom:1 }} error={Boolean(errors.jobTitle)}>
                     <FormLabel>Job Title</FormLabel>
-                    <Input name="jobTitle"   placeholder='Add job tittle, role, vacancies etc' onChange={handleInputChange} onBlur={handleBlur} />
+
+                  <Skeleton  loading={formloading}>
+
+                    <Input name="jobTitle"   placeholder='Add job tittle, role, vacancies etc' onChange={handleInputChange} value={formData.jobTitle} onBlur={()=>{ setChecked(false); setSurLoad(true); checkCreator(formData.jobTitle); setChecked(true); }} />
+
+                  </Skeleton>
+
                     {errors.jobTitle && (
                         <FormHelperText>
                             <InfoOutlined /> {errors.jobTitle}
@@ -639,6 +754,7 @@ const Dashboard = () => {
                         
 
                         <FormLabel>Select Tags</FormLabel>
+                        <Skeleton loading={formloading} >
                         <Autocomplete
                           
                           multiple={true}
@@ -678,6 +794,7 @@ const Dashboard = () => {
                         // onInputChange={handleChangeForContact}
                         
                         />
+                         </Skeleton>
 
                         {errors.tags && (
                           <FormHelperText>
@@ -694,9 +811,11 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.jobRole)}>
                     <FormLabel>Job Role</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Select 
                         name='jobRole' 
                         placeholder="Select a Role" 
+                        value={formData.jobRole}
 
                         onChange={(event, newValue) => { 
 
@@ -719,6 +838,7 @@ const Dashboard = () => {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {errors.jobRole && (
                         <FormHelperText>
@@ -742,8 +862,10 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.minSalary)}>
                     <FormLabel>Min Salery</FormLabel>
+                    <Skeleton  loading={formloading}>
                     <Input 
                       name = 'minSalary'
+                      value={formData.minSalary}
                       onChange={handleInputChange}
                       placeholder='Enter Minimum Salary'
                       startDecorator={<Button disabled variant='soft' color="neutral">LKR</Button>}
@@ -754,6 +876,7 @@ const Dashboard = () => {
                         },
                       }}
                       />
+                      </Skeleton>
                       {
                         errors.minSalary && (
                           <FormHelperText>
@@ -765,8 +888,10 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.maxSalary)}>
                     <FormLabel>Max Salery</FormLabel>
+                    <Skeleton  loading={formloading}>
                     <Input 
                       name = 'maxSalary'
+                      value={formData.maxSalary}
                       placeholder='Enter Maximum Salary'
                       onChange={handleInputChange}
                       startDecorator={<Button disabled variant='soft' color="neutral">LKR</Button>}
@@ -776,6 +901,7 @@ const Dashboard = () => {
                         },
                       }} 
                       />
+                      </Skeleton>
                       {
                         errors.maxSalary && (
                           <FormHelperText>
@@ -787,9 +913,11 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.salaryType)}>
                     <FormLabel>Salary Type</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Select 
                       
                         placeholder="Select a Type"
+                        value={formData.salaryType}
                         onChange={(event, newValue) => { 
 
                           if (errors.salaryType) {
@@ -808,6 +936,7 @@ const Dashboard = () => {
                           <Option key='3' value="fish">Fish</Option>
                           <Option key='4' value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {
                         errors.salaryType && (
@@ -831,8 +960,10 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.education)}>
                     <FormLabel>Education</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Select 
                         placeholder="Select"
+                        value={formData.education}
                         onChange={(event, newValue) => {
                             
                             if (errors.education) {
@@ -851,6 +982,7 @@ const Dashboard = () => {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {
                         errors.education && (
@@ -864,8 +996,10 @@ const Dashboard = () => {
 
                   <FormControl error= {Boolean(errors.experience)}>
                     <FormLabel>Experience</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Select 
                         placeholder="Select"
+                        value={formData.experience}
                         onChange={(event, newValue) => {
                               
                               if (errors.experience) {
@@ -884,6 +1018,7 @@ const Dashboard = () => {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {
                         errors.experience && (
@@ -897,8 +1032,10 @@ const Dashboard = () => {
                 
                   <FormControl error={Boolean(errors.jobType)}>
                     <FormLabel>Job Type</FormLabel>
+                      <Skeleton  loading={formloading}>
                       <Select 
                         placeholder="Select"
+                        value={formData.jobType}
                         onChange={(event, newValue) => {
                               
                               if (errors.jobType) {
@@ -917,6 +1054,7 @@ const Dashboard = () => {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {
                         errors.jobType && (
@@ -930,11 +1068,15 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.vacancies)}>
                     <FormLabel>Vacancies</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Input 
-                      placeholder='Enter number of vacancies' 
+                      placeholder='Enter number of vacancies'
+                      value={formData.vacancies} 
                       onChange={handleInputChange}
                       name='vacancies'
                       />
+
+                      </Skeleton>
 
                       {
                         errors.vacancies && (
@@ -948,8 +1090,10 @@ const Dashboard = () => {
 
                   <FormControl error={Boolean(errors.expirationDate)}>
                     <FormLabel>Expiration Date</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Input 
                       name="expirationDate"
+                      value={formData.expirationDate}
                       type="date" 
                       placeholder='Select a date'
                       onChange={handleInputChange}
@@ -959,6 +1103,7 @@ const Dashboard = () => {
                           max: formatDate(nextMonth),
                         },
                       }}/>
+                      </Skeleton>
 
                       {
                         errors.expirationDate && (
@@ -972,8 +1117,10 @@ const Dashboard = () => {
                 
                   <FormControl error={Boolean(errors.jobLevel)}>
                     <FormLabel>Job Level</FormLabel>
+                    <Skeleton  loading={formloading}>
                       <Select
                         placeholder="Select"
+                        value={formData.jobLevel}
                         onChange={(event, newValue) => {
                                 
                                 if (errors.jobLevel) {
@@ -993,6 +1140,7 @@ const Dashboard = () => {
                           <Option value="fish">Fish</Option>
                           <Option value="bird">Bird</Option>
                       </Select>
+                      </Skeleton>
 
                       {
                         errors.expirationDate && (
@@ -1012,46 +1160,69 @@ const Dashboard = () => {
 
                   <Typography sx={{marginBottom:'1rem'}} level="title-lg" endDecorator={
                     
-                        <Switch
-                        disabled={surLoad}
-                        sx={{ ml: 1 }}
-                        checked={checked}
-                        onChange={ (event) => {
-                          const isChecked = event.target.checked;
-                          setChecked(isChecked);
-                          console.log(isChecked);
-
-
-                          setFormData({ ...formData, isCustomizedFormNeeded: isChecked });
-
-                          
-                            
-
-                          if(!isChecked){
-                            setsurveyOpen(true);
-
-                            setErrors((prevState) => {
-                              const newErrors = { ...prevState };
-                              delete newErrors.customizedForm;
-                              return newErrors;
-                            });
-                          }
-
-                        }
+                    <>
+                    <Switch
+                    sx={{ ml: 1 ,mr:1}}
+                    disabled={surLoad}
+                    checked={checked}
+                    onChange={ (event) => {
+                      const isChecked = event.target.checked;
+                      setChecked(isChecked);
+                      console.log(isChecked);
+                      
+                      // SetReadySvy(false);
+                      if(!checked){
+ 
+                        SetReadySvy(true);
                       }
+                     // checkCreator();
 
-                      endDecorator={ <CircularProgress sx={{display: surLoad && formData.jobTitle ? 'block' : 'none'}}  size='sm'/>}
-                        />
+
+                      //add delay
+                      setTimeout(() => {
+                        SetReadySvy(false);
+                      }, 2000);
+                      
+    
+    
+                      setFormData({ ...formData, isCustomizedFormNeeded: isChecked });
+    
+                      
+                        
+    
+                      if(!isChecked){
+                        setsurveyOpen(true);
+    
+                        setErrors((prevState) => {
+                          const newErrors = { ...prevState };
+                          delete newErrors.customizedForm;
+                          return newErrors;
+                        });
+                      }
+    
+                    }
+                  }
+
+                  endDecorator={<CircularProgress size="sm" sx={{display: surLoad ? 'block' : 'none'}} />}
+
+                      />
+                  
+                      
+                      </>
+                      
                         }
                   >
-                    Need a Customized Form?
+                     
+                     <CircularProgress size="sm" sx={{display: readySvy ? 'block' : 'none' , mr:2}}/>  Need a Customized Form? 
+                    
                   </Typography>
-                 
-
 
                   <Box borderRadius={10}   sx={{ display: checked ? 'block' : 'none' , mt:1,mb:1  , border: !Boolean(errors.customizedForm) ? '1px solid #CDD7E1' : '1px solid red' , padding:1 }}>
+                  
+                  <Skeleton  loading={formloading}>
+                    {checked && <SurveyCreatorComponent  creator={creator}/>}
 
-                  {checked && <SurveyCreatorComponent  creator={creator}/>}
+                    </Skeleton>
                   
                   </Box>
 
@@ -1064,10 +1235,26 @@ const Dashboard = () => {
                   <Typography level="title-lg" sx={{marginBottom: '1rem',}} >Job Description</Typography>
 
                   <FormControl error = {Boolean(errors.description)}>
-                 
-                   
+
+                    {formloading ? (
+
+                      <Box sx={{mb:6}}>
+
+                      <Skeleton  loading={formloading} sx={{width:"100%", height:'50px'}}/>
+                      </Box>
+
+                    ):
+                    (
+
+                      <RichText text={text} handleChange={handleChangeText}/>
+
+                    )
                     
-                    <RichText text={text} handleChange={handleChangeText}/>
+                    }
+                 
+                    
+                  
+
                     
 
                       {
@@ -1080,7 +1267,7 @@ const Dashboard = () => {
                   </FormControl>
 
                   <CardActions sx={{ maxWidth:'200px' }}>
-                    <Button loading={response} type='submit' variant="solid" color="primary"  endDecorator={<ArrowForwardOutlinedIcon />}>
+                    <Button  type='submit' variant="solid" color="primary" disabled={formloading}  endDecorator={<ArrowForwardOutlinedIcon />}>
                       Post Job
                     </Button>
                   </CardActions>
@@ -1168,6 +1355,32 @@ const Dashboard = () => {
                     <Typography level='body-sm'>Drag and drop items from the toolbox on the left side.</Typography>
                     </Box>
                   </Snackbar>
+
+
+                  <Snackbar
+                    variant="soft"
+                    color="danger"
+                    open={errorPost}
+                    onClose={() => setErrorPost(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<WarningAmberIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() => setErrorPost(false)}
+                        size="sm"
+                        variant="soft"
+                        color="danger"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                    <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                    <Typography level='title-md' textAlign={'left'}>Error.</Typography>
+                    <Typography level='body-sm'>Please Try Again Later.</Typography>
+                    </Box>
+                  </Snackbar>
                 </React.Fragment>
 
                 
@@ -1176,4 +1389,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default UpdateJob

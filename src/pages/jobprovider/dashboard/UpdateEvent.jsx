@@ -329,7 +329,7 @@ function CreateAnEvent() {
 
        return newErrors;
 
-       return [];
+       //return [];
     
 
       }
