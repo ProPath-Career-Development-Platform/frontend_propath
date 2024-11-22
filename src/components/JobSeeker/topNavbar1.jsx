@@ -2,7 +2,7 @@ import React from 'react'
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Button} from "@nextui-org/react";
 import { Link } from 'react-router-dom';
 import logo from "/logo.png";
-import '../../landingPage/navbar/Navbar.css'
+import '../landingPage/navbar/Navbar.css'
 
 
 const Navbar1 = () => {
@@ -30,8 +30,8 @@ const Navbar1 = () => {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Button as={Link} to ="/jobprovider/dashboard" className='bg-[#814DDE] text-white font-semibold' href="#" variant="flat">
-            Back to Dashboard
+          <Button as={Link} to ="/jobseeker/home" className='bg-[#814DDE] text-white font-semibold' href="#" variant="flat">
+            Back to Home
           </Button>
         </NavbarItem>
         {/* <NavbarItem className="hidden lg:flex">

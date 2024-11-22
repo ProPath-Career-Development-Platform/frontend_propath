@@ -425,7 +425,7 @@ const handleBannerUpload = (event) => {
         // Submit the form data
         const response = await RegisterCompany(companyData,token);
         console.log(response.data);
-        navigate('/jobprovider/home/');
+        navigate('/jobprovider/dashboard/');
       } catch (error) {
         console.error('Error submitting form:', error);
         if (error.response) {
@@ -868,10 +868,8 @@ const [italic, setItalic] = React.useState(false);
             fontWeight: 500,
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all .3s ease',
-            '&:hover': {
-              backgroundColor: '#005DD1',
-            },
+            transition: 'all .3s ease'
+        
           }}
           onClick={handleSubmit1}
         >
@@ -1269,10 +1267,8 @@ const [italic, setItalic] = React.useState(false);
             fontWeight: 500,
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all .3s ease',
-            '&:hover': {
-              backgroundColor: '#005DD1',
-            },
+            transition: 'all .3s ease'
+            
           }}
           onClick={handleSubmit2}
         >
@@ -1461,10 +1457,8 @@ const [italic, setItalic] = React.useState(false);
           fontWeight: 500,
           fontSize: '15px',
           cursor: 'pointer',
-          transition: 'all .3s ease',
-          '&:hover': {
-            backgroundColor: '#005DD1',
-          },
+          transition: 'all .3s ease'
+        
         }}
         onClick={haddlesubmit3}
       >
@@ -1701,10 +1695,7 @@ const [italic, setItalic] = React.useState(false);
           fontWeight: 500,
           fontSize: '15px',
           cursor: 'pointer',
-          transition: 'all .3s ease',
-          '&:hover': {
-            backgroundColor: '#005DD1',
-          },
+          transition: 'all .3s ease'
         }}
        
       >
