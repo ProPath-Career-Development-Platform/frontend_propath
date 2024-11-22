@@ -263,7 +263,7 @@ export default function SidebarAdmin() {
                     </ListItemButton>
                     </ListItem>
 
-                    <ListItem>
+                    {/* <ListItem>
                     <ListItemButton
                         component={RouterLink}
                         to="/admin/Postedjobs/"
@@ -274,7 +274,7 @@ export default function SidebarAdmin() {
                         <Typography level="title-sm">Professional Memberships</Typography>
                         </ListItemContent>
                     </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
 
                     <ListItem>
                     <ListItemButton
@@ -289,7 +289,7 @@ export default function SidebarAdmin() {
                     </ListItemButton>
                     </ListItem>
 
-                    <ListItem>
+                    {/* <ListItem>
                     <ListItemButton
                         component={RouterLink}
                         to="/admin/PDC_Courses/"
@@ -300,7 +300,7 @@ export default function SidebarAdmin() {
                         <Typography level="title-sm">CPD Courses</Typography>
                         </ListItemContent>
                     </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
 
                     <ListItem>
                     <ListItemButton
