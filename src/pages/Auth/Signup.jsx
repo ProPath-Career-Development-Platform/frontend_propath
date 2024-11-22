@@ -103,9 +103,11 @@ function Signup() {
       localStorage.setItem('token', token);
 
       if (role === 'JobSeeker') {
-        navigate("/jobseeker/setup/");
+        navigate("/login");
       } else if (role === 'JobProvider') {
-        navigate("/jobprovider/setup/");
+
+        navigate("/jobprovider/dashboard/");
+
       }
     } catch (error) {
       console.error('Signup failed:', error);
@@ -116,7 +118,7 @@ function Signup() {
   return (
 
     <>
-    <JobNav/>
+    {/* <JobNav/> */}
     <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200 overflow-hidden">
       <div className="flex items-center justify-center w-full h-full lg:w-3/4">
         <div className="flex w-full max-w-[800px] rounded-3xl  bg-violet-100">

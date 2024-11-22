@@ -95,8 +95,9 @@ function Login() {
       if (role === 'JobSeeker') {
         navigate("/jobseeker/home/");
       } else if (role === 'JobProvider') {
+
         jobProviderLogin(localStorage.getItem('token'),navigate);
-        //navigate("/jobprovider/home/");
+        navigate("/jobprovider/dashboard/");
       } else if (role === 'Admin') {
         navigate("/admin/home/");
       }
@@ -124,7 +125,7 @@ function Login() {
 
   return (
     <>
-    <JobNav/>
+    {/* <JobNav/> */}
     <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200  overflow-hidden">
       <div className="flex items-center justify-center w-full h-full lg:w-1/2">
         <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-violet-100 ">
