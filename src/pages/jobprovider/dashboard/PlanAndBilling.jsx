@@ -34,6 +34,8 @@ function PlanAndBilling() {
   const [loading, setLoading] = useState(true);
   const [butLoad,setButLoad] = useState(false);
   const [subscription, setSubscription] = useState([]);
+  const [currentPlanFeatures, setCurrentPlanFeatures] = useState([]);
+  const [remainingPlanFeatures, setRemainingPlanFeatures] = useState([]);
 
   useEffect(() => {
 
@@ -45,7 +47,7 @@ function PlanAndBilling() {
     })
     .then((response) => {
       setSubscription(response.data);
-      setLoading(false);
+     
     })
     .catch((error) => {
       console.log(error);
@@ -57,17 +59,49 @@ function PlanAndBilling() {
 
   }, [])
 
-  function createData(name, calories, fat, carbs,) {
-    return { name, calories, fat, carbs };
-  }
+  useEffect(() => {
+    const selectedPlanFeatures = plans[subscription.planName]?.features || [];
+      const remainingFeatures =plans.PREMIUM.features;
   
-  const rows = [
-    createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
-    createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
-    createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
-    createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
-    createData(1050, 'Dec 7, 2019 23:26', 'Premium', 'LKR 5000', ),
-  ];
+      setCurrentPlanFeatures(selectedPlanFeatures);
+      setRemainingPlanFeatures(remainingFeatures);
+      setLoading(false);  
+  }, [subscription]);
+  
+  
+
+  const plans = {
+    BASIC: {
+      name: "Basic",
+      features: [
+        { text: "3 Job Posting", included: true },
+        { text: "3 Meetup or Workshop", included: true },
+      ],
+    },
+    STANDARD: {
+      name: "Standard",
+      features: [
+        { text: "5 Job Postings", included: true },
+        { text: "24/7 Critical support", included: true },
+        { text: "5 Meetup or Workshop", included: true },
+      ],
+    },
+    PREMIUM: {
+      name: "Premium",
+      features: [
+        { text: "10 Job Postings", included: true },
+        { text: "24/7 Critical support", included: true },
+        { text: "10 Meetup or Workshop", included: true },
+      ],
+    },
+  };
+
+
+
+
+
+
+ 
 
   const handlePayment = async () => {
 
@@ -357,106 +391,39 @@ function PlanAndBilling() {
 
 
 
-          <Card orientation='horizontal' variant='outlined' sx={{ borderRadius:10 }}>
-
-            <CardContent>
-
-            <Typography level="title-lg" >Current Plan Benefits</Typography>
-
-           
-
-            <List size="md" >
-
-              <ListItem>
-                 <ListItemDecorator>
-                    <CheckCircleOutlineIcon color="success" />
-                 </ListItemDecorator>
-
-                  1 Job Postings per month
-              </ListItem>
-
-              <ListItem>
-                 <ListItemDecorator>
-                    <CheckCircleOutlineIcon color="success" />
-                 </ListItemDecorator>
-
-                 Access to a limited resume database
-              </ListItem>
-
-              <ListItem>
-                 <ListItemDecorator>
-                    <CheckCircleOutlineIcon color="success" />
-                 </ListItemDecorator>
-
-                 Job alert notifications
-              </ListItem>
 
 
+          <Card orientation="horizontal" variant="outlined" sx={{ borderRadius: 10 }}>
+      <CardContent>
+        <Typography level="title-lg">Current Plan Benefits</Typography>
+        <List size="md">
+          {currentPlanFeatures.map((feature, index) => (
+            <ListItem key={index}>
+              <ListItemDecorator>
+                <CheckCircleOutlineIcon color="success" />
+              </ListItemDecorator>
+              {feature.text}
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
 
-            </List>
+      <Divider orientation="vertical" flexItem />
 
-            </CardContent>
-
-            <Divider />
-
-            <CardContent>
-
-            <Typography level="title-lg" >Remaining Plan Benefits</Typography>
-            
-
-            <List size="md" >
-
-              <ListItem>
-                <ListItemDecorator>
-                    <BlockIcon color="danger"/>
-                </ListItemDecorator>
-
-                  50 Job Postings per month
-              </ListItem>
-
-              <ListItem>
-                <ListItemDecorator>
-                    <BlockIcon color="danger"/>
-                </ListItemDecorator>
-
-                Full access to resume database
-              </ListItem>
-
-              <ListItem>
-                <ListItemDecorator>
-                  <BlockIcon color="danger"/>
-                </ListItemDecorator>
-
-                Advanced applicant tracking system
-              </ListItem>
-
-              <ListItem>
-                <ListItemDecorator>
-                  <BlockIcon color="danger"/>
-                </ListItemDecorator>
-
-                Advanced applicant tracking system
-              </ListItem>
-
-
-              <ListItem>
-                <ListItemDecorator>
-                  <BlockIcon color="danger"/>
-                </ListItemDecorator>
-
-                Advanced applicant tracking system
-              </ListItem>
-
-
-
-
-              </List>
-
-
-
-            </CardContent>
-          </Card>
-
+      <CardContent>
+        <Typography level="title-lg">Remaining Plan Benefits</Typography>
+        <List size="md">
+          {remainingPlanFeatures.map((feature, index) => (
+            <ListItem key={index}>
+              <ListItemDecorator>
+                <BlockIcon color="danger" />
+              </ListItemDecorator>
+              {feature.text}
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
+    </Card>
           
           
     <Typography  level="h4" sx={{ mt:2 }} >Latest Invoices</Typography>

@@ -255,6 +255,9 @@ import axios from 'axios';
 import { rowsStateInitializer } from '@mui/x-data-grid/internals';
 import Tooltip from '@mui/material/Tooltip';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import ResponseView from '../../../components/jobprovider/dashboard/ResponseView';
+import { resolveTimeViewsResponse } from '@mui/x-date-pickers/internals';
+import { useParams } from 'react-router-dom';
 
 
 
@@ -327,6 +330,16 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
 
   const token = localStorage.getItem('token');
 
+  const [open, setOpen] = useState(false);
+  const [jobSeekerId, setJobSeekerId] = useState(null);
+
+
+  const viewResponse = (jobSeekerId) => {
+    setOpen(true);
+    setJobSeekerId(jobSeekerId);
+    console.log(jobSeekerId);
+  }
+
   const columns = [
   
          { field: 'col0', headerName: '#', width: 10, type: 'number', },
@@ -381,7 +394,7 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
                 icon={<TextSnippetIcon />}
                 label="View Response"
                 showInMenu
-               // onClick={toggleAdmin(params.id)}
+                onClick={()=> viewResponse(params.id)}
                
               />
              
@@ -398,6 +411,7 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
   const [theme, setTheme] = useState(getLightTheme);
   const [rows, setRows] = useState([]);
   const [prevRowSelectionModel, setPrevRowSelectionModel] = useState([]);
+  
 
   useEffect(() => {
     setTheme(mode === 'light' ? getLightTheme() : getDarkTheme());
@@ -582,6 +596,7 @@ useEffect(() => {
           }}
         />
       </Box>
+      <ResponseView jobSeekerId={jobSeekerId} open={open} setOpen={setOpen} />
     </CssVarsProvider>
   );
 }

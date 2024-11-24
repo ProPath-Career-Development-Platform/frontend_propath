@@ -27,6 +27,6 @@ export async function checkUserSubscription() {
 
         
     } catch (error) {
-        return true;
+        //return true;
     }
 }

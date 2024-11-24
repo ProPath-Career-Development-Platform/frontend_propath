@@ -186,6 +186,8 @@ export default function EventCard(props) {
                 sx={{ position: 'absolute', top: 0, width: '100%', p: 1 }}
                 >
                 {status == "active" ? (
+
+                  <>
                   <Chip
                   variant="soft"
                   color="success"
@@ -194,8 +196,32 @@ export default function EventCard(props) {
                     >
                     Active
                   </Chip>
+
+                  <IconButton
+                  component= {RouterLink}
+                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
+                  variant="outlined"
+                  size="sm"
+                  color="neutral"
+
+                  sx={{
+                    display: { xs: 'flex', sm: 'none' },
+                    ml: 'auto',
+                    borderRadius: '50%',
+                    zIndex: '20',
+                    bgcolor: 'background.body',
+                    
+                  }}
+                  >
+                  <ModeEditIcon   />
+
+                  </IconButton>
+
+                  </>
                 ):
                 (
+
+                  <>
                   <Chip
                   variant="soft"
                   color="warning"
@@ -204,26 +230,13 @@ export default function EventCard(props) {
                   >
                     Completed
                   </Chip>
+
+                  
+
+                  </>
     
                 )}
-                <IconButton
-                  component= {RouterLink}
-                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
-                  variant="outlined"
-                  size="sm"
-                  color="neutral"
-                  
-                  sx={{
-                    display: { xs: 'flex', sm: 'none' },
-                    ml: 'auto',
-                    borderRadius: '50%',
-                    zIndex: '20',
-                    bgcolor: 'background.body',
-                  }}
-                >
-                  <ModeEditIcon />
-                  
-                </IconButton>
+                
               </Stack>
             </AspectRatio>
           </CardOverflow>
@@ -253,21 +266,29 @@ export default function EventCard(props) {
                 
                 </Typography>
               </div>
-              <IconButton
-              component= {RouterLink}
-              to={`/jobprovider/meet-up/updateEvent/${eventId}`}
-                variant="outlined"
-                size="sm"
-                color="neutral"
-                
-                sx={{
-                  display: { xs: 'none', sm: 'flex' },
-                  borderRadius: '50%',
-                  bgcolor: 'background.body',
-                }}
-              >
-                <ModeEditIcon />
-              </IconButton>
+              {
+                status == "active" ? (
+
+                  <IconButton
+                  component= {RouterLink}
+                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
+                    variant="outlined"
+                    size="sm"
+                    color="neutral"
+                    
+                    sx={{
+                      display: { xs: 'none', sm: 'flex' },
+                      borderRadius: '50%',
+                      bgcolor: 'background.body',
+                      
+                    }}
+                  >
+                    <ModeEditIcon />
+                  </IconButton>
+                ) : null
+
+              }
+             
             </Stack>
             <Stack
               spacing="0.25rem 1rem"

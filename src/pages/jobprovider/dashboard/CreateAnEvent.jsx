@@ -45,7 +45,8 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import MapBoxGeo from '../../../components/jobprovider/dashboard/mapBoxGeo';
 
-
+import Snackbar from '@mui/joy/Snackbar';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ImageKit from "imagekit";
 import axios from 'axios';
 import RichText from '../../../components/jobprovider/dashboard/RichText';
@@ -68,6 +69,28 @@ function CreateAnEvent() {
     };
 
     verifySubscription();
+  }, []);
+
+
+  const jwtToken = localStorage.getItem('token');
+  const [limit,setLimit] = React.useState([]);
+  const [open,setOpen] = React.useState(false);
+  //check-plan-before
+  React.useEffect(() => {
+
+    //http://localhost:8080/jobprovider/plan-limits-check
+
+    axios.get('http://localhost:8080/jobprovider/plan-limits-check', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+      setLimit(response.data);
+      console.log(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+
   }, []);
 
   const imagekit = new ImageKit({
@@ -113,6 +136,7 @@ function CreateAnEvent() {
         keySearching: false,
       }); // State for loading status
 
+    
     const [formData, setFormData] = React.useState({
         bannerImg: false,
         bannerFile:'',
@@ -422,7 +446,11 @@ function CreateAnEvent() {
         
        
           const errors = validationStep3();
-          if (Object.keys(errors).length > 0) {
+
+          if (limit.EXCEED_SERVICES.event ==='exceed') {
+              setOpen(true);
+          }
+          else if (Object.keys(errors).length > 0) {
             return;
 
           }else{
@@ -1429,6 +1457,36 @@ function CreateAnEvent() {
              
 
                 <PaymentModel open={paymentOpen} />
+
+                <React.Fragment>
+                  
+                  <Snackbar
+                    variant="soft"
+                    color="warning"
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<WarningAmberIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() => setOpen(false)}
+                        size="sm"
+                        variant="soft"
+                        color="warning"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                   <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                      <Typography level='title-md' textAlign={'left'}>Please consider upgrading your plan.</Typography>
+                      <Typography level='body-sm'>You have exceeded the posting limit for your current plan.</Typography>
+                    </Box>
+                    
+                  </Snackbar>
+
+                  </React.Fragment>
 
   
 

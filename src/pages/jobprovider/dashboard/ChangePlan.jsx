@@ -33,7 +33,7 @@ import DeleteForever from '@mui/icons-material/DeleteForever';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import { useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/joy/Snackbar';
-
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 const ChangePlan = () => {
 
   
@@ -55,6 +55,13 @@ const ChangePlan = () => {
   const [open, setOpen] = useState(false);
   const [modBut,setModBut] = useState(false);
   const [eOpen, setEOpen] = useState(false);
+  const [limit, setLimit] = useState({
+    but1: false,
+    but2: false,
+    but3: false,
+});
+
+const [oLimit, setOLimit] = useState(false);
   
 
   useEffect(() => {
@@ -116,6 +123,32 @@ const ChangePlan = () => {
       }
     }
   }, [subscription]); // React when `subscription` updates
+
+  useEffect(() => {
+
+    //http://localhost:8080/jobprovider/plan-limits-check
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          'http://localhost:8080/jobprovider/plan-limits-check',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (response.status === 200) {
+          setLimit({
+            but1: response.data.BASIC,
+            but2: response.data.STANDARD,
+            but3: response.data.PREMIUM,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching plan limits:", error);
+      }
+    };
+  }, [disabled]); 
+
   
 
  
@@ -347,25 +380,14 @@ const ChangePlan = () => {
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            Post 1 Job
+            Post 3 Jobs
           </ListItem>
+         
           <ListItem>
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            10 days Resume visibility
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <CheckCircleIcon color="primary"/>
-            </ListItemDecorator>
-            24/7 Critical support
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <CheckCircleIcon color="primary"/>
-            </ListItemDecorator>
-            One Meetup or Workshop
+           3 Meetup or Workshop
           </ListItem>
         </List>
         <Divider inset="none" />
@@ -382,7 +404,16 @@ const ChangePlan = () => {
             endDecorator={<KeyboardArrowRight />}
             disabled={disabled.but1 || subscription.planName ==="BASIC"}
             loading={loading.but1}
-            onClick={()=> setOpen(true)}
+            onClick={()=> {
+
+              if(!limit.but1){
+                setOLimit(true);
+                return;
+              }else{
+              setOpen(true)}
+            }
+
+            }
           >
             Start now
           </Button>
@@ -409,14 +440,9 @@ const ChangePlan = () => {
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            Post 3 Job
+            Post 5 Jobs
           </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <CheckCircleIcon color="primary"/>
-            </ListItemDecorator>
-            10 days Resume visibility
-          </ListItem>
+          
           <ListItem>
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
@@ -444,7 +470,16 @@ const ChangePlan = () => {
             color="primary"
             endDecorator={<KeyboardArrowRight />}
             disabled={disabled.but2 || subscription.planName ==="STANDARD"}
-            onClick={() =>{handleCheckout(plans[1]?.price,plans[1]?.id); setLoading({but2: true});}}
+            onClick={() =>{
+              
+              if(!limit.but2){
+                setOLimit(true);
+                return;
+              }else{
+                
+                handleCheckout(plans[1]?.price,plans[1]?.id); setLoading({but2: true});}}
+              }
+              
             loading={loading.but2}
 
           >
@@ -479,25 +514,19 @@ const ChangePlan = () => {
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            10 days Resume visibility
-          </ListItem>
-          <ListItem>
-            <ListItemDecorator>
-            <CheckCircleIcon color="primary"/>
-            </ListItemDecorator>
             24/7 Critical support
           </ListItem>
           <ListItem>
             <ListItemDecorator>
             <CheckCircleIcon color="primary"/>
             </ListItemDecorator>
-            Meetups / Workshops Publishing
+            10 Meetups / Workshops Publishing
           </ListItem>
         </List>
         <Divider inset="none" />
         <CardActions>
           <Typography level="title-lg" sx={{ mr: 'auto' }} color="primary">
-          {plans[2]?.price} LKR€{' '}
+          {plans[2]?.price} LKR{' '}
             <Typography fontSize="sm" textColor="text.tertiary">
               / month
             </Typography>
@@ -562,6 +591,36 @@ const ChangePlan = () => {
       >
         Error changing plan. Please try again.
       </Snackbar>
+
+      
+                  
+                  <Snackbar
+                    variant="soft"
+                    color="warning"
+                    open={oLimit}
+                    onClose={() => setOLimit(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    startDecorator={<WarningAmberIcon />}
+                    endDecorator={
+                      <Button
+                        onClick={() => setOLimit(false)}
+                        size="sm"
+                        variant="soft"
+                        color="warning"
+                      >
+                        Dismiss
+                      </Button>
+                    }
+                  > 
+                   <Box sx={{display: 'flex' , flexDirection:'column'}}>
+
+                      <Typography level='title-md' textAlign={'left'}> Time to Upgrade!</Typography>
+                      <Typography level='body-sm'>Maximum usage reached. Upgrade to continue uninterrupted service.</Typography>
+                    </Box>
+                    
+                  </Snackbar>
+
+                
     </React.Fragment>
         
     </Box>

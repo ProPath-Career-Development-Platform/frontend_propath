@@ -488,7 +488,7 @@ function JobPreview() {
              <PeopleIcon /> 
              <Typography  sx={{display:{xs:'none' , sm:'block' ,md:'block'}}} >Attendance</Typography>
             </Tab>
-            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={4} disabled={loading} >
+            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={4} disabled={loading ||event.status==="expire"} >
             <SettingsOutlinedIcon />
             <Typography  sx={{display:{xs:'none' , sm:'block' ,md:'block'}}} >Manage</Typography>
             </Tab>

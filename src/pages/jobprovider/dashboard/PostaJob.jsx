@@ -47,6 +47,7 @@ import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel
 
 
 
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -138,6 +139,28 @@ const Dashboard = () => {
    const[text,setText] = React.useState('');
    const [emptyDescription, setEmptyDescription] = React.useState(true);
    const [response, setResponse] = React.useState(false);
+   const[limit,setLimit] = React.useState([]);
+   const jwtToken = localStorage.getItem('token');
+   
+
+   //check-plan-before
+   React.useEffect(() => {
+
+    //http://localhost:8080/jobprovider/plan-limits-check
+
+    axios.get('http://localhost:8080/jobprovider/plan-limits-check', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+      setLimit(response.data);
+      console.log(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+
+  }, []);
+
 
 
   
@@ -206,6 +229,8 @@ const Dashboard = () => {
   
     // Generate questions based on the job title
     const questionBank = await generateQuestions(jobTitle);
+
+    console.log(questionBank);
   
     // Check if the creator is initialized
     if (creator === undefined) {
@@ -409,15 +434,11 @@ const Dashboard = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const plan = 'basic'; // Check if user is on free plan
-    const postCount = 0; // Check if user has reached the maximum number of posts allowed
+   
 
-    if (plan === 'basic' && postCount >= 1) {
+    if (limit.EXCEED_SERVICES.job ==='exceed') {
       setOpen(true);
-    }else if (plan === 'standard' && postCount >= 3) {
-      setOpen(true);
-    }else if (plan === 'premium' && postCount >= 6) {
-      setOpen(true);
+    
     }else{
 
       const validationErrors = validateForm();
@@ -542,7 +563,7 @@ const Dashboard = () => {
       ...prev,
       description: editor.getHTML(),
     }));
-    console.log(editor.getHTML());
+   // console.log(editor.getHTML());
   };
 
 
