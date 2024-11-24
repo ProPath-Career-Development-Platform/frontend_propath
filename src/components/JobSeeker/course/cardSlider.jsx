@@ -11,11 +11,38 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import Chip from '@mui/joy/Chip';
+import axios from 'axios';
+import { getToken } from '../../../pages/Auth/Auth';
+import Swal from 'sweetalert2';
 
-export default function BasicCard({url , callback ,}) {
+
+export default function BasicCard({url , callback ,details}) {
   const [num, setNum] = useState(0)
   const [scrollTop, setScrollTop] = useState(15); // Initial top position in percentage
 
+  const postEvent = async (eventId) => {
+    try {
+      const token = getToken(); // Function to retrieve the token
+      const response = await axios.post(
+        `http://localhost:8080/jobseeker/registerEvent/${details.event.id}`, // Endpoint with eventId as a path variable
+        {}, // No payload needed as eventId is in the URL
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in headers
+            "Content-Type": "application/json", // Content type for the request
+          },
+        }
+      );
+  
+      console.log("Event registration successful:", response.data);
+    } catch (error) {
+      console.error(
+        "Error registering for the event:",
+        error.response?.data || error.message
+      );
+    }
+  };
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -67,17 +94,51 @@ export default function BasicCard({url , callback ,}) {
         size="md"
         color="primary"
         aria-label="Explore Bahamas Islands"
-        sx={{ fontWeight: 600 , width: 200 , background:num==0?'#3f067a': 'green' }}
+        sx={{ fontWeight: 600 , width: 200 , background:details?.isApplied==false?'#3f067a': 'green' }}
         onClick={()=> {
+         
           setNum(1)
           callback(true)
+         { details?.event?.maxParticipant - details?.event?.currentParticipants > 0 && 
+          Swal.fire({
+            title: details?.event?.title,
+            text: details?.isApplied == false ? "Do you want to enroll to this event" : "Are you sure you want to leave this event?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: details?.isApplied == false ? "Yes , I enroll ": "Yes, I leave"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              postEvent();
+              Swal.fire({
+                title: "Successful!",
+                text: details?.isApplied == false 
+                  ? "You have enrolled successfully." 
+                  : `You have successfully left "${details?.event?.title}."`, // Backticks for template literal
+                icon: "success"
+              });
+            }
+          });
+        }
+        { details?.event?.maxParticipant - details?.event?.currentParticipants <=0  && 
+          Swal.fire({
+            title: "Oops :-( ",
+            text: "Enrollment is closed as the maximum number of participants has been reached.",
+            icon: "warning",
+            showCancelButton: false,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            
+          })
+        }
         }}
-      > {num ==0 && (
+      > {details?.isApplied==false && (
         <Typography sx={{fontWeight: "bold", color:'white'}}> Enroll</Typography>
        
 
       )}
-        {num ==1 && (
+        {details?.isApplied==true && (
         <Typography sx={{fontWeight: "bold", color:'white'}}> Enrolled</Typography>
         
 

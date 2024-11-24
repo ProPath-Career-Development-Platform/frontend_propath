@@ -164,7 +164,7 @@ function JobSeekerSideBar() {
             >
               <NotificationsActiveIcon />
               <ListItemContent>
-                <Typography level="title-sm">Courses</Typography>
+                <Typography level="title-sm">Events & Meetups</Typography>
               </ListItemContent>
              
             </ListItemButton>

@@ -1,4 +1,4 @@
-import React , {useState} from 'react'
+import React , {useEffect, useState} from 'react'
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -25,7 +25,7 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import Divider from '@mui/joy/Divider';
-
+import axios from 'axios';
 
 import Navbar1 from '../../components/navbar/Navbar1';
 import JSCard from '../../components/JobSeeker/card';
@@ -48,6 +48,7 @@ import AdvancedFilter from '../../components/JobSeeker/advancedfilter/advancedfi
 import CourseCard from '../../components/JobSeeker/coursecard';
 import { useLocation } from 'react-router-dom';
 import Pagination from '../../components/JobSeeker/pagination';
+import { getToken } from '../Auth/Auth';
 
 const cardData = [
   { title: 'UI/UX Design Fundamentals', content: ['User Interface Design', 'User Experience Design'], location: 'Online', company: 'ABC Design' , img: '/ml2.png' , slots: '5' },
@@ -85,7 +86,7 @@ const Courses = () => {
   const pageLimit = 8;
   const [pagePeople, setPagePeople] = useState([]);
   const [page, setPage] = useState(12);
-  
+  const [courseList,setCourseList] = useState([]);
 
   const handlePageChange = (event, newValue) => {
     const newPage = 12// Extract the number from the selected value
@@ -110,6 +111,34 @@ const Courses = () => {
     setPageNumber( value)
 
   }
+
+   
+  useEffect(() => {
+    const fetchData = async () => {
+      let res = await axios.get('http://localhost:8080/jobseeker/getFullEventDetails', {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+        },
+      }).then((response) => {
+      
+       setCourseList(response.data)
+       console.log(courseList[0])// Store the response data in state
+       
+        
+        // Log the response data
+      }).catch((error) => {
+       
+      
+  
+     
+      });
+    }
+    
+    fetchData();
+    const interval = setInterval(fetchData,5000)
+    return () => clearInterval(interval);
+    console.log(message)
+  }, []);
   return (
 
     
@@ -156,11 +185,11 @@ const Courses = () => {
                     }}
                       >
                         <Typography level="h2" component="h1">
-                          Home
+                          Events & Meetups
                         </Typography> 
                       
                         <Box sx={{ display: 'flex' }}>
-                            <JSSearch/>
+                            {/* <JSSearch/> */}
                             <Alert />
                             <ProfileDropdown />
                             {/* <AdvancedFilter/> */}
@@ -261,10 +290,22 @@ const Courses = () => {
                             
                           }}
                         >
-                          {cardData.slice(PageNumber* selectedSize,PageNumber * selectedSize + selectedSize).map((card, index) => (
-                            <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img={card.img} slot = {card.slots}/>
+                         {courseList?.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((course, index) => (
+                            <CourseCard
+                              key={index}
+                              title={course.title}
+                              content={course.keyWords}
+                              location={course.location}
+                              company={course.user.name}
+                              type={type}
+                              img={course.banner}
+                              slot={course.currentParticipants}
+                              maxslots={course.maxParticipant}
+                              id = {course.id}
+                            />
                           ))}
-                          
+
+
                         
                       </Box>
                       
@@ -283,7 +324,7 @@ const Courses = () => {
                          }}
                        >
                          {cardData.slice(0,selectedSize).map((card, index) => (
-                           <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img={card.img} slot = {card.slots}/>
+                           <CourseCard key={index} id= {card?.id} title={card?.title} content={card?.content} location={card?.location} company={card?.company} type = {type} img={card?.img} slot = {card?.slots}/>
                          ))}
                          
                         

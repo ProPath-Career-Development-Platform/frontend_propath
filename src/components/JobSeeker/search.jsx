@@ -1,21 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from "@mui/joy/Box";
 import IconButton from '@mui/joy/IconButton';
 
 const JSSearch = ({ message = [] }) => {  // Set default value for message
-  const titleArray = message.map((msg) => msg.jobTitle);
+  // Memoize titleArray so it's only recalculated if `message` changes
+  const titleArray = useMemo(() => message.map((msg) => msg.jobTitle), [message]);
+  
   const [query, setQuery] = useState("");
   const [filteredTitles, setFilteredTitles] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  
+
   const searchRef = useRef(null); // Ref for the search container
 
   useEffect(() => {
-    const results = titleArray.filter((title) =>
-      title.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredTitles(results);
+    // Filter titles based on query, avoiding redundant state updates
+    if (query.trim() === "") {
+      setFilteredTitles([]);
+    } else {
+      const results = titleArray.filter((title) =>
+        title.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredTitles(results);
+    }
   }, [query, titleArray]);
 
   // Click outside to close dropdown

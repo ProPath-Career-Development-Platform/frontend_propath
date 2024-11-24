@@ -33,24 +33,7 @@ import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import logo from "/logo.png"
 
 const jobs = [
-  {
-    title: "Networking Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Active",
-    icon: "https://via.placeholder.com/32/00FF00/FFFFFF?text=U",
-  },
-  {
-    title: "Product Designer",
-    location: "Nugegoda",
-    salary: "LKR50k-80k/month",
-    type: "Full Time",
-    dateApplied: "Dec 7, 2023 23:26",
-    status: "Expired",
-    icon: "https://via.placeholder.com/32/FF0000/FFFFFF?text=P",
-  },
+  
   {
     title: "Junior Graphic Designer",
     location: "Kandy",
@@ -58,7 +41,7 @@ const jobs = [
     type: "Casual",
     dateApplied: "Feb 2, 2024 19:28",
     status: "Active",
-    icon: "https://via.placeholder.com/32/000000/FFFFFF?text=A",
+    icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=M",
   },
   {
     title: "Visual Designer",
@@ -69,6 +52,24 @@ const jobs = [
     status: "Expired",
     icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=M",
   },
+  {
+    title: "Networking Engineer",
+    location: "Colmbo 06",
+    salary: "LKR50k-80k/month",
+    type: "Remote",
+    dateApplied: "Feb 2, 2024 19:28",
+    status: "Active",
+    icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=M",
+  },
+  {
+    title: "Product Designer",
+    location: "Nugegoda",
+    salary: "LKR50k-80k/month",
+    type: "Full Time",
+    dateApplied: "Dec 7, 2023 23:26",
+    status: "Expired",
+    icon: "https://via.placeholder.com/32/FF0000/FFFFFF?text=P",
+  }
 ];
 
 const JobSeekerDashboard= () => {

@@ -65,12 +65,12 @@ const JobDetails = () => {
     fetchData();
   }, [id]);
   
-  console.log(message)
+  console.log(message.jobDescription)
  
 
 
   const responsibilities = [
-    "Quisque semper gravida est et consectetur.",
+    "Quique semper gravida est et consectetur.",
     "Curabitur blandit lorem velit, vitae pretium leo placerat eget.",
     "Morbi mattis in ipsum ac tempus.",
     "Curabitur eu vehicula libero. Vestibulum sed purus ullamcorper, lobortis lectus nec.",
@@ -173,7 +173,7 @@ const JobDetails = () => {
           </Breadcrumbs>
         </Box>
         <Box sx={{ display: 'flex' }}>
-          <JSSearch />
+          
           <Alert />
           <ProfileDropdown />
         </Box>

@@ -57,58 +57,58 @@ import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import Modal from '@mui/joy/Modal';
-const cardData = [
-  { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
-  { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
-  { title: 'Technical Support Specialist', content: 'Provides technical assistance and support to clients.', location: 'Kandy', company: 'Tech Support Co.' ,  img : '/jobs/99x.png' },
-  { title: 'Junior Graphic Designer', content: 'Creates visual content under the guidance of senior designers.', location: 'Jaffna', company: 'Graphic World' , img : '/jobs/virtusa.jpg' },
-  { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' ,img : '/jobs/codegen.png' },
-  { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' ,img : '/jobs/microsoft.png' },
-  { title: 'Project Manager', content: 'Oversees project planning, execution, and completion.', location: 'Trincomalee', company: 'Project Pros' },
-  { title: 'QA Engineer', content: 'Ensures the quality and functionality of software products.', location: 'Anuradhapura', company: 'Quality Assurance Inc.' },
-  { title: 'Data Scientist', content: 'Analyzes and interprets complex data to provide insights.', location: 'Batticaloa', company: 'Data Insights' },
-  { title: 'System Administrator', content: 'Manages and maintains IT infrastructure.', location: 'Colombo', company: 'Tech Admins' },
-  { title: 'DevOps Engineer', content: 'Develops and maintains CI/CD pipelines.', location: 'Galle', company: 'DevOps Solutions' },
-  { title: 'Mobile App Developer', content: 'Creates and maintains mobile applications.', location: 'Kandy', company: 'App Creators' },
-  { title: 'Network Engineer', content: 'Designs and implements network solutions.', location: 'Jaffna', company: 'Net Solutions' },
-  { title: 'Database Administrator', content: 'Manages database environments.', location: 'Negombo', company: 'Data Admins' },
-  { title: 'Security Analyst', content: 'Monitors and secures IT systems.', location: 'Matara', company: 'SecureTech' },
-  { title: 'Business Analyst', content: 'Analyzes business needs and processes.', location: 'Trincomalee', company: 'Business Insights' },
-  { title: 'Content Writer', content: 'Creates written content for various platforms.', location: 'Anuradhapura', company: 'Content Creators' },
-  { title: 'SEO Specialist', content: 'Optimizes website content for search engines.', location: 'Batticaloa', company: 'SEO Pros' },
-  { title: 'Marketing Manager', content: 'Develops and executes marketing strategies.', location: 'Colombo', company: 'Market Masters' },
-  { title: 'HR Manager', content: 'Manages human resources and recruitment.', location: 'Galle', company: 'HR Solutions' },
-  { title: 'Financial Analyst', content: 'Analyzes financial data and trends.', location: 'Kandy', company: 'Finance Pros' },
-  { title: 'Product Manager', content: 'Oversees product development and lifecycle.', location: 'Jaffna', company: 'Product Leaders' },
-  { title: 'Sales Manager', content: 'Leads sales teams and strategies.', location: 'Negombo', company: 'Sales Experts' },
-  { title: 'Operations Manager', content: 'Manages daily business operations.', location: 'Matara', company: 'Ops Masters' },
-  { title: 'Graphic Designer', content: 'Creates visual content for various media.', location: 'Trincomalee', company: 'Design Hub' },
-  { title: 'Content Strategist', content: 'Plans and manages content strategies.', location: 'Anuradhapura', company: 'Content Planners' },
-  { title: 'Customer Support Representative', content: 'Provides customer service and support.', location: 'Batticaloa', company: 'Customer First' },
-  { title: 'Software Architect', content: 'Designs and oversees software architecture.', location: 'Colombo', company: 'Software Builders' },
-  { title: 'Cloud Engineer', content: 'Develops and manages cloud solutions.', location: 'Galle', company: 'Cloud Masters' },
-  { title: 'Data Analyst', content: 'Analyzes and interprets data.', location: 'Kandy', company: 'Data Insights' },
-  { title: 'Web Developer', content: 'Builds and maintains websites.', location: 'Jaffna', company: 'Web Solutions' },
-  { title: 'Digital Marketing Specialist', content: 'Executes digital marketing campaigns.', location: 'Negombo', company: 'Digital Experts' },
-  { title: 'Project Coordinator', content: 'Supports project management activities.', location: 'Matara', company: 'Project Support' },
-  { title: 'Technical Writer', content: 'Creates technical documentation.', location: 'Trincomalee', company: 'Tech Docs' },
-  { title: 'System Analyst', content: 'Analyzes and improves IT systems.', location: 'Anuradhapura', company: 'System Solutions' },
-  { title: 'IT Consultant', content: 'Provides IT consulting services.', location: 'Batticaloa', company: 'IT Advisory' },
-  { title: 'Network Administrator', content: 'Manages network infrastructure.', location: 'Colombo', company: 'Net Admins' },
-  { title: 'Software Tester', content: 'Tests software for bugs and issues.', location: 'Galle', company: 'QA Solutions' },
-  { title: 'UI Developer', content: 'Develops user interfaces.', location: 'Kandy', company: 'UI Experts' },
-  { title: 'Backend Engineer', content: 'Builds and maintains backend systems.', location: 'Jaffna', company: 'Backend Solutions' },
-  { title: 'Full Stack Developer', content: 'Develops both frontend and backend solutions.', location: 'Negombo', company: 'Full Stack Pros' },
-  { title: 'Machine Learning Engineer', content: 'Develops machine learning models.', location: 'Matara', company: 'ML Solutions' },
-  { title: 'Technical Project Manager', content: 'Manages technical projects.', location: 'Trincomalee', company: 'Tech Projects' },
-  { title: 'Product Designer', content: 'Designs product features and interfaces.', location: 'Anuradhapura', company: 'Product Design Co.' },
-  { title: 'Marketing Coordinator', content: 'Supports marketing activities.', location: 'Batticaloa', company: 'Marketing Support' },
-  { title: 'Research Scientist', content: 'Conducts scientific research.', location: 'Colombo', company: 'Research Labs' },
-  { title: 'Logistics Manager', content: 'Manages logistics and supply chain.', location: 'Galle', company: 'Logistics Solutions' },
-  { title: 'IT Support Engineer', content: 'Provides IT support to users.', location: 'Kandy', company: 'IT Support Co.' },
-  { title: 'Cybersecurity Specialist', content: 'Secures IT systems and data.', location: 'Jaffna', company: 'Security Experts' },
-  { title: 'UX Researcher', content: 'Conducts user experience research.', location: 'Negombo', company: 'UX Insights' },
-];
+// const cardData = [
+//   { title: 'UI/UX Designer', content: 'Responsible for designing user interfaces and improving user experience.', location: 'Colombo', company: 'ABC Design' , img : '/jobs/sysco.png'},
+//   { title: 'Senior UI/UX Designer', content: 'Leads design projects and mentors junior designers.', location: 'Galle', company: 'Creative Solutions' , img : '/jobs/ifs.png'},
+//   { title: 'Technical Support Specialist', content: 'Provides technical assistance and support to clients.', location: 'Kandy', company: 'Tech Support Co.' ,  img : '/jobs/99x.png' },
+//   { title: 'Junior Graphic Designer', content: 'Creates visual content under the guidance of senior designers.', location: 'Jaffna', company: 'Graphic World' , img : '/jobs/virtusa.jpg' },
+//   { title: 'Front End Developer', content: 'Develops and implements front-end web applications.', location: 'Negombo', company: 'Web Solutions' ,img : '/jobs/codegen.png' },
+//   { title: 'Backend Developer', content: 'Handles server-side logic and database management.', location: 'Matara', company: 'Data Masters' ,img : '/jobs/microsoft.png' },
+//   { title: 'Project Manager', content: 'Oversees project planning, execution, and completion.', location: 'Trincomalee', company: 'Project Pros' },
+//   { title: 'QA Engineer', content: 'Ensures the quality and functionality of software products.', location: 'Anuradhapura', company: 'Quality Assurance Inc.' },
+//   { title: 'Data Scientist', content: 'Analyzes and interprets complex data to provide insights.', location: 'Batticaloa', company: 'Data Insights' },
+//   { title: 'System Administrator', content: 'Manages and maintains IT infrastructure.', location: 'Colombo', company: 'Tech Admins' },
+//   { title: 'DevOps Engineer', content: 'Develops and maintains CI/CD pipelines.', location: 'Galle', company: 'DevOps Solutions' },
+//   { title: 'Mobile App Developer', content: 'Creates and maintains mobile applications.', location: 'Kandy', company: 'App Creators' },
+//   { title: 'Network Engineer', content: 'Designs and implements network solutions.', location: 'Jaffna', company: 'Net Solutions' },
+//   { title: 'Database Administrator', content: 'Manages database environments.', location: 'Negombo', company: 'Data Admins' },
+//   { title: 'Security Analyst', content: 'Monitors and secures IT systems.', location: 'Matara', company: 'SecureTech' },
+//   { title: 'Business Analyst', content: 'Analyzes business needs and processes.', location: 'Trincomalee', company: 'Business Insights' },
+//   { title: 'Content Writer', content: 'Creates written content for various platforms.', location: 'Anuradhapura', company: 'Content Creators' },
+//   { title: 'SEO Specialist', content: 'Optimizes website content for search engines.', location: 'Batticaloa', company: 'SEO Pros' },
+//   { title: 'Marketing Manager', content: 'Develops and executes marketing strategies.', location: 'Colombo', company: 'Market Masters' },
+//   { title: 'HR Manager', content: 'Manages human resources and recruitment.', location: 'Galle', company: 'HR Solutions' },
+//   { title: 'Financial Analyst', content: 'Analyzes financial data and trends.', location: 'Kandy', company: 'Finance Pros' },
+//   { title: 'Product Manager', content: 'Oversees product development and lifecycle.', location: 'Jaffna', company: 'Product Leaders' },
+//   { title: 'Sales Manager', content: 'Leads sales teams and strategies.', location: 'Negombo', company: 'Sales Experts' },
+//   { title: 'Operations Manager', content: 'Manages daily business operations.', location: 'Matara', company: 'Ops Masters' },
+//   { title: 'Graphic Designer', content: 'Creates visual content for various media.', location: 'Trincomalee', company: 'Design Hub' },
+//   { title: 'Content Strategist', content: 'Plans and manages content strategies.', location: 'Anuradhapura', company: 'Content Planners' },
+//   { title: 'Customer Support Representative', content: 'Provides customer service and support.', location: 'Batticaloa', company: 'Customer First' },
+//   { title: 'Software Architect', content: 'Designs and oversees software architecture.', location: 'Colombo', company: 'Software Builders' },
+//   { title: 'Cloud Engineer', content: 'Develops and manages cloud solutions.', location: 'Galle', company: 'Cloud Masters' },
+//   { title: 'Data Analyst', content: 'Analyzes and interprets data.', location: 'Kandy', company: 'Data Insights' },
+//   { title: 'Web Developer', content: 'Builds and maintains websites.', location: 'Jaffna', company: 'Web Solutions' },
+//   { title: 'Digital Marketing Specialist', content: 'Executes digital marketing campaigns.', location: 'Negombo', company: 'Digital Experts' },
+//   { title: 'Project Coordinator', content: 'Supports project management activities.', location: 'Matara', company: 'Project Support' },
+//   { title: 'Technical Writer', content: 'Creates technical documentation.', location: 'Trincomalee', company: 'Tech Docs' },
+//   { title: 'System Analyst', content: 'Analyzes and improves IT systems.', location: 'Anuradhapura', company: 'System Solutions' },
+//   { title: 'IT Consultant', content: 'Provides IT consulting services.', location: 'Batticaloa', company: 'IT Advisory' },
+//   { title: 'Network Administrator', content: 'Manages network infrastructure.', location: 'Colombo', company: 'Net Admins' },
+//   { title: 'Software Tester', content: 'Tests software for bugs and issues.', location: 'Galle', company: 'QA Solutions' },
+//   { title: 'UI Developer', content: 'Develops user interfaces.', location: 'Kandy', company: 'UI Experts' },
+//   { title: 'Backend Engineer', content: 'Builds and maintains backend systems.', location: 'Jaffna', company: 'Backend Solutions' },
+//   { title: 'Full Stack Developer', content: 'Develops both frontend and backend solutions.', location: 'Negombo', company: 'Full Stack Pros' },
+//   { title: 'Machine Learning Engineer', content: 'Develops machine learning models.', location: 'Matara', company: 'ML Solutions' },
+//   { title: 'Technical Project Manager', content: 'Manages technical projects.', location: 'Trincomalee', company: 'Tech Projects' },
+//   { title: 'Product Designer', content: 'Designs product features and interfaces.', location: 'Anuradhapura', company: 'Product Design Co.' },
+//   { title: 'Marketing Coordinator', content: 'Supports marketing activities.', location: 'Batticaloa', company: 'Marketing Support' },
+//   { title: 'Research Scientist', content: 'Conducts scientific research.', location: 'Colombo', company: 'Research Labs' },
+//   { title: 'Logistics Manager', content: 'Manages logistics and supply chain.', location: 'Galle', company: 'Logistics Solutions' },
+//   { title: 'IT Support Engineer', content: 'Provides IT support to users.', location: 'Kandy', company: 'IT Support Co.' },
+//   { title: 'Cybersecurity Specialist', content: 'Secures IT systems and data.', location: 'Jaffna', company: 'Security Experts' },
+//   { title: 'UX Researcher', content: 'Conducts user experience research.', location: 'Negombo', company: 'UX Insights' },
+// ];
 
 
 
@@ -124,8 +124,8 @@ const JobSeekerHome = () => {
   const [message, setMessage] = useState([]);
   const [isNetwork, setIsNetwork] = useState(-1); //0 for notconnected , 1 for connected 
   const [paginationLength , setPaginationLength] = useState([]);
-
-
+  const [jobType, setJobType] = useState('')
+  
   useEffect(() => {
     const fetchData = async () => {
       let res = await axios.get('http://localhost:8080/jobseeker/getCompany', {
@@ -199,6 +199,11 @@ const JobSeekerHome = () => {
   const getValuefromChild = (value)=> {
         setPageNumber(value)
         
+  }
+
+  const handleFilter = ()=>{
+
+    console.log("Hello")
   }
 
  
@@ -330,7 +335,7 @@ const JobSeekerHome = () => {
                       
                         
                         <Box sx={{ display: 'flex', gap : 2  }}>
-                           <JSDropDown name = {"Job Type "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1' />
+                           <JSDropDown name = {"Job Type "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1' onclick = {handleFilter}/>
                            <JSDropDown name = {"Modality "} sizes = {['Inoffice', 'Remote'  ]} proptype = '1'/>
                            <JSDropDown name = {"Job Type "} sizes = {['Srilanka', 'Bangladesh' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1'/>
                            <JSDropDown name = {"Salary "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '0'/> 
