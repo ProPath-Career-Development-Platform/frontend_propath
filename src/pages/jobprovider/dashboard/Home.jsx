@@ -42,6 +42,9 @@ import axios from 'axios';
 
 import { useNavigate } from 'react-router-dom';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -86,8 +89,21 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const jwtToken = localStorage.getItem('token');
+  const [open,setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
   
  useEffect(() => {
@@ -474,7 +490,7 @@ const Home = () => {
 
 
 
-
+                <PaymentModel open={open} />
 
 
 

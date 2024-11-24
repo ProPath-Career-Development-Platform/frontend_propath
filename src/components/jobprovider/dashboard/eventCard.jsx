@@ -26,10 +26,34 @@ import Button from '@mui/joy/Button';
 import {Link as RouterLink} from 'react-router-dom';
 import MovingIcon from '@mui/icons-material/Moving';
 import Skeleton from '@mui/joy/Skeleton';
+import axios from 'axios';
 export default function EventCard(props) {
   const { eventId,status,eventName,eventImage,eventLocation,eventParticipants,eventDate,keywords , skeleton} = props;
 
   const [isLoaded, setIsLoaded] = React.useState(true);
+  const [userData, setUserData] = React.useState([]);
+
+  const token = localStorage.getItem('token');
+
+  React.useEffect(() => {
+
+    //axios get request to fetch the event details ,token
+    axios.get(`http://localhost:8080/jobprovider/event/register/${eventId}`,{
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    }).then((response) => {
+      setUserData(response.data);
+    }
+    ).catch((error) => {
+      console.log(error);
+    }
+    )
+    
+
+  },[]);
+
+    
 
   
   return (
@@ -162,6 +186,8 @@ export default function EventCard(props) {
                 sx={{ position: 'absolute', top: 0, width: '100%', p: 1 }}
                 >
                 {status == "active" ? (
+
+                  <>
                   <Chip
                   variant="soft"
                   color="success"
@@ -170,8 +196,32 @@ export default function EventCard(props) {
                     >
                     Active
                   </Chip>
+
+                  <IconButton
+                  component= {RouterLink}
+                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
+                  variant="outlined"
+                  size="sm"
+                  color="neutral"
+
+                  sx={{
+                    display: { xs: 'flex', sm: 'none' },
+                    ml: 'auto',
+                    borderRadius: '50%',
+                    zIndex: '20',
+                    bgcolor: 'background.body',
+                    
+                  }}
+                  >
+                  <ModeEditIcon   />
+
+                  </IconButton>
+
+                  </>
                 ):
                 (
+
+                  <>
                   <Chip
                   variant="soft"
                   color="warning"
@@ -180,26 +230,13 @@ export default function EventCard(props) {
                   >
                     Completed
                   </Chip>
+
+                  
+
+                  </>
     
                 )}
-                <IconButton
-                  component= {RouterLink}
-                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
-                  variant="outlined"
-                  size="sm"
-                  color="neutral"
-                  
-                  sx={{
-                    display: { xs: 'flex', sm: 'none' },
-                    ml: 'auto',
-                    borderRadius: '50%',
-                    zIndex: '20',
-                    bgcolor: 'background.body',
-                  }}
-                >
-                  <ModeEditIcon />
-                  
-                </IconButton>
+                
               </Stack>
             </AspectRatio>
           </CardOverflow>
@@ -229,21 +266,29 @@ export default function EventCard(props) {
                 
                 </Typography>
               </div>
-              <IconButton
-              component= {RouterLink}
-              to={`/jobprovider/meet-up/updateEvent/${eventId}`}
-                variant="outlined"
-                size="sm"
-                color="neutral"
-                
-                sx={{
-                  display: { xs: 'none', sm: 'flex' },
-                  borderRadius: '50%',
-                  bgcolor: 'background.body',
-                }}
-              >
-                <ModeEditIcon />
-              </IconButton>
+              {
+                status == "active" ? (
+
+                  <IconButton
+                  component= {RouterLink}
+                  to={`/jobprovider/meet-up/updateEvent/${eventId}`}
+                    variant="outlined"
+                    size="sm"
+                    color="neutral"
+                    
+                    sx={{
+                      display: { xs: 'none', sm: 'flex' },
+                      borderRadius: '50%',
+                      bgcolor: 'background.body',
+                      
+                    }}
+                  >
+                    <ModeEditIcon />
+                  </IconButton>
+                ) : null
+
+              }
+             
             </Stack>
             <Stack
               spacing="0.25rem 1rem"
@@ -267,10 +312,22 @@ export default function EventCard(props) {
     
     
             <AvatarGroup size='md'>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-              <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-              <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-              <Avatar>+3</Avatar>
+
+            {userData.length > 5 ? (
+                  <>
+                    {userData.slice(0, 4).map((user) => (
+                      <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                    ))}
+                    <Avatar>+{userData.length - 4}</Avatar>
+                  </>
+                ) : (
+                  userData.map((user) => (
+                    <Avatar key={user.userId} alt={user.userName} src={user.profilePicture} />
+                  ))
+                )}
+
+              
+              
             </AvatarGroup>
             
             <Button 
