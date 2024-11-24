@@ -1,10 +1,15 @@
 import React from 'react'
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Button} from "@nextui-org/react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from "/logo.png";
 
 const EmployerNavbar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogin = () => {
+        navigate("/login");
+    }
 
   return (
     <Navbar maxWidth='full' className='px-8'>
@@ -18,14 +23,14 @@ const EmployerNavbar = () => {
             </Link>
             </NavbarItem>
             <NavbarItem className={location.pathname === '/jobprovider/home' ? 'isActive' : ''}>
-            <Link color="foreground" to='/jobprovider/home' className='font-semibold text-[#808080]'>
+            <Link color="foreground" to='/jobprovider/dashboard' className='font-semibold text-[#808080]'>
                 My Dashboard
             </Link>
             </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end">
             <NavbarItem>
-            <Button as={Link} className='bg-purple1 text-white font-semibold' href="#" variant="flat">
+            <Button onClick={handleLogin} className='bg-purple1 text-white font-semibold' href="#" variant="flat">
                 Log in
             </Button>
             </NavbarItem>

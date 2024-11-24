@@ -12,17 +12,75 @@ import { Container } from '@mui/material';
 import { typographyClasses } from '@mui/joy/Typography';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import AspectRatio from '@mui/joy/AspectRatio';
+import axios from 'axios';
+import UserContext from '../../../utils/userContext'
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import CircularProgress from '@mui/joy/CircularProgress';
+import CardOverflow from '@mui/joy/CardOverflow';
+
+
 
 
 
 
 const Dashboard = () => {
 
+  const {logUser,setLogUser} = React.useContext(UserContext);
+
   const navigate = useNavigate();
+
+  const jwtToken = localStorage.getItem('token');
+
+  const[isPending, setIsPending] = React.useState(false);
+  const[isDataLoad, setDataLoad] = React.useState(true);
 
   const handleSignInClick = () => {
     navigate('/jobprovider/setup');
   };
+
+  React.useEffect(()=> {
+
+   
+
+    axios.get('http://localhost:8080/jobprovider/company/status', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+
+      if(response.data === "pending"){
+        setIsPending(true);
+      }else if (response.data === "active"){
+
+
+          axios.get('http://localhost:8080/jobprovider/company', {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }).then((response) => {
+            
+              setLogUser(response.data);
+              localStorage.setItem('logUser', JSON.stringify(response.data));
+              navigate('/jobprovider/home/');
+            
+          }).catch((error) => {
+            console.log(error);
+          });
+        
+        navigate('/jobprovider/home');
+      }
+
+      setDataLoad(false);
+      
+     
+    }
+    ).catch((error) => {
+      console.error(error);
+    });
+
+  },[]);
+
 
   return (
     
@@ -70,7 +128,7 @@ const Dashboard = () => {
                   Dashboard
                 </Link>
                 <Typography color="primary" fontWeight={500} fontSize={12}>
-                  Dashbord
+                  Company Setup
                 </Typography>
               </Breadcrumbs>
             </Box>
@@ -86,7 +144,7 @@ const Dashboard = () => {
               }}
             >
               <Typography level="h2" component="h1">
-                Dashboard
+                Company Setup
               </Typography>
               {/* <Button
                 color="primary"
@@ -97,7 +155,95 @@ const Dashboard = () => {
               </Button> */}
             </Box>
 
-            <Container sx={(theme) => ({
+            {
+
+              isDataLoad ? (
+
+
+                <Card sx={{ m: 'auto', display: {sm: 'flex' }, width: '100%', height:'100%' }}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', p: 5 }}>
+                  
+                  <CircularProgress size='lg' sx={{ mt: 2 }} />
+                </CardContent>
+              </Card>
+                ) : 
+
+              
+              isPending ? (
+
+                <>                <Card orientation='horizontal' sx={{m:'auto', display:{xs:'none',sm:'flex'}}}>
+
+
+                <CardContent sx={{ display:'flex', flexDirection:'column', justifyContent:'center', alignContent:'center', p:5,gap:2}}>
+
+               
+
+
+                   
+                    <Typography level='h2'>Company Registration Successful!</Typography>
+                    <Typography level='body-md'>Your company has been registered successfully. An admin will review and verify the information shortly. You'll be notified once the verification process is complete.</Typography>
+                   
+                    
+
+                </CardContent>
+
+                <CardOverflow>
+
+                    <AspectRatio ratio="10/9" objectFit='contain' sx={{display:{xs:'none',sm:'none', md:'block'},width:'550px'}}>
+                        <img src="/com-ver.png"/>
+                    </AspectRatio>
+
+                    <AspectRatio ratio="1" objectFit='contain' sx={{display:{xs:'none',sm:'block', md:'none'},width:'360px'}}>
+                        <img src="/com-ver.png"/>
+                    </AspectRatio>
+
+                    <AspectRatio ratio="1" objectFit='contain' sx={{display:{xs:'block',sm:'none', md:'none'},width:'100%'}}>
+                        <img src="/com-ver.png"/>
+                    </AspectRatio>
+
+                </CardOverflow>
+
+              </Card>
+
+
+              <Card  sx={{m:'auto', display:{xs:'block',sm:'none'}}}>
+
+              <CardOverflow>
+
+                 
+
+                    <AspectRatio ratio="4/3" objectFit='contain'>
+                        <img src="/com-ver.png"/>
+                    </AspectRatio>
+
+                </CardOverflow>
+
+                <CardContent sx={{ display:'flex', flexDirection:'column', justifyContent:'center', alignContent:'center', p:1,gap:2, mt:2}}>
+
+               
+
+
+                   
+                <Typography level='h2'>Company Registration Successful!</Typography>
+                 <Typography level='body-md'>Your company has been registered successfully. An admin will review and verify the information shortly. You'll be notified once the verification process is complete.</Typography>
+                   
+                    
+                    
+
+                </CardContent>
+
+
+                </Card>
+
+                </>
+
+              ):
+
+              (
+
+                <>
+
+<Container sx={(theme) => ({
         position: 'relative',
         overflow: 'auto',
         maxHeight: 'calc(100vh - 64px)',
@@ -188,6 +334,15 @@ const Dashboard = () => {
               </AspectRatio>
 
             </Container>
+                
+                
+                </>
+
+
+              )
+            }
+
+            
 
 
            

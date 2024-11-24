@@ -245,7 +245,7 @@ const Courses = () => {
                       
                       
                       </Box>
-
+                      
                       {/*breadcrumbs over*/}
                       <Divider />
                       {(type == 1) && (

@@ -7,7 +7,7 @@ import SubPlans from '../../components/landingPage/employerSite/SubPlans'
 const EmployerSite = () => {
   return (
     <div>
-        <EmployerNavbar/>
+        {/* <EmployerNavbar/> */}
         <EmployerHero/>
         <Steps/>
         <SubPlans/>
