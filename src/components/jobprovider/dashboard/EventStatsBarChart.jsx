@@ -7,7 +7,7 @@ import { LineChart } from '@mui/x-charts/LineChart';
 
 
 
-export default function SimpleCharts() {
+export default function SimpleCharts({userData}) {
 
     const { mode } = useColorScheme();
    
@@ -61,19 +61,23 @@ export default function SimpleCharts() {
             }, [mode]);
 
             // Sample dataset
-  const dataset = [
-    { date: '08-01', peopleJoined: 50 },
-    { date: '08-02', peopleJoined: 10 },
-    { date: '08-03', peopleJoined: 20 },
-    { date: '08-04', peopleJoined: 6 },
-    { date: '08-05', peopleJoined: 13 },
-    { date: '08-06', peopleJoined: 20 },
-    { date: '08-07', peopleJoined: 2 },
-    { date: '08-08', peopleJoined: 11 },
-    { date: '08-09', peopleJoined: 9 },
-    { date: '08-10', peopleJoined: 7 },
-    // more data
-  ];
+            const dataset = userData.reduce((acc, user) => {
+              const appliedDate = new Date(user.appliedDate);  // Convert to Date object
+              const formattedDate = `${(appliedDate.getMonth() + 1).toString().padStart(2, '0')}-${appliedDate.getDate().toString().padStart(2, '0')}`; // Format as MM-DD
+            
+              // Find if the date already exists in the accumulator
+              const existing = acc.find(item => item.date === formattedDate);
+            
+              if (existing) {
+                // If the date exists, increment the count of people joined
+                existing.peopleJoined += 1;
+              } else {
+                // If the date doesn't exist, create a new entry with 1 person joined
+                acc.push({ date: formattedDate, peopleJoined: 1 });
+              }
+              return acc;
+            }, []);
+            
 
   // Transform dataset for BarChart
   const transformedData = dataset.map(entry => ({

@@ -94,7 +94,7 @@ const Course = () => {
     // Clear the interval on component unmount
     return () => clearInterval(interval);
   }, [id]);
-  console.log(seeekerEvent)
+  console.log(seeekerEvent?.event?.longitude)
 
   return (
     <Box component="main"
@@ -247,7 +247,7 @@ const Course = () => {
       boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Add a subtle shadow
     }}
   >
-    <SimpleMap />
+    <SimpleMap latitude = {6.0535} longitude = {80.2205}/>
   </Box>
 </Box>
 

@@ -39,7 +39,7 @@ function SurveyQuestions({ callback }) {
 
   const handleSurveyComplete = (survey) => {
     console.log("Survey Results:", survey.data);
-    callback(); // Notify parent component that survey is complete
+    callback(survey.data); // Notify parent component that survey is complete
   };
 
   if (!surveyJson) {

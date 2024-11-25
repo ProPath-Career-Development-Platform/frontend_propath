@@ -119,11 +119,11 @@ function Signup() {
 
     <>
     {/* <JobNav/> */}
-    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200 overflow-hidden">
+    <div className="flex items-center justify-center w-full h-screen overflow-hidden bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200">
       <div className="flex items-center justify-center w-full h-full lg:w-3/4">
         <div className="flex w-full max-w-[800px] rounded-3xl  bg-violet-100">
         <div className="w-1/2 p-6 ">
-            <img src="signup.jpg" alt="Signup Illustration" className="rounded-3xl h-full " />
+            <img src="signup.jpg" alt="Signup Illustration" className="h-full rounded-3xl " />
           </div>
 
           <div className="w-1/2 px-6 py-12">
@@ -132,7 +132,7 @@ function Signup() {
             <div className="relative border-gray-300">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center justify-between w-36 h-10 px-3 border rounded-lg bg-violet-100 border-2 shadow-sm focus:outline-none border-gray-400"
+                className="flex items-center justify-between h-10 px-3 border border-2 border-gray-400 rounded-lg shadow-sm w-36 bg-violet-100 focus:outline-none"
               >
                 <span className="text-gray-700">{selectedRole}</span>
                 <svg
@@ -151,7 +151,7 @@ function Signup() {
                 </svg>
               </button>
               {showDropdown && (
-                <div className="absolute right-0 mt-2 w-full bg-white border rounded-lg shadow-lg z-10">
+                <div className="absolute right-0 z-10 w-full mt-2 bg-white border rounded-lg shadow-lg">
                   <a
                     href="#"
                     onClick={() => handleSelectRole("Job Seeker")}
@@ -176,24 +176,24 @@ function Signup() {
                 <div>
                   <div className="flex flex-col">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Name"
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col  mt-4 relative">
+                  <div className="relative flex flex-col mt-4">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col mt-4 relative">
+                  <div className="relative flex flex-col mt-4">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Password"
                       type={showNewPassword ? "text" : "password"}
                       value={password}
@@ -201,7 +201,7 @@ function Signup() {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3"
                       onClick={toggleNewPasswordVisibility}
                     >
                       {showNewPassword ? (
@@ -239,9 +239,9 @@ function Signup() {
                       )}
                     </button>
                   </div>
-                  <div className="flex flex-col mt-4 relative">
+                  <div className="relative flex flex-col mt-4">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
@@ -249,7 +249,7 @@ function Signup() {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3"
                       onClick={toggleConfirmPasswordVisibility}
                     >
                       {showConfirmPassword ? (
@@ -292,24 +292,24 @@ function Signup() {
                 <div>
                   <div className="flex flex-col">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Company Name"
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col  mt-4 relative">
+                  <div className="relative flex flex-col mt-4">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Company Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       />
                   </div>
-                  <div className="flex flex-col mt-4 relative">
+                  <div className="relative flex flex-col mt-4">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Password"
                       type={showNewPassword ? "text" : "password"}
                       value={password}
@@ -317,7 +317,7 @@ function Signup() {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3"
                       onClick={toggleNewPasswordVisibility}
                     >
                       {showNewPassword ? (
@@ -355,9 +355,9 @@ function Signup() {
                       )}
                     </button>
                   </div>
-                  <div className="flex flex-col mt-4 relative">
+                  <div className="relative flex flex-col mt-4">
                     <input
-                      className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                      className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
@@ -365,7 +365,7 @@ function Signup() {
                       />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3"
                       onClick={toggleConfirmPasswordVisibility}
                       >
                       {showConfirmPassword ? (
@@ -406,8 +406,8 @@ function Signup() {
                 </div>
               )}
             </div>
-            {errorMessage && <div className="text-red-500 text-center mt-5">{errorMessage}</div>}
-            <div className="mt-8 flex flex-col gap-y-4">
+            {errorMessage && <div className="mt-5 text-center text-red-500">{errorMessage}</div>}
+            <div className="flex flex-col mt-8 gap-y-4">
               <button
                 type="submit"
                 className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 rounded-xl bg-[#6756a8] text-white font-bold text-lg"
@@ -416,8 +416,8 @@ function Signup() {
               </button>
             </div>
           </form>
-          <div className="mt-8 flex justify-center items-center">
-            <p className="font-medium text-base text-gray-400">Already have an account?</p>
+          <div className="flex items-center justify-center mt-8">
+            <p className="text-base font-medium text-gray-400">Already have an account?</p>
             <button
               onClick={handleSignin}
               className="ml-2 font-medium text-base text-[#6756a8]"
