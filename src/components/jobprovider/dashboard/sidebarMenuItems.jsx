@@ -227,7 +227,7 @@ function sidebarMenuItems() {
             component={RouterLink}
             to="/jobprovider/Interviews/"
             selected={location.pathname.includes("/Interviews")}
-          
+          disabled={!logUser}
           >
             <SchoolIcon />
             <ListItemContent>

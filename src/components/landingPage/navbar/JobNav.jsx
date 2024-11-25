@@ -19,7 +19,7 @@ const JobNav = () => {
       <NavbarBrand>
         <img src={logo} alt="" className='h-10'/>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-10 mx-16" justify="center">
+      <NavbarContent className="hidden gap-10 mx-16 sm:flex" justify="center">
         <NavbarItem className={location.pathname === '/' ? 'isActive' : ''}>
           <Link color="foreground" to='/' className='font-semibold text-[#808080]'>
             Job Search
@@ -48,12 +48,13 @@ const JobNav = () => {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Button onClick={handleLogin} className='bg-purple1 text-white font-semibold' href="#" variant="flat">
+          <Button as={Link} className='font-semibold text-white bg-purple1' href="#" variant="flat" component= {Link}
+                to = "/Login">
             Log in
           </Button>
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">
-          <Link to="/employersite" className='text-purple1 font-bold'>Employer Site</Link>
+          <Link to="/employersite" className='font-bold text-purple1'>Employer Site</Link>
         </NavbarItem>
       </NavbarContent>
     </Navbar>
