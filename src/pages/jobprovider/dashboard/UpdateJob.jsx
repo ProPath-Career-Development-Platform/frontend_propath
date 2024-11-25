@@ -44,6 +44,8 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import Skeleton from '@mui/joy/Skeleton';
 import { useNavigate } from 'react-router-dom';
 import { generateQuestions } from '../../../services/generativeAi';
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
 
 
 
@@ -81,6 +83,21 @@ const NumericFormatAdapter = React.forwardRef(
 
 
 const UpdateJob = () => {
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
   
  const navigate = useNavigate();
@@ -1383,7 +1400,7 @@ function saveSurveyJson(json, saveNo, callback) {
                   </Snackbar>
                 </React.Fragment>
 
-                
+                <PaymentModel open={paymentOpen} />
           </Box>
 
   )

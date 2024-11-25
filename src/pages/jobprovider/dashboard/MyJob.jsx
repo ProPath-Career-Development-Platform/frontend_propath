@@ -44,9 +44,26 @@ import axios from 'axios';
 import WorkIcon from '@mui/icons-material/Work';
 import {getUserId} from '../../../utils/auth';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
 
 
 function MyJob() {
+
+  const [paymentOpen,setPaymentOpen] = useState(false);
+
+  useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
   console.log("user id", getUserId());
 
@@ -316,6 +333,8 @@ const handlePostSnackbar = () => {
             
 
           <JobTable key={getUserId()} markAsExpire={modelCheck} loading={loading} setLoading={setLoading} change={change} setChange={setChange} count ={setCount} />
+
+          <PaymentModel open={paymentOpen} />
 
           <React.Fragment>
       <Modal open={open.open} onClose={() => setOpen(open.false)}>
