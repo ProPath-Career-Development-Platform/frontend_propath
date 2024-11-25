@@ -31,7 +31,9 @@ const CompanyTable = () => {
         return response.json();
       })
       .then(data => {
-        setCompanies(data);
+        const approvedCompanies = data.filter(company => company.status === 'Approved');
+        console.log(approvedCompanies);
+        setCompanies(approvedCompanies);
       })
       .catch(error => {
         console.log('Error fetching companies:', error);

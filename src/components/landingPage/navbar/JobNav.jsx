@@ -35,16 +35,16 @@ const JobNav = () => {
             Workshops
           </Link>
         </NavbarItem>
-        <NavbarItem className={location.pathname === '/professionalmemberships' ? 'isActive' : ''}>
+        {/* <NavbarItem className={location.pathname === '/professionalmemberships' ? 'isActive' : ''}>
           <Link color="foreground" to='/professionalmemberships' href="#" className='font-semibold text-[#808080]'>
             Professional Memberships
           </Link>
-        </NavbarItem>
-        <NavbarItem className={location.pathname === '/cpdcourses' ? 'isActive' : ''}>
+        </NavbarItem> */}
+        {/* <NavbarItem className={location.pathname === '/cpdcourses' ? 'isActive' : ''}>
           <Link color="foreground" to='/cpdcourses' href="#" className='font-semibold text-[#808080]'>
             CPD Courses
           </Link>
-        </NavbarItem>
+        </NavbarItem> */}
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>

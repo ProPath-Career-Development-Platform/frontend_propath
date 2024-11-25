@@ -10,15 +10,15 @@ class EventOverviewChart extends Component {
         
           series: [{
             name: 'OCTOBER',
-            data: [44, 55, 41, 67, 22, 43, 25, 32, 55],
+            data: [4, 5, 4, 7, 2, 3, 5, 3, 5],
             color: '#732fca' 
           }, {
             name: 'NOVEMBER',
-            data: [13, 23, 20, 8, 13, 27,31, 35, 8],
+            data: [1, 2, 8, 8, 3, 7,3, 5, 8],
             color: '#9966da' 
           },{
             name: 'DECEMBER',
-            data: [21, 7, 25, 13, 22, 8, 10, 12, 22],
+            data: [2, 7, 5, 3, 2, 8, 1, 2, 2],
             color: '#c0a0e8' 
           }],
           options: {
