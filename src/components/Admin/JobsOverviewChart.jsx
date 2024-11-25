@@ -62,7 +62,7 @@ class JobsOverviewChart extends Component {
               },
             },
             xaxis: {
-              categories: ['Infor & Comm Tech', 'Accounting', 'Administration', 'Financial', 'Customer Service',
+              categories: ['Software & Tech', 'Banking', 'Administration', 'Logistics', 'Customer Service',
                 'Construction', 'Education', 'Healthcare', 'Hospitality'
               ],
             },

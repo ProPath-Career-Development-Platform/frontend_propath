@@ -67,8 +67,8 @@ const EventTable = () => {
           <TableColumn>TITLE</TableColumn>
           <TableColumn>DATE</TableColumn>
           <TableColumn>LOCATION</TableColumn>
-          <TableColumn>MAX USER COUNT</TableColumn>
-          <TableColumn>REG USER COUNT</TableColumn>
+          <TableColumn>MAX COUNT</TableColumn>
+          <TableColumn>CURRENT COUNT</TableColumn>
           <TableColumn>ACTIONS</TableColumn>
         </TableHeader>
         <TableBody>
