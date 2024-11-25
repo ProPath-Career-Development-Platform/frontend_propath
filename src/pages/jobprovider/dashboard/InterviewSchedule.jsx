@@ -210,7 +210,7 @@ function InterviewSchedule() {
    
     try{
       
-      const responseUpdate = await axios.put(`http://localhost:8080/jobprovider/applicant/updateStatusSelected/${jobId})`,selectedIds,
+      const responseUpdate = await axios.put(`http://localhost:8080/jobprovider/applicant/updateStatusSelected/${jobId}`,selectedIds,
       {
             headers: {
               Authorization: `Bearer ${token}`,
