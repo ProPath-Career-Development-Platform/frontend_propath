@@ -190,7 +190,7 @@ function InterviewSchedule() {
   const handleSubmit = async(jobId,dataToSend,selectedIds) => {
 
     try{
-      const response = await axios.post(`http://localhost:8080/jobprovider/createInterview/${jobId}`,dataToSend,
+      const response = await axios.post(`http://localhost:8080/jobprovider/createInterview/${jobId}`,dataToSend,selectedIds,
         {
         headers: {
           Authorization: `Bearer ${token}` ,
@@ -210,7 +210,7 @@ function InterviewSchedule() {
    
     try{
       
-      const responseUpdate = await axios.put(`http://localhost:8080/jobprovider/applicant/updateStatusSelected/${jobId})`,selectedIds,
+      const responseUpdate = await axios.put(`http://localhost:8080/jobprovider/applicant/updateStatusSelected/${jobId}`,selectedIds,
       {
             headers: {
               Authorization: `Bearer ${token}`,

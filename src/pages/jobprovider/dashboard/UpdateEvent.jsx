@@ -52,11 +52,29 @@ import axios from 'axios';
 import RichText from '../../../components/jobprovider/dashboard/RichText';
 import { useNavigate } from 'react-router-dom';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
 function CreateAnEvent() {
 
   const { id } = useParams();
   //function to handle delete
   const navigate = useNavigate();
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
 
   const getJwtToken = () => {
@@ -1498,7 +1516,7 @@ function CreateAnEvent() {
              
 
 
-
+                <PaymentModel open={paymentOpen} />
   
 
 

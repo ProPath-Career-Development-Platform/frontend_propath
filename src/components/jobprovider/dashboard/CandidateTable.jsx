@@ -243,7 +243,7 @@
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid,GridActionsCellItem } from '@mui/x-data-grid';
 import { Experimental_CssVarsProvider as CssVarsProvider, experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -253,8 +253,13 @@ import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
 import { rowsStateInitializer } from '@mui/x-data-grid/internals';
+import Tooltip from '@mui/material/Tooltip';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import ResponseView from '../../../components/jobprovider/dashboard/ResponseView';
+import { resolveTimeViewsResponse } from '@mui/x-date-pickers/internals';
+import { useParams } from 'react-router-dom';
 
-const token = localStorage.getItem('token');
+
 
 const getLightTheme = () => extendTheme({
   palette: {
@@ -323,6 +328,18 @@ const getDarkTheme = () => extendTheme({
 
 export default function CandidateTable({ filteredRows , setFilteredRows, criteria, rowSelectionModel, setRowSelectionModel,jobId }) {
 
+  const token = localStorage.getItem('token');
+
+  const [open, setOpen] = useState(false);
+  const [jobSeekerId, setJobSeekerId] = useState(null);
+
+
+  const viewResponse = (jobSeekerId) => {
+    setOpen(true);
+    setJobSeekerId(jobSeekerId);
+    console.log(jobSeekerId);
+  }
+
   const columns = [
   
          { field: 'col0', headerName: '', width: 10, type: 'number', },
@@ -360,18 +377,35 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
         { field: 'col4', headerName: 'Applied Date', width: 150 },
         { field: 'col5', headerName: 'Expirenced Level', width: 150 },
       
-       { field: 'col6',
-          headerName: 'Actions',
-           headerAlign: 'center',
-          width: 150,
-           renderCell: (params) => (
-             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems:'center' , gap:1 ,p:1}}>
-            <Button variant="contained" size="small"><VisibilityIcon/></Button>
-            <Button variant="contained"  size='small'><DownloadIcon/></Button>
-            </Box>
-         )
-         
-        },
+       { field: 'col6', headerName: 'Actions', width: 150,type: 'actions',
+
+          getActions: (params) => [
+              <Tooltip title="View CV">
+              <GridActionsCellItem
+                icon={<DownloadIcon />}
+                label="cv"
+                //onClick go to cv page
+                onClick = {() => window.open(params.row.col6.cv)}
+           
+              />
+              </Tooltip>
+              ,
+              
+              <GridActionsCellItem
+            
+                icon={<TextSnippetIcon />}
+                label="View Response"
+                showInMenu
+                onClick={()=> viewResponse(params.id)}
+               
+              />
+             
+              ,
+
+              
+          
+            ],
+          },
       
        ];
 
@@ -379,6 +413,7 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
   const [theme, setTheme] = useState(getLightTheme);
   const [rows, setRows] = useState([]);
   const [prevRowSelectionModel, setPrevRowSelectionModel] = useState([]);
+  
 
   useEffect(() => {
     setTheme(mode === 'light' ? getLightTheme() : getDarkTheme());
@@ -398,14 +433,14 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
           status:applicant.status,
           col0: applicant.seekerId,
           col1: {
-            url: 'https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg', // Placeholder URL
+            url: applicant.proUrl, // Placeholder URL
             name: `${applicant.name}`
           },
           col2: applicant.email,
           col3: applicant.atsScore, // Format as percentage
           col4: applicant.appliedDate,
           col5: applicant.exp,
-          col6: '' // Placeholder for empty column
+          col6: {cv: applicant.cv} // Placeholder for empty column
         }));
   
         setRows(rows);
@@ -451,14 +486,14 @@ useEffect(() => {
           status: applicant.status,
           col0: applicant.seekerId,
           col1: {
-            url: 'https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg',
+            url: applicant.proUrl,
             name: `${applicant.name}`
           },
           col2: applicant.email,
           col3: applicant.atsScore,
           col4: applicant.appliedDate,
           col5: applicant.exp,
-          col6: ''
+          col6: {cv: applicant.cv}
         }));
 
         setRows(rows);
@@ -563,6 +598,7 @@ useEffect(() => {
           }}
         />
       </Box>
+      <ResponseView jobSeekerId={jobSeekerId} open={open} setOpen={setOpen} />
     </CssVarsProvider>
   );
 }
