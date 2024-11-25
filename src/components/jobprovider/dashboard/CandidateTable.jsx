@@ -383,8 +383,10 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
               <Tooltip title="View CV">
               <GridActionsCellItem
                 icon={<DownloadIcon />}
-                label="Delete"
-              // onClick={()=> navigate(`/jobprovider/my-jobs/${params.id}/applications`)}
+                label="cv"
+                //onClick go to cv page
+                onClick = {() => window.open(params.row.col6.cv)}
+           
               />
               </Tooltip>
               ,
@@ -431,14 +433,14 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
           status:applicant.status,
           col0: applicant.seekerId,
           col1: {
-            url: 'https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg', // Placeholder URL
+            url: applicant.proUrl, // Placeholder URL
             name: `${applicant.name}`
           },
           col2: applicant.email,
           col3: applicant.atsScore, // Format as percentage
           col4: applicant.appliedDate,
           col5: applicant.exp,
-          col6: '' // Placeholder for empty column
+          col6: {cv: applicant.cv} // Placeholder for empty column
         }));
   
         setRows(rows);
@@ -484,14 +486,14 @@ useEffect(() => {
           status: applicant.status,
           col0: applicant.seekerId,
           col1: {
-            url: 'https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg',
+            url: applicant.proUrl,
             name: `${applicant.name}`
           },
           col2: applicant.email,
           col3: applicant.atsScore,
           col4: applicant.appliedDate,
           col5: applicant.exp,
-          col6: ''
+          col6: {cv: applicant.cv}
         }));
 
         setRows(rows);
