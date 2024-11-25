@@ -230,7 +230,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
              
                  <Avatar
                     size='lg'
-                    src={`https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg`}
+                    src={applicantDetails.proUrl}
                     
                   /> 
                 
