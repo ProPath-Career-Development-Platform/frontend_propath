@@ -14,6 +14,11 @@ import Chip from '@mui/joy/Chip';
 import axios from 'axios';
 import { getToken } from '../../../pages/Auth/Auth';
 import Swal from 'sweetalert2';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+
+import EventSeatIcon from '@mui/icons-material/EventSeat'; // For Seats Left
+import LocationOnIcon from '@mui/icons-material/LocationOn'; // For Location
+
 
 
 export default function BasicCard({url , callback ,details}) {
@@ -94,7 +99,7 @@ export default function BasicCard({url , callback ,details}) {
         size="md"
         color="primary"
         aria-label="Explore Bahamas Islands"
-        sx={{ fontWeight: 600 , width: 200 , background:details?.isApplied==false?'#3f067a': 'green' }}
+        sx={{ fontWeight: 600 , width: 200 , background:details?.isApplied==false?'#3f067a': 'green' , marginTop: '15px'}}
         onClick={()=> {
          
           setNum(1)
@@ -148,64 +153,55 @@ export default function BasicCard({url , callback ,details}) {
     </CardContent>
 
     <Box >
-      <Typography sx={{fontSize : '14px' , marginTop : '8px'}}>
-      This Course Includes
-      </Typography>
-      <Box sx = {{display: 'flex' , flexDirection : 'column'}}>
+      
+    <Box
+  sx={{
+    display: 'grid',
+    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, // 1 column for small screens, 2 columns for larger screens
+    gap: 4,
+    justifyContent: 'center',
+    mt: 3,
+  }}
+>
+  {/* Enrollments */}
+  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+    <GroupAddIcon sx={{ fontSize: 30, color: 'blue' }} />
+    <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
+      {details?.event?.currentParticipants} Enrolled
+    </Typography>
+  </Box>
 
-      <Box sx={{marginTop : '8px' , display : 'flex'}}>
-        <Typography>
-          <AccessTimeIcon/>
-        </Typography>
-        <Box sx={{marginLeft : '20px'}}>
-          <Typography sx = {{fontWeight: 500}}>
-            2 Hours
-          </Typography>
-          <Typography sx = {{}}>
-             Of self-paced video lessons
-          </Typography>
+  {/* Seats Left */}
+  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+    <EventSeatIcon sx={{ fontSize: 30, color: 'blue' }} />
+    <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
+      {details?.event?.maxParticipant - details?.event?.currentParticipants} Seats Left
+    </Typography>
+  </Box>
 
-        </Box>
-        
-      </Box>
-      <Box sx={{marginTop : '8px' , display : 'flex'}}>
-        <Typography>
-          <CardMembershipIcon/>
-        </Typography>
-        <Box sx={{marginLeft : '20px'}}>
-          <Typography sx = {{fontWeight: 500}}>
-          Completion Certificate
-          </Typography>
-          <Typography sx = {{}}>
-          awarded on course completion
-          </Typography>
+  {/* Location */}
+  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <LocationOnIcon sx={{ fontSize: 30, color: 'blue' }} />
+    <Typography sx={{ fontSize: 12, color: 'text.secondary' ,  marginTop:'10px'}}>Location</Typography>
+    <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{details?.event?.location}</Typography>
+    
+  </Box>
 
-        </Box>
-        
-      </Box>
+  {/* Registration Deadline */}
+  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <AccessTimeIcon sx={{ fontSize: 30, color: 'blue' }} />
+    <Typography sx={{ fontSize: 12, color: 'text.secondary' , marginTop:'10px' }}>Registration Ends On</Typography>
 
-      <Box sx={{marginTop : '8px' , display : 'flex'}}>
-        <Typography>
-          <CalendarTodayIcon/>
-        </Typography>
-        <Box sx={{marginLeft : '20px'}}>
-          <Typography sx = {{fontWeight: 500}}>
-          90 Days of Access
-          </Typography>
-          <Typography sx = {{}}>
-          To your Free Course
-          </Typography>
-
-        </Box>
-        
-      </Box>
+    <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{details?.event?.closeDate}</Typography>
+  </Box>
+</Box>
 
 
 
-      </Box>
-     
-     
-    </Box>
+
+          
+          
+          </Box>
     </Card>
   );
 }

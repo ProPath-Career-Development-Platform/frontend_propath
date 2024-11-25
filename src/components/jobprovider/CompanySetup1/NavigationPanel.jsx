@@ -1,4 +1,4 @@
-import React, { useState, useRef,useEffect} from 'react';
+import React, { useState, useRef,useEffect,useContext} from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -43,6 +43,9 @@ import Check from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
 import { getToken } from '../../../pages/Auth/Auth';
 import {getUserIdFromToken} from '../../../utils/tokenUtils'
+import ImageKit from "imagekit";
+import UserContext from '../../../utils/userContext'
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
 
@@ -69,6 +72,8 @@ export default function NavigationPanel() {
     aboutUs: '',
     logoImg: null,
     bannerImg: null,
+    logoImgFile: null,
+    bannerImgFile: null,
     organizationType: '',
     industryType: '',
     establishedDate: '',
@@ -79,6 +84,51 @@ export default function NavigationPanel() {
     email:'',
     
   });
+
+  const [formLoad, setFormLoad] = useState(false);
+
+  const imagekit = new ImageKit({
+   
+    urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+    publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+    privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY
+   
+  });
+
+  const {logUser,setLogUser} = useContext(UserContext);
+
+  const uploadLogo = async (file, companyName) => {
+    try {
+      const response = await imagekit.upload({
+        file: file, // the file you want to upload
+        fileName: companyName, // file name you want to save as
+      });
+  
+      // Return the uploaded image URL
+      console.error(response.url);
+      return response.url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null; // Return null in case of an error
+    }
+  };
+
+  const uploadBusinessRegistration = async (file, companyName) => {
+    try {
+      const response = await imagekit.upload({
+        file: file, // the file you want to upload
+        fileName: `${companyName}_BusinessRegistration`, // file name you want to save as
+      });
+  
+      // Return the uploaded image URL
+      console.error(response.url);
+      return response.url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null; // Return null in case of an error
+    }
+  };
+
 
   const [error, setError] = useState({});
   const [highlightLogo, setHighlightLogo] = useState(false);
@@ -176,35 +226,71 @@ export default function NavigationPanel() {
 
 
   
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        setError((prevState) => ({
-          ...prevState,
-          logoImg: 'Image size must be less than 2MB',
-        }));
-      } else {
-        setFormData({ ...formData, logoImg: URL.createObjectURL(file) });
-        setHighlightLogo(false);
-      }
-    }
-  };
+ /* ================ Img validation here ================= */
 
-  const handleBannerUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError((prevState) => ({
-          ...prevState,
-          bannerImg: 'Image size must be less than 5MB',
-        }));
-      } else {
-        setFormData({ ...formData, bannerImg: URL.createObjectURL(file) });
-        setHighlightBanner(false);
-      }
+ const handleImageUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    if (file.size > 2 * 1024 * 1024) {
+      setError((prevState) => ({
+        ...prevState,
+        logoImg: 'Image size must be less than 2MB',
+      }));
+    }else if (!file.type.match('image/jpeg') && !file.type.match('image/png')){
+      setError((prevState) => ({
+        ...prevState,
+        logoImg: 'Please select a jpg, jpeg, or png image file',
+      }));
+
+    } else {
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+
+          //setFormData({ ...formData, logoImg: URL.createObjectURL(file) });
+          setFormData({ ...formData, logoImg:reader.result ,logoImgFile:file});
+          setHighlightLogo(false);
+        }
+
+        reader.readAsDataURL(file);
+
+
+
+     
     }
-  };
+  }
+};
+
+const handleBannerUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    if (file.size > 5 * 1024 * 1024) {
+      setError((prevState) => ({
+        ...prevState,
+        bannerImg: 'Image size must be less than 5MB',
+      }));
+    }else if (!file.type.match('image/jpeg') && !file.type.match('image/png')){
+      setError((prevState) => ({
+        ...prevState,
+        logoImg: 'Please select a jpg, jpeg, or png image file',
+      }));
+
+    }else {
+
+      const reader = new FileReader();
+
+        reader.onloadend = () => {
+     // setFormData({ ...formData, bannerImg: URL.createObjectURL(file) });
+      setFormData({ ...formData, bannerImgFile: file, bannerImg:reader.result });
+      setHighlightBanner(false);
+
+        }
+
+        reader.readAsDataURL(file);
+    }
+  }
+};
 
   const handleSubmit1 = () => {
     let hasError = false;
@@ -303,12 +389,19 @@ export default function NavigationPanel() {
     if (hasError) {
       setError(newErrors);
     } else {
-      try {
+    /*  try {
+
+        setFormLoad(true);
+
+        const logoURL =  await uploadImage(formData.logoImg);
+        const bannerURL = await uploadImage(formData.bannerImg);
+
+
         const companyData = {
           companyName: formData.companyName,
           aboutUs: formData.aboutUs,
-          logoImg: formData.logoImg, // Assuming this is a URL or base64 string
-          bannerImg: formData.bannerImg, // Assuming this is a URL or base64 string
+          logoImg: logoURL, // Assuming this is a URL or base64 string
+          bannerImg: bannerURL, // Assuming this is a URL or base64 string
           organizationType: formData.organizationType,
           industryType: formData.industryType,
           establishedDate: formData.establishedDate,
@@ -332,7 +425,7 @@ export default function NavigationPanel() {
         // Submit the form data
         const response = await RegisterCompany(companyData,token);
         console.log(response.data);
-        navigate('/jobprovider/home/');
+        navigate('/jobprovider/dashboard/');
       } catch (error) {
         console.error('Error submitting form:', error);
         if (error.response) {
@@ -340,8 +433,61 @@ export default function NavigationPanel() {
           console.error('Response status:', error.response.status);
           console.error('Response headers:', error.response.headers);
         }
-      }
-    }
+      }*/
+
+        setFormLoad(true);
+
+        const logoURL =  await uploadLogo(formData.logoImgFile, formData.companyName);
+        const bannerURL = await uploadBusinessRegistration(formData.bannerImgFile, formData.companyName);
+
+        const companyData = {
+          companyName: formData.companyName,
+          aboutUs: formData.aboutUs,
+          logoImg: logoURL, // Assuming this is a URL or base64 string
+          bannerImg: bannerURL, // Assuming this is a URL or base64 string
+          organizationType: formData.organizationType,
+          industryType: formData.industryType,
+          establishedDate: formData.establishedDate,
+          companyWebsite: formData.companyWebsite,
+          companyVision: formData.companyVision,
+          location: formData.location,
+          contactNumber: formData.contactNumber,
+          email: formData.email,
+          status:"pending",
+          //userId:userId
+        };
+        try{
+
+          const response = await axios.post('http://localhost:8080/jobprovider/Setup', companyData, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${getToken()}`,
+            },
+          });
+
+          console.log(response.data);
+
+          setFormLoad(false);
+
+       /*   const newCompanyData = {
+            ...companyData,
+            isNew: true,
+          };*/
+
+       //   localStorage.setItem('logUser', JSON.stringify(newCompanyData));
+
+       //   setLogUser(newCompanyData);
+
+
+          navigate('/jobprovider/dashboard/');
+
+        }catch(error){
+
+          console.error('Error submitting form:', error);
+        }
+
+        }
+    
   };
   
 
@@ -722,10 +868,8 @@ const [italic, setItalic] = React.useState(false);
             fontWeight: 500,
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all .3s ease',
-            '&:hover': {
-              backgroundColor: '#005DD1',
-            },
+            transition: 'all .3s ease'
+        
           }}
           onClick={handleSubmit1}
         >
@@ -1123,10 +1267,8 @@ const [italic, setItalic] = React.useState(false);
             fontWeight: 500,
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all .3s ease',
-            '&:hover': {
-              backgroundColor: '#005DD1',
-            },
+            transition: 'all .3s ease'
+            
           }}
           onClick={handleSubmit2}
         >
@@ -1315,10 +1457,8 @@ const [italic, setItalic] = React.useState(false);
           fontWeight: 500,
           fontSize: '15px',
           cursor: 'pointer',
-          transition: 'all .3s ease',
-          '&:hover': {
-            backgroundColor: '#005DD1',
-          },
+          transition: 'all .3s ease'
+        
         }}
         onClick={haddlesubmit3}
       >
@@ -1541,7 +1681,27 @@ const [italic, setItalic] = React.useState(false);
       </Button>
               </Box>
               <Box>
-              <Button
+             {/* <Button
+        variant="contained"
+        type="submit"
+        sx={{
+          
+          display: 'block',
+          width: '200px',
+          padding: '10px 0',
+          borderRadius: '15px',
+          backgroundColor: '#814DDE',
+          color: '#fff',
+          fontWeight: 500,
+          fontSize: '15px',
+          cursor: 'pointer',
+          transition: 'all .3s ease'
+        }}
+       
+      >
+       Save and Submit   <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
+      </Button>*/}
+      <LoadingButton
         variant="contained"
         type="submit"
         sx={{
@@ -1560,10 +1720,10 @@ const [italic, setItalic] = React.useState(false);
             backgroundColor: '#005DD1',
           },
         }}
-       
-      >
-       Save and Submit   <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
-      </Button>
+      
+      loading={formLoad}>
+        Save and Submit   <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
+      </LoadingButton>
               </Box>
            
             </Box>

@@ -26,13 +26,15 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { getToken } from '../Auth/Auth'
 import SimpleMap from '../../components/JobSeeker/map'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
 const Course = () => {
   
     const location = useLocation();
     const {id} = location.state || {};
     const [seeekerEvent,setSeekerEvent] = useState([]);
     
-  const images = ['/ml1.jpg','/ml2.png','/ml3.png']
+  const images = ['/ml1.jpg']
   const[img, setImg] = useState(0)
  
   const [Open, setOpen] = useState(false)
@@ -40,19 +42,28 @@ const Course = () => {
                     description:'This Python Interview Course is the ultimate answer if you are looking to crack a job in python. It will take you through all the questions that can be expected from a python developer with answers explained in Hindi. In this Interview questions series, you will learn questions and answers with python basics and advanced topics that will help you get your desired python job.' ,
                     learner: ['App developers' , 'Software Developers' , 'Full Stack Developers' , 'Coding enthuisiastics']}
 
-  useEffect(() =>{
-     const change = setInterval(() => {
-      
-        setImg(prevImg => prevImg + 1)
 
-        if(img ==2 ){
-            setImg(0)
-        }
+//   const headline = {
+//     title: "Introduction to Flutter Course Online",
+//     h1: "Stand Out in a Python Coding Interview",
+//     description:
+//       "This Python Interview Course is the ultimate answer if you are looking to crack a job in python. It will take you through all the questions that can be expected from a python developer with answers explained in Hindi. In this Interview questions series, you will learn questions and answers with python basics and advanced topics that will help you get your desired python job.",
+//     learner: [
+//       "App developers",
+//       "Software Developers",
+//       "Full Stack Developers",
+//       "Coding enthuisiastics",
+//     ],
+//   };
+
+//         if(img ==2 ){
+//             setImg(0)
+//         }
         
-     }, 6000);
+//      }, 6000);
     
-     return () => clearInterval(change); 
-  } , [img])
+//      return () => clearInterval(change); 
+//   } , [img])
   
  
    useEffect(() => {
@@ -66,9 +77,8 @@ const Course = () => {
           },
         });
         setSeekerEvent(res.data); // Update the state with the fetched data
-      
-        // console.log("Response Data:", seeekerEvent.event.title);
-        // console.log("id : " + seeekerEvent.event.keyWords)
+    
+
       } catch (error) {
         console.error("Error fetchig data:", error.response?.data || error.message);
       }
@@ -84,7 +94,7 @@ const Course = () => {
     // Clear the interval on component unmount
     return () => clearInterval(interval);
   }, [id]);
-
+  console.log(seeekerEvent)
 
   return (
     <Box component="main"
@@ -136,17 +146,14 @@ const Course = () => {
 
         <Box sx={{backgroundColor: '#3f067a', width: '100%' , height:'60%'}}>
             <Box sx={{width: '60%' , marginTop : '3%' , marginBottom: '5%'}}>
-                <Box sx={{marginLeft : '6%' , marginTop : '2%'}}>
-                        <Typography sx={{ color: 'white' , fontSize : 25 , fontWeight: 'bold'}}>{seeekerEvent?.event?.title}</Typography>
+                <Box sx={{marginLeft : '6%' , marginTop : '2%' , display:'flex' , justifyContent:'center'}}>
+                        <Typography sx={{ color: 'white' , fontSize : 30 , fontWeight: 'bold'}}>{seeekerEvent?.event?.title}</Typography>
                     </Box>
                     
-                    <Box sx={{marginLeft : '6%' , marginTop : '8px' , display: 'flex' , flexDirection: 'row' , gap: 4, marginBottom: '20px'}}>
-                        <Typography sx={{ color: 'white' , fontSize : 13  }}><GroupAddIcon sx={{color:'white' , marginRight: '5px'}}/>{seeekerEvent?.event?.currentParticipants} enrolled </Typography>
-                        <Typography sx={{ color: 'white' , fontSize : 13 }}> <WhatshotIcon sx={{color:'white' , marginRight: '4px'}}/>{seeekerEvent?.event?.maxParticipant - seeekerEvent?.event?.currentParticipants} remaining</Typography>
-                        
-                    </Box>
-                   <Box sx={{marginLeft : '6%' , marginTop : '8px'}}>
-                        <Typography sx={{ color: 'white' , fontSize : 13 , }}>{seeekerEvent?.event?.description}</Typography>
+                  
+                    <Box sx={{marginLeft : '6%' , marginTop : '2%' , display:'flex' , justifyContent:'center'}}>
+                    <Typography sx={{ color: 'white' , fontSize : 13  }}>  <CalendarTodayIcon sx={{ color: 'white', marginRight: '5px', fontSize: 16 }} />{seeekerEvent?.event?.date} | {seeekerEvent?.event?.startTime}-{seeekerEvent?.event?.endTime}</Typography>
+                  
                    </Box>
                     
             </Box>
@@ -154,10 +161,10 @@ const Course = () => {
               
         </Box>
         <Box sx={{position: 'absolute' , right: '8%' , top: '25%'}}>
-                <BasicCard  url = {images[img]} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent}></BasicCard>
+                <BasicCard  url = {seeekerEvent?.event?.banner} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent}></BasicCard>
                 </Box>
         <Box>
-            <Box>
+            {/* <Box>
             <Box sx={{marginTop : '10px' , }}>
                 <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Skills you will learn</Typography>
             </Box>
@@ -185,9 +192,9 @@ const Course = () => {
           </Box>
         
         
-            </Box>
+            </Box> */}
      
-            <Box sx={{width : '60%' , marginTop : '40px'}} >
+            {/* <Box sx={{width : '60%' , marginTop : '40px'}} >
                 <Box sx={{width: '100%' ,marginTop : '12px' , marginBottom : '12px'}}>
                 <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Who should learn this free Flutter course?</Typography>
                 </Box>
@@ -201,9 +208,9 @@ const Course = () => {
                     }
 
                 </Box>
-            </Box>
+            </Box> */}
 
-            <Box sx={{width : '60%'}} >
+            {/* <Box sx={{width : '60%'}} >
                 <Box sx={{width: '100%' ,marginTop : '40px' , marginBottom : '12px'}}>
                 <Typography sx={{fontWeight : 500, fontSize: '25px'}}>What will you learn from this flutter course</Typography>
                 </Box>
@@ -211,27 +218,39 @@ const Course = () => {
                     <AccordionIndicator sx = {{width: '100%'}}/>
 
                 </Box>
-            </Box>
+            </Box> */}
 
             <Box sx={{width : '60%' , marginTop : '40px'}} >
                 <Box sx={{width: '100%' ,marginTop : '12px' , marginBottom : '12px'}}>
                 <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Course Overview  </Typography>
                 </Box>
                 <Box>
-                    <CourseOverview/>
+                    {seeekerEvent?.event?.description}
                 </Box>
             </Box>
 
-            <Box sx={{width : '60%'}} >
-                <Box sx={{width: '100%' ,marginTop : '40px' , marginBottom : '12px'}}>
-                <Typography sx={{fontWeight : 500, fontSize: '25px'}}>FAQ</Typography>
-                </Box>
-                <Box sx={{  gap:3 , marginTop : '25px'}}>
-                    <CourseFAQ sx = {{width: '100%'}}/>
+            <Box sx={{ width: '60%', marginTop: '40px' }}>
+  {/* Section Title */}
+  <Box sx={{ marginBottom: '20px' }}>
+    <Typography sx={{ fontWeight: 600, fontSize: '24px', color: 'text.primary' }}>
+      Location
+    </Typography>
+  </Box>
 
-                </Box>
-                <SimpleMap/>
-            </Box>
+  {/* Map Container */}
+  <Box
+    sx={{
+      width: '100%',
+      height: '400px', // Set a fixed height for the map
+      borderRadius: '12px', // Rounded corners for a modern look
+      overflow: 'hidden', // Ensure content doesn't overflow the border radius
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Add a subtle shadow
+    }}
+  >
+    <SimpleMap />
+  </Box>
+</Box>
+
 
         </Box>
        
@@ -270,10 +289,7 @@ const Course = () => {
        
         
     </Box>
- 
-       
- 
-  )
-}
+  );
+};
 
-export default Course
+export default Course;

@@ -36,7 +36,7 @@ function SettingsCompanyInfo() {
 
   const jwtToken = localStorage.getItem('token');
 
-  const {setLogUser} = useContext(UserContext);
+  const {logUser,setLogUser} = useContext(UserContext);
 
   const VisuallyHiddenInput = styled('input')`
   clip: rect(0 0 0 0);
@@ -256,11 +256,18 @@ function SettingsCompanyInfo() {
         );
         console.log('Settings updated successfully:', response.data);
         //update LocalStorage company info
-        setLogUser((prev) => ({
-          ...prev,
-          companyName: companyInfo.companyName,
-          logoImg: companyInfo.logoImg,
-        }));
+        setLogUser((prev) => {
+          const updatedLogUser = {
+            ...prev,
+            companyName: companyInfo.companyName,
+            logoImg: companyInfo.logoImg,
+          };
+          
+          // Update local storage
+          localStorage.setItem('logUser', JSON.stringify(updatedLogUser));
+      
+          return updatedLogUser;
+        });
         setResponseStat(true);
       } catch (error) {
         console.error('Error changing setting:', error);

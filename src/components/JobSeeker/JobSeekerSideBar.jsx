@@ -179,7 +179,7 @@ function JobSeekerSideBar() {
             >
               <SettingsRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Settings</Typography>
+                <Typography level="title-sm">Set Up</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>

@@ -104,7 +104,7 @@ const Courses = () => {
   };
   
   const [PageNumber , setPageNumber] = useState(0)
-  const total = Math.floor(cardData.length/ Number(selectedSize))
+  const total = Math.floor(courseList.length/ Number(selectedSize))
 
   const getValuefromChild = (value)=> {
 
@@ -121,8 +121,9 @@ const Courses = () => {
         },
       }).then((response) => {
       
-       setCourseList(response.data)
-       console.log(courseList[0])// Store the response data in state
+       setCourseList(response.data )
+       console.log(courseList)
+      // Store the response data in state
        
         
         // Log the response data
@@ -290,20 +291,23 @@ const Courses = () => {
                             
                           }}
                         >
-                         {courseList?.slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize)).map((course, index) => (
+                         {courseList
+                          .slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize))
+                          .map((course, index) => (
                             <CourseCard
-                              key={index}
-                              title={course.title}
-                              content={course.keyWords}
-                              location={course.location}
-                              company={course.user.name}
-                              type={type}
-                              img={course.banner}
-                              slot={course.currentParticipants}
-                              maxslots={course.maxParticipant}
-                              id = {course.id}
+                              key={index} // Fallback key for safety
+                              title={course?.title || "No Title"}
+                              content={course?.keyWords || []}
+                              location={course?.location || "Unknown"}
+                              company={course?.user?.username|| "Unknown"}
+                              type={type || 0}
+                              img={course?.banner || ""}
+                              slot={course?.currentParticipants || 0}
+                              maxslots={course?.maxParticipant || 0}
+                              id={course?.id}
                             />
                           ))}
+
 
 
                         
@@ -323,7 +327,7 @@ const Courses = () => {
                            
                          }}
                        >
-                         {cardData.slice(0,selectedSize).map((card, index) => (
+                         {cardData?.slice(0,selectedSize).map((card, index) => (
                            <CourseCard key={index} id= {card?.id} title={card?.title} content={card?.content} location={card?.location} company={card?.company} type = {type} img={card?.img} slot = {card?.slots}/>
                          ))}
                          

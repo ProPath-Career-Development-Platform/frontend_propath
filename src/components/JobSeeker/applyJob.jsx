@@ -1,108 +1,126 @@
-import React, { useEffect, useState, useRef } from 'react';
-import Button from '@mui/joy/Button';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Modal from '@mui/joy/Modal';
-import ModalDialog from '@mui/joy/ModalDialog';
-import DialogTitle from '@mui/joy/DialogTitle';
-import Stack from '@mui/joy/Stack';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Button,
+  Modal,
+  ModalDialog,
+  DialogTitle,
+  Stack,
+  Box,
+  Typography,
+  Avatar,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@mui/joy";
+import IndicatorStepper from "./stepper";
+import SurveyQuestions from "./surveyQuestions";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import seba from "/seba.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import seba from '/seba.jpg';
-import Add from '@mui/icons-material/Add';
-import Box from '@mui/joy/Box';
-import Typography from '@mui/joy/Typography';
-import { Avatar } from '@mui/joy';
-import IndicatorStepper from './stepper';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import SurveyQuestions from './surveyQuestions';
-import { keyframes } from '@emotion/react';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { keyframes } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
 
-export default function BasicModalDialog({ title, callback }) {
+export default function AppliedJob() {
   const scaleFadeIn = keyframes`
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.1);
-      opacity: 0.5;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
   `;
 
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(1); // 1: Contact Info, 2: Survey, 3: Success
+  const inputCvRef = useRef(null);
   const [showIcon, setShowIcon] = useState(false);
-  const [cvFileName, setCvFileName] = useState(''); // State to store CV file name
+  const navigate = useNavigate();
 
   useEffect(() => {
     setShowIcon(true);
-  }, []);
 
-  const inputCvRef = useRef(null);
-  const [open, setOpen] = React.useState(false);
-  const [num, setNum] = React.useState(1);
+    if (step === 3) {
+      // Redirect to the home page after 5 seconds
+      const timer = setTimeout(() => navigate("/jobseeker"), 5000);
+
+      // Cleanup the timer when the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [step, navigate]);
 
   const handleCvUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.size < 10000000) {
-      setCvFileName(file.name); // Save file name in state
+      console.log("CV uploaded:", file.name);
     } else {
-      alert("File size more than 10MB");
+      alert("File size exceeds 10MB.");
     }
   };
 
-  const submit = () => {
-    callback(1);
-  };
+  const submitContactInfo = () => setStep(2);
 
-  const getValuefromChild = (value) => {
-    setNum(value);
-  };
+  const completeSurvey = () => setStep(3);
 
   return (
-    <React.Fragment>
-      <Button
-        sx={{ backgroundColor: 'blue' }}
-        onClick={() => setOpen(true)}
-      >
-        <Typography sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' }, color: 'white' }}>Apply Now</Typography>
-        <ArrowRightAltIcon sx={{ marginLeft: { xs: '0px', sm: '3px' }, color: 'white' }} />
+    <>
+      <Button sx={{ backgroundColor: "blue" }} onClick={() => setOpen(true)}>
+        <Typography
+          sx={{ display: { xs: "none", lg: "block" }, color: "white" }}
+        >
+          Apply Now
+        </Typography>
       </Button>
 
-      <Modal open={open} onClose={() => setOpen(false)} sx={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
-        <ModalDialog>
-          <Box sx={{ margin: "15px 0 15px 0" }}>
-            <IndicatorStepper callback={getValuefromChild} num={num} />
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        sx={{ display: "flex", justifyContent: "center", overflow: "auto" }}
+      >
+        <ModalDialog
+          sx={{
+            width: "90vw", // Adjust the width dynamically based on viewport size
+            maxWidth: "600px", // Set a maximum width for the modal
+            padding: "20px",
+          }}
+        >
+          <Box sx={{ margin: "15px 0" }}>
+            <IndicatorStepper callback={setStep} num={step} />
           </Box>
-          
-          {num == 1 && (
-            <Box sx={{ width: '500px' }}>
-              <SurveyQuestions callback={getValuefromChild} />
-            </Box>
-          )}
-          
-          {num == 2 && (
-            <Box sx={{ width: '500px' }}>
-              <DialogTitle sx={{ marginBottom: '10px', paddingBottom: '3px', borderBottom: '1px solid #E8DFDF' }}>Contact Info</DialogTitle>
+
+          {step === 1 && (
+            <Box>
+              <DialogTitle
+                sx={{
+                  marginBottom: "10px",
+                  paddingBottom: "3px",
+                  borderBottom: "1px solid #E8DFDF",
+                }}
+              >
+                Contact Info
+              </DialogTitle>
               <Box>
-                <Box sx={{ display: 'flex', gap: 3, mt: '25px' }}>
-                  <Avatar src={seba} sx={{ width: '50px', height: '50px', borderRadius: '50%', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
+                <Box sx={{ display: "flex", gap: 3, mt: "25px" }}>
+                  <Avatar
+                    src={seba}
+                    sx={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                    }}
+                  />
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Santhush Fernando</Typography>
-                    <Typography variant="body1" sx={{ fontSize: '13px' }}>SFernando@gmail.com</Typography>
-                    <Typography variant="body1" sx={{ fontSize: '13px' }}>Sri Lanka</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                      Santhush Fernando
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontSize: "13px" }}>
+                      SFernando@gmail.com
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontSize: "13px" }}>
+                      Sri Lanka
+                    </Typography>
                   </Box>
                 </Box>
 
-                <form onSubmit={(event) => {
-                  event.preventDefault();
-                  setOpen(false);
-                }}>
+                <form onSubmit={(event) => event.preventDefault()}>
                   <Stack spacing={2}>
                     <FormControl>
                       <FormLabel>Email</FormLabel>
@@ -122,11 +140,8 @@ export default function BasicModalDialog({ title, callback }) {
                           borderRadius: "8px",
                           padding: "20px",
                           width: "100%",
-                          maxWidth: "500px",
                           cursor: "pointer",
-                          "&:hover": {
-                            backgroundColor: "#f0f7ff",
-                          },
+                          "&:hover": { backgroundColor: "#f0f7ff" },
                         }}
                         onClick={() => inputCvRef.current.click()}
                       >
@@ -135,33 +150,18 @@ export default function BasicModalDialog({ title, callback }) {
                           Add CV/Resume
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                          Only PDF format available. Max file size 10MB
+                          Only PDF format allowed. Max file size 10MB.
                         </Typography>
                         <input
                           type="file"
-                          id="cv-file-upload"
-                          accept=".pdf"
                           hidden
                           ref={inputCvRef}
                           onChange={handleCvUpload}
                         />
-                        {cvFileName && (
-                          <Typography variant="body2" sx={{ mt: 1, color: 'green' }}>
-                            File uploaded: {cvFileName}
-                          </Typography>
-                        )}
                       </Box>
                     </FormControl>
-                    <Button
-                      type="submit"
-                      onClick={() => {
-                        setNum(3);
-                        setTimeout(() => {
-                          callback(1);
-                        }, 3000);
-                      }}
-                    >
-                      Submit Application
+                    <Button type="submit" onClick={submitContactInfo}>
+                      Submit Contact Info
                     </Button>
                   </Stack>
                 </form>
@@ -169,28 +169,34 @@ export default function BasicModalDialog({ title, callback }) {
             </Box>
           )}
 
-          {num == 3 && (
-            <Modal open={open} onClose={() => setOpen(false)} sx={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
-              <ModalDialog>
-                <DialogTitle sx={{ marginBottom: '10px', paddingBottom: '3px', borderBottom: '1px solid #E8DFDF' }}>
-                  <Typography sx={{ color: 'green', fontSize: '23px' }}>Successful</Typography>
-                </DialogTitle>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  {showIcon && (
-                    <DoneAllIcon
-                      sx={{
-                        fontSize: 50,
-                        animation: `${scaleFadeIn} 1s ease-in-out`,
-                        color: 'green'
-                      }}
-                    />
-                  )}
-                </Box>
-              </ModalDialog>
-            </Modal>
+          {step === 2 && <SurveyQuestions callback={completeSurvey} />}
+
+          {step === 3 && (
+            <Box sx={{ textAlign: "center" }}>
+              <DialogTitle
+                sx={{
+                  marginBottom: "10px",
+                  paddingBottom: "3px",
+                  borderBottom: "1px solid #E8DFDF",
+                }}
+              >
+                <Typography sx={{ color: "green", fontSize: "23px" }}>
+                  Application Submitted Successfully
+                </Typography>
+              </DialogTitle>
+              {showIcon && (
+                <DoneAllIcon
+                  sx={{
+                    fontSize: 50,
+                    animation: `${scaleFadeIn} 1s ease-in-out`,
+                    color: "green",
+                  }}
+                />
+              )}
+            </Box>
           )}
         </ModalDialog>
       </Modal>
-    </React.Fragment>
+    </>
   );
 }
