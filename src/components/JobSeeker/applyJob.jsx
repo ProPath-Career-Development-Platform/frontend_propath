@@ -346,7 +346,6 @@ export default function AppliedJob() {
                           email: e.target.value,
                         }))
                       }
-                      required
                     />
                   </FormControl>
                   <CVUploadField
