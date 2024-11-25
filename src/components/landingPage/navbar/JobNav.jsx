@@ -48,12 +48,8 @@ const JobNav = () => {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-<<<<<<< Updated upstream
-          <Button onClick={handleLogin} className='bg-purple1 text-white font-semibold' href="#" variant="flat">
-=======
           <Button as={Link} className='font-semibold text-white bg-purple1' href="#" variant="flat" component= {Link}
                 to = "/Login">
->>>>>>> Stashed changes
             Log in
           </Button>
         </NavbarItem>
