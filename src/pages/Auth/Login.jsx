@@ -125,11 +125,10 @@ function Login() {
 
   return (
     <>
-    {/* <JobNav/> */}
-    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200  overflow-hidden">
+    <div className="flex items-center justify-center w-full h-screen overflow-hidden bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200">
       <div className="flex items-center justify-center w-full h-full lg:w-1/2">
         <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-violet-100 ">
-          <h1 className="text-4xl font-bold flex justify-center items-center text-black w-full">
+          <h1 className="flex items-center justify-center w-full text-4xl font-bold text-black">
             Log in
           </h1>
 
@@ -137,16 +136,16 @@ function Login() {
             <div className="mt-8">
               <div className="flex flex-col">
                 <input
-                  className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                  className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                   placeholder="Email address"
                   
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col mt-4 relative">
+              <div className="relative flex flex-col mt-4">
                 <input
-                  className="w-full border-2 border-gray-400 rounded-xl p-3 mt-1 bg-transparent text-base"
+                  className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
                   placeholder="Password"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -154,7 +153,7 @@ function Login() {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
                   onClick={togglePasswordVisibility}
                 >
                   {showPassword ? (
@@ -191,9 +190,9 @@ function Login() {
                     </svg>
                   )}
                 </button>
-                {/* {errorMessage && <div className="text-red-500 text-center mt-2">{errorMessage}</div>} */}
+                {/* {errorMessage && <div className="mt-2 text-center text-red-500">{errorMessage}</div>} */}
               </div>
-              <div className="mt-8 flex justify-between items-center">
+              <div className="flex items-center justify-between mt-8">
                 <div>
                 <input 
                     type="checkbox" 
@@ -202,7 +201,7 @@ function Login() {
                     onChange={(e) => setRememberMe(e.target.checked)} 
                   />
                   <label
-                    className="ml-2 font-medium text-base text-black"
+                    className="ml-2 text-base font-medium text-black"
                     htmlFor="remember"
                   >
                     Remember me
@@ -215,8 +214,8 @@ function Login() {
                   Forgot password
                 </button>
               </div>
-              {errorMessage && <div className="text-red-500 text-center mt-5">{errorMessage}</div>}
-              <div className="mt-5 flex flex-col gap-y-4">
+              {errorMessage && <div className="mt-5 text-center text-red-500">{errorMessage}</div>}
+              <div className="flex flex-col mt-5 gap-y-4">
                 <button type="submit" className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#6756a8] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]">
                   Sign in
                 </button>
@@ -252,8 +251,8 @@ function Login() {
                   Sign in with Google
                 </button>
               </div>
-              <div className="mt-8 flex justify-center items-center">
-                <p className="font-medium text-base text-black">Don't have an account?</p>
+              <div className="flex items-center justify-center mt-8">
+                <p className="text-base font-medium text-black">Don't have an account?</p>
                 <button 
                 type="button"
                 onClick={handlesignup}

@@ -84,12 +84,14 @@ const JobSeekerHome = () => {
       const validJobs = response.data.filter((job) => {
         const expiryDate = new Date(job.expiryDate);
         return expiryDate >= currentDate;
+
       });
 
       // Fetch company details for each job
       const jobsWithCompanyDetails = await Promise.all(
         validJobs.map(async (job) => {
           const companyDetails = await fetchCompanyDetails(job.id);
+          console.log("Hi")
           return { ...job, companyDetails }; // Add company details to the job object
         })
       );
@@ -97,6 +99,7 @@ const JobSeekerHome = () => {
       console.log("Jobs with company details:", jobsWithCompanyDetails);
       setJobs(jobsWithCompanyDetails);
       setTotalPages(Math.ceil(validJobs.length / selectedSize)-1);
+      console.log(Response)
     } catch (error) {
       console.error("Error fetching job data:", error);
     }
@@ -110,6 +113,7 @@ const JobSeekerHome = () => {
   const handlePageChange = (value) => {
     setPageNumber(value);
   };
+  
 
   return (
     <Box
@@ -149,7 +153,7 @@ const JobSeekerHome = () => {
           <img src={logo} alt="Logo" />
         </Box>
         <Box sx={{ display: "flex" }}>
-          <JSSearch />
+          {/* <JSSearch /> */}
           <Alert />
           <ProfileDropdown />
         </Box>

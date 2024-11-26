@@ -15,6 +15,7 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { useNavigate } from "react-router-dom";
 import wso2img from "../../assets/wso2.png";
 import sysco from "../../assets/sysco.png";
+import axios from "axios";
 
 export default function JSCard({
   jobId,
@@ -57,7 +58,10 @@ export default function JSCard({
   };
 
   const [companyDetails, setCompanyDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+  const [checkUserAlreadyApplied, setCheckUserAlreadyApplied] = useState();
   const fetchCompanyDetails = async () => {
+    const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
         `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
@@ -73,13 +77,53 @@ export default function JSCard({
       console.error("Error fetching company details:", error);
     }
   };
+  const fetchUserDetails = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:8080/jobseeker/getUserDetails`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("User details:", response.data);
+      setUserDetails(response.data); // Update user details here
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
   useEffect(() => {
     if (jobId) {
       fetchCompanyDetails();
+      fetchUserDetails();
     } else {
       console.error("Job ID not found");
     }
   }, [jobId]);
+
+  useEffect(() => {
+    if (userDetails) {
+      const checkUserApplied = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const userId = userDetails?.user?.id;
+          console.log("User ID:", userId);
+          const response = await axios.get(
+            `http://localhost:8080/jobseeker/check-applied/${userId}/${jobId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          console.log("User already applied:", response.data);
+          setCheckUserAlreadyApplied(response.data);
+        } catch (error) {
+          console.error("Error checking if user already applied:", error);
+        }
+      };
+
+      checkUserApplied();
+    }
+  }, [userDetails, jobId]);
 
   if (type === 1) {
     return (
@@ -132,10 +176,17 @@ export default function JSCard({
         >
           <Button
             variant="solid"
-            sx={{ backgroundColor: "#3f067a" }}
+            sx={{
+              backgroundColor: checkUserAlreadyApplied ? "grey" : "#3f067a",
+              color: checkUserAlreadyApplied ? "white" : "white",
+              "&:hover": {
+                backgroundColor: checkUserAlreadyApplied ? "grey" : "#2c054d",
+              },
+            }}
             onClick={handleApplyNowClick}
           >
-            Apply Now <ArrowRightAltIcon sx={{ marginLeft: "3px" }} />
+            {checkUserAlreadyApplied ? "Applied" : "Apply Now"}{" "}
+            <ArrowRightAltIcon sx={{ marginLeft: "3px" }} />
           </Button>
         </CardActions>
       </Card>

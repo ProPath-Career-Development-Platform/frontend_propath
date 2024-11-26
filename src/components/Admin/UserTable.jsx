@@ -65,12 +65,13 @@ const UserTable = () => {
                     startContent={<IoMdSearch size={20} />}
                     type="search"
                 />
-                <Pagination 
+                <Pagination total={5} color='secondary' initialPage={1} />
+                {/* <Pagination 
                     color='secondary' 
                     total={Math.ceil(users.length / rowsPerPage)} 
                     initialPage={currentPage} 
                     onChange={page => setCurrentPage(page)}
-                />
+                /> */}
             </div>            
             <Table>
                 <TableHeader>

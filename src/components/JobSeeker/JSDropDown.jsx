@@ -56,7 +56,8 @@ export default function JSDropDown(props) {
                   key={item}
                   role="menuitemradio"
                   aria-checked={item === size ? 'true' : 'false'}
-                  onClick={() => handleCheckboxClick(item)}
+                  onClick={() => props.onclick(item)} 
+                  
                   
                 >
                  

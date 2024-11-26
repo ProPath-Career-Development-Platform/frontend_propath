@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
-
+import React, { useState , useContext} from "react";
+import React, { useEffect} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
@@ -13,7 +13,7 @@ import LinearProgress from "@mui/joy/LinearProgress";
 import Button from "@mui/joy/Button";
 import Divider from "@mui/joy/Divider";
 import Avatar from "@mui/joy/Avatar";
-import seba from '/seba.jpg';
+import seba from "/seba.jpg";
 
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -34,11 +34,16 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import GroupsIcon from "@mui/icons-material/Groups";
 
 import Typography from "@mui/joy/Typography";
+import UserContext from "../../utils/userContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 console.log("Current pathname:", location.pathname);
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = useState(defaultExpanded);
+ 
   return (
     <>
       {renderToggle({ open, setOpen })}
@@ -60,13 +65,42 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 
 function JobSeekerSideBar() {
 
+  const [userDetails, setUserDetails] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getUserDetails`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching user details: ", error);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+
   return (
     <>
       <Box
         sx={{
           minHeight: 0,
           overflow: "hidden auto",
-          flexGrow:1,
+          flexGrow: 1,
           display: "flex",
           flexDirection: "column",
           [`& .${listItemButtonClasses.root}`]: {
@@ -83,7 +117,6 @@ function JobSeekerSideBar() {
             "--ListItem-radius": (theme) => theme.vars.radius.sm,
           }}
         >
-
           <ListItem>
             <ListItemButton
               component="a"
@@ -110,7 +143,6 @@ function JobSeekerSideBar() {
             </ListItemButton>
           </ListItem>
 
-          
           <ListItem>
             <ListItemButton
               component="a"
@@ -163,12 +195,10 @@ function JobSeekerSideBar() {
             >
               <NotificationsActiveIcon />
               <ListItemContent>
-                <Typography level="title-sm">Courses</Typography>
+                <Typography level="title-sm">Events & Meetups</Typography>
               </ListItemContent>
-             
             </ListItemButton>
           </ListItem>
-          
 
           <ListItem>
             <ListItemButton
@@ -183,7 +213,7 @@ function JobSeekerSideBar() {
             </ListItemButton>
           </ListItem>
         </List>
-
+          
         {/* <Card
           invertedColors
           variant="soft"
@@ -209,26 +239,20 @@ function JobSeekerSideBar() {
             Upgrade plan
           </Button>
         </Card> */}
-    </Box>
-    <Divider />
-    <Box sx={{ display: "flex", gap: 1, alignItems: "center"}}>
-        <Avatar
-          variant="outlined"
-          size="sm"
-          src={seba}
-        />
+      </Box>
+      <Divider />
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <Avatar variant="outlined" size="sm" src={seba} />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Santhush F.</Typography>
-          <Typography level="body-xs">Santhush@gmail.com</Typography>
+          <Typography level="title-sm">{userDetails?.user?.name}</Typography>
+          <Typography level="body-xs">{userDetails?.user?.email}</Typography>
         </Box>
-        <IconButton size="sm" variant="plain" color="neutral">
+
+        <IconButton size="sm" variant="plain" color="neutral" onClick={handleLogout}>
+
           <LogoutRoundedIcon />
         </IconButton>
-    </Box>
-     
-      
-     
-     
+      </Box>
     </>
   );
 }
