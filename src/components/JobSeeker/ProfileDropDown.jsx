@@ -18,6 +18,11 @@ const ProfileDropdown = () => {
     navigate('/JobSeeker/Profile/' )
 }
 
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  navigate("/login");
+};
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsOpen(false);
@@ -51,11 +56,11 @@ const ProfileDropdown = () => {
             </li>
             <li className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
               <SettingsIcon className="mr-2 text-gray-500 dark:text-gray-200" />
-              <a onClick= {applyHandleChange} className="block text-gray-800 dark:text-gray-200 hover:cursor-pointer">Settings</a>
+              <a onClick= {applyHandleChange} className="block text-gray-800 dark:text-gray-200 hover:cursor-pointer">Edit</a>
             </li>
             <li className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
               <ExitToAppIcon className="mr-2 text-gray-500 dark:text-gray-200" />
-              <a href="#" className="block text-gray-800 dark:text-gray-200">Logout</a>
+              <a onClick={handleLogout} className="block text-gray-800 dark:text-gray-200">Logout</a>
             </li>
           </ul>
         </div>

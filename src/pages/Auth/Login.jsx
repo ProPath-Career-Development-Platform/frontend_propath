@@ -125,7 +125,6 @@ function Login() {
 
   return (
     <>
-    <JobNav/>
     <div className="flex items-center justify-center w-full h-screen overflow-hidden bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200">
       <div className="flex items-center justify-center w-full h-full lg:w-1/2">
         <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-violet-100 ">
