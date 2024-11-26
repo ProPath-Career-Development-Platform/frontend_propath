@@ -210,7 +210,7 @@ const AppliedJobs = () => {
                       <img
                         src={company?.logoImg || ""}
                         alt={job.job?.jobTitle || "Job"}
-                        style={{ width: 66, height: 66, borderRadius: 28 }}
+                        style={{ width: 56, height: 56, borderRadius: 48 }}
                       />
                       <Box>
                         <Typography>
@@ -245,23 +245,23 @@ const AppliedJobs = () => {
                   </td>
                   <td>{new Date(job.appliedDate).toLocaleDateString()}</td>
                   <td>
-                    {job.status === "active" ? (
+                    {job.status === "selected" ? (
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
                       >
-                        <CheckCircleOutlineIcon color="success" /> Active
+                        <CheckCircleOutlineIcon color="success" /> Selected
+                      </Box>
+                    ) : job.status === "preSelected" ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <WarningAmberIcon color="success" /> Pre Selected
                       </Box>
                     ) : job.status === "pending" ? (
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
                       >
                         <WarningAmberIcon color="warning" /> Pending
-                      </Box>
-                    ) : job.status === "rejected" ? (
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                      >
-                        <CancelIcon color="error" /> Rejected
                       </Box>
                     ) : (
                       <Box
