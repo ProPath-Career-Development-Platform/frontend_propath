@@ -28,7 +28,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Snackbar from '@mui/joy/Snackbar';
 
 
-const token = localStorage.getItem('token');
+//const token = localStorage.getItem('token');
 
 
 
@@ -147,19 +147,24 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
         // Ensure selectedApplicantIds is not empty
         if (selectedIds.length === 0) return;
 
-        // Prepare a request to fetch details for all selected applicants //use post instead of get beacuse we pass lot of ids
-        const response = await axios.post("http://localhost:8080/jobprovider/applicant/selected", 
-          selectedIds,
+        const payload = {
+          ids: selectedIds,
+          jobId: jobId,
+        };
+    
+        const response = await axios.post(
+          "http://localhost:8080/jobprovider/applicant/selected",
+          payload,
           {
-          headers: {
-            Authorization: `Bearer ${token}`
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        }
         );
+    
         setApplicantDetails(response.data);
-        
       } catch (error) {
-        console.error('Error fetching applicant details:', error);
+        console.error("Error fetching applicant details:", error);
       }
     };
 
@@ -261,7 +266,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
              
                  <Avatar
                     size='lg'
-                    src={`https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg`}
+                    src={applicantDetails.proUrl}
                     
                   /> 
                 

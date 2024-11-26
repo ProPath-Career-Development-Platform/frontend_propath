@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, Tooltip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, Tooltip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure} from "@nextui-org/react";
 import { FaRegEye } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
+import { IoMdSearch } from "react-icons/io";
 import { getToken } from '../../pages/Auth/Auth';
 
 const CompanyTable = () => {
@@ -30,7 +31,9 @@ const CompanyTable = () => {
         return response.json();
       })
       .then(data => {
-        setCompanies(data);
+        const approvedCompanies = data.filter(company => company.status === 'Approved');
+        console.log(approvedCompanies);
+        setCompanies(approvedCompanies);
       })
       .catch(error => {
         console.log('Error fetching companies:', error);
@@ -47,12 +50,25 @@ const CompanyTable = () => {
     <div className="flex flex-col gap-3 my-16">
       <div className='flex justify-between'>
         <h1 className='font-bold text-xl pb-3'>Registered Companies</h1>
-        <Pagination 
+        <Input
+          classNames={{
+              base: "max-w-full sm:max-w-[20rem] h-9",
+              mainWrapper: "h-full",
+              input: "text-small",
+              inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+          }}
+          placeholder="Type to search..."
+          size="sm"
+          startContent={<IoMdSearch size={20} />}
+          type="search"
+        />
+        <Pagination total={5} color='secondary' initialPage={1} />
+        {/* <Pagination 
           color='secondary' 
           total={Math.ceil(companies.length / rowsPerPage)} 
           initialPage={currentPage} 
           onChange={page => setCurrentPage(page)}
-        />
+        /> */}
       </div>
       <Table>
         <TableHeader>

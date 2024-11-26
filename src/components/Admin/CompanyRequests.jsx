@@ -76,16 +76,17 @@ const CompanyRequests = () => {
 
   return (
     <Card>
-        <CardBody className='px-4 pt-6 pb-3' style={{height: '450px'}}>
-            <div className="flex flex-col gap-3">
+        <CardBody className='px-4 pt-6' style={{height: '450px'}}>
+            <div className="flex flex-col gap-5">
                 <div className='flex justify-between'>
                     <h1 className='font-bold text-xl pl-4 pb-3'>New Company Requests</h1>  
-                    <Pagination 
+                    <Pagination total={3} color='secondary' initialPage={1} />
+                    {/* <Pagination 
                         color='secondary' 
                         total={Math.ceil(requests.length / rowsPerPage)} 
                         initialPage={currentPage} 
                         onChange={page => setCurrentPage(page)}
-                    />    
+                    />     */}
                 </div>        
                 <Table>
                     <TableHeader>

@@ -40,11 +40,29 @@ import FilterButton from '../../../components/jobprovider/dashboard/filterButton
 
 import RadioButton from '../../../components/jobprovider/dashboard/RadioButton';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
 function MeetUp() {
 
   const location = useLocation();
 
   const [snackOpen, setSnackOpen] = React.useState(false);
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
 
   const handleCloseSnackbar = () => {
@@ -488,6 +506,8 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
       </Snackbar>
     </React.Fragment>
 
+    
+    <PaymentModel open={paymentOpen} />
 
           </Box>
 

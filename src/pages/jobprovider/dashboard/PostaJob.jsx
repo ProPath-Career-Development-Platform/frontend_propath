@@ -42,6 +42,10 @@ import "survey-creator-core/survey-creator-core.css";
 import { useNavigate } from 'react-router-dom';
 import { generateQuestions } from '../../../services/generativeAi';
 
+import {checkUserSubscription} from '../../../utils/checkUserSubcription';
+import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+
+
 
 
 const formatDate = (date) => {
@@ -78,6 +82,21 @@ const NumericFormatAdapter = React.forwardRef(
 
 
 const Dashboard = () => {
+
+  const [paymentOpen,setPaymentOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    
+    const verifySubscription = async () => {
+      const isSubscribed = await checkUserSubscription();
+
+      console.log(isSubscribed);
+
+      setPaymentOpen(isSubscribed);
+    };
+
+    verifySubscription();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -120,6 +139,28 @@ const Dashboard = () => {
    const[text,setText] = React.useState('');
    const [emptyDescription, setEmptyDescription] = React.useState(true);
    const [response, setResponse] = React.useState(false);
+   const[limit,setLimit] = React.useState([]);
+   const jwtToken = localStorage.getItem('token');
+   
+
+   //check-plan-before
+   React.useEffect(() => {
+
+    //http://localhost:8080/jobprovider/plan-limits-check
+
+    axios.get('http://localhost:8080/jobprovider/plan-limits-check', {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((response) => {
+      setLimit(response.data);
+      console.log(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+
+  }, []);
+
 
 
   
@@ -188,6 +229,8 @@ const Dashboard = () => {
   
     // Generate questions based on the job title
     const questionBank = await generateQuestions(jobTitle);
+
+    console.log(questionBank);
   
     // Check if the creator is initialized
     if (creator === undefined) {
@@ -391,15 +434,11 @@ const Dashboard = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const plan = 'basic'; // Check if user is on free plan
-    const postCount = 0; // Check if user has reached the maximum number of posts allowed
+   
 
-    if (plan === 'basic' && postCount >= 1) {
+    if (limit.EXCEED_SERVICES.job ==='exceed') {
       setOpen(true);
-    }else if (plan === 'standard' && postCount >= 3) {
-      setOpen(true);
-    }else if (plan === 'premium' && postCount >= 6) {
-      setOpen(true);
+    
     }else{
 
       const validationErrors = validateForm();
@@ -524,7 +563,7 @@ const Dashboard = () => {
       ...prev,
       description: editor.getHTML(),
     }));
-    console.log(editor.getHTML());
+   // console.log(editor.getHTML());
   };
 
 
@@ -1170,7 +1209,7 @@ const Dashboard = () => {
                   </Snackbar>
                 </React.Fragment>
 
-                
+                <PaymentModel open={paymentOpen} />
           </Box>
 
   )
