@@ -74,8 +74,10 @@ import ProfessionalMemberships from "../pages/landingPage/ProfessionalMembership
 import EmployerSite from "../pages/landingPage/EmployerSite";
 
 //security
-import ProtectedRoute from "../components/ProtectedRoute";
-import AdminLayout from "../layout/AdminLayout";
+
+import  ProtectedRoute  from "../components/ProtectedRoute";
+import AdminLayout from '../layout/AdminLayout';
+import Event from '../pages/jobseeker/event';
 
 const router = createBrowserRouter([
   {
@@ -313,6 +315,8 @@ const router = createBrowserRouter([
       },
 
       {
+        path: "JobDetails/:id",
+        element: <JobDetail />,
         path: "JobDetails/:jobId",
         element: <JobDetail />,
       },
@@ -339,6 +343,13 @@ const router = createBrowserRouter([
         path: "appliedcard",
         element: <AppliedCard />,
       },
+
+
+      {
+        path:"event",
+        element:<Event/>
+      }
+
     ],
   },
 

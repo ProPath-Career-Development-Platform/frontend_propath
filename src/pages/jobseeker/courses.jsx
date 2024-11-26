@@ -1,4 +1,4 @@
-import React , {useState} from 'react'
+import React , {useEffect, useState} from 'react'
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -25,7 +25,7 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import Divider from '@mui/joy/Divider';
-
+import axios from 'axios';
 
 import Navbar1 from '../../components/navbar/Navbar1';
 import JSCard from '../../components/JobSeeker/card';
@@ -48,6 +48,7 @@ import AdvancedFilter from '../../components/JobSeeker/advancedfilter/advancedfi
 import CourseCard from '../../components/JobSeeker/coursecard';
 import { useLocation } from 'react-router-dom';
 import Pagination from '../../components/JobSeeker/pagination';
+import { getToken } from '../Auth/Auth';
 
 const cardData = [
   { title: 'UI/UX Design Fundamentals', content: ['User Interface Design', 'User Experience Design'], location: 'Online', company: 'ABC Design' , img: '/ml2.png' , slots: '5' },
@@ -85,7 +86,7 @@ const Courses = () => {
   const pageLimit = 8;
   const [pagePeople, setPagePeople] = useState([]);
   const [page, setPage] = useState(12);
-  
+  const [courseList,setCourseList] = useState([]);
 
   const handlePageChange = (event, newValue) => {
     const newPage = 12// Extract the number from the selected value
@@ -103,13 +104,42 @@ const Courses = () => {
   };
   
   const [PageNumber , setPageNumber] = useState(0)
-  const total = Math.floor(cardData.length/ Number(selectedSize))
+  const total = Math.floor(courseList.length/ Number(selectedSize))
 
   const getValuefromChild = (value)=> {
 
     setPageNumber( value)
 
   }
+
+   
+  useEffect(() => {
+    const fetchData = async () => {
+      let res = await axios.get('http://localhost:8080/jobseeker/getFullEventDetails', {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include the token in the headers
+        },
+      }).then((response) => {
+      
+       setCourseList(response.data )
+       console.log(courseList)
+      // Store the response data in state
+       
+        
+        // Log the response data
+      }).catch((error) => {
+       
+      
+  
+     
+      });
+    }
+    
+    fetchData();
+    const interval = setInterval(fetchData,5000)
+    return () => clearInterval(interval);
+    console.log(message)
+  }, []);
   return (
 
     
@@ -156,11 +186,11 @@ const Courses = () => {
                     }}
                       >
                         <Typography level="h2" component="h1">
-                          Home
+                          Events & Meetups
                         </Typography> 
                       
                         <Box sx={{ display: 'flex' }}>
-                            <JSSearch/>
+                            {/* <JSSearch/> */}
                             <Alert />
                             <ProfileDropdown />
                             {/* <AdvancedFilter/> */}
@@ -183,13 +213,13 @@ const Courses = () => {
                     }}
                       >
                         
-                        <Box sx={{ display: 'flex', gap : 2  }}>
-                           <JSDropDown name = {"Job Type "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1' />
-                           <JSDropDown name = {"Modality "} sizes = {['Inoffice', 'Remote'  ]} proptype = '1'/>
-                           <JSDropDown name = {"Job Type "} sizes = {['Srilanka', 'Bangladesh' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '1'/>
-                           <JSDropDown name = {"Salary "} sizes = {['Fulltime', 'Contract' , 'Internship' , 'PartTime' , 'Casual'    ]} proptype = '0'/> 
-                         
-                        </Box>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <JSDropDown name={"Course Type"} sizes={['Full Course', 'Short Course', 'Workshop', 'Seminar']} proptype='1' />
+                        <JSDropDown name={"Level"} sizes={['Beginner', 'Intermediate', 'Advanced']} proptype='1' />
+                        <JSDropDown name={"Location"} sizes={['Online', 'On-Campus', 'Hybrid']} proptype='1' />
+                        <JSDropDown name={"Duration"} sizes={['1 Week', '1 Month', '3 Months', '6 Months', '1 Year']} proptype='0' />
+                      </Box>
+
                         <Box
                               sx={{
                                         display: 'flex',
@@ -261,10 +291,25 @@ const Courses = () => {
                             
                           }}
                         >
-                          {cardData.slice(PageNumber* selectedSize,PageNumber * selectedSize + selectedSize).map((card, index) => (
-                            <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img={card.img} slot = {card.slots}/>
+                         {courseList
+                          .slice(PageNumber * Number(selectedSize), PageNumber * Number(selectedSize) + Number(selectedSize))
+                          .map((course, index) => (
+                            <CourseCard
+                              key={index} // Fallback key for safety
+                              title={course?.title || "No Title"}
+                              content={course?.keyWords || []}
+                              location={course?.location || "Unknown"}
+                              company={course?.user?.username|| "Unknown"}
+                              type={type || 0}
+                              img={course?.banner || ""}
+                              slot={course?.currentParticipants || 0}
+                              maxslots={course?.maxParticipant || 0}
+                              id={course?.id}
+                            />
                           ))}
-                          
+
+
+
                         
                       </Box>
                       
@@ -282,8 +327,8 @@ const Courses = () => {
                            
                          }}
                        >
-                         {cardData.slice(0,selectedSize).map((card, index) => (
-                           <CourseCard key={index} title={card.title} content={card.content} location={card.location} company={card.company} type = {type} img={card.img} slot = {card.slots}/>
+                         {cardData?.slice(0,selectedSize).map((card, index) => (
+                           <CourseCard key={index} id= {card?.id} title={card?.title} content={card?.content} location={card?.location} company={card?.company} type = {type} img={card?.img} slot = {card?.slots}/>
                          ))}
                          
                         

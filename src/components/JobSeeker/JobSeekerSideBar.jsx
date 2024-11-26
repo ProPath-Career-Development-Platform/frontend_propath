@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState , useContext} from "react";
+import React, { useEffect} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
@@ -34,12 +34,16 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import GroupsIcon from "@mui/icons-material/Groups";
 
 import Typography from "@mui/joy/Typography";
+import UserContext from "../../utils/userContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 
 console.log("Current pathname:", location.pathname);
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = useState(defaultExpanded);
+ 
   return (
     <>
       {renderToggle({ open, setOpen })}
@@ -60,6 +64,7 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 }
 
 function JobSeekerSideBar() {
+
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
 
@@ -87,6 +92,7 @@ function JobSeekerSideBar() {
     localStorage.removeItem("token");
     navigate("/login");
   };
+
 
   return (
     <>
@@ -189,7 +195,7 @@ function JobSeekerSideBar() {
             >
               <NotificationsActiveIcon />
               <ListItemContent>
-                <Typography level="title-sm">Courses</Typography>
+                <Typography level="title-sm">Events & Meetups</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
@@ -207,7 +213,7 @@ function JobSeekerSideBar() {
             </ListItemButton>
           </ListItem>
         </List>
-
+          
         {/* <Card
           invertedColors
           variant="soft"
@@ -241,7 +247,9 @@ function JobSeekerSideBar() {
           <Typography level="title-sm">{userDetails?.user?.name}</Typography>
           <Typography level="body-xs">{userDetails?.user?.email}</Typography>
         </Box>
+
         <IconButton size="sm" variant="plain" color="neutral" onClick={handleLogout}>
+
           <LogoutRoundedIcon />
         </IconButton>
       </Box>
