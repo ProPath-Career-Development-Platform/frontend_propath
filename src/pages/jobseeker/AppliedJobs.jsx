@@ -19,7 +19,8 @@ import {
 import Divider from "@mui/joy/Divider";
 import axios from "axios";
 import BusinessIcon from "@mui/icons-material/Business";
-import CancelIcon from '@mui/icons-material/Cancel';
+import CancelIcon from "@mui/icons-material/Cancel";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const AppliedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -185,9 +186,9 @@ const AppliedJobs = () => {
           <thead>
             <tr>
               <th>Job</th>
-              <th>Date Applied</th>
               <th>Status</th>
               <th>Action</th>
+              <th>Schedule the Interview</th>
             </tr>
           </thead>
           <tbody>
@@ -243,7 +244,7 @@ const AppliedJobs = () => {
                       </Box>
                     </Box>
                   </td>
-                  <td>{new Date(job.appliedDate).toLocaleDateString()}</td>
+                  {/* <td>{new Date(job.appliedDate).toLocaleDateString()}</td> */}
                   <td>
                     {job.status === "selected" ? (
                       <Box
@@ -273,12 +274,21 @@ const AppliedJobs = () => {
                   </td>
                   <td>
                     <Button
-                      color="primary"
-                      variant="solid"
+                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }} 
+                      variant="contained"
                       size="md"
                       onClick={() => window.open(job.cv, "_blank")}
                     >
-                      View CV
+                      View Your CV
+                    </Button>
+                  </td>
+                  <td>
+                    <Button 
+                      sx={{ backgroundColor: "#5D3FD3", color: "#e7e7e7" }} 
+                      variant="contained"
+                      size="md"  
+                    >
+                      Calendar
                     </Button>
                   </td>
                 </tr>

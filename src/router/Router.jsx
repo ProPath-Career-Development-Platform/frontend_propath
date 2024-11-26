@@ -49,7 +49,7 @@ import JsAppliedJobs from "../pages/jobseeker/AppliedJobs";
 import JsFavorites from "../pages/jobseeker/Favorites";
 import JsJobAlert from "../pages/jobseeker/JobAlert";
 import TopNavBar from "../components/JobSeeker/TopNavBar";
-import Meetingview from "../components/JobSeeker/meetingview";
+import AppliedCard from "../components/JobSeeker/appliedcard";
 import Navbar1 from "../components/navbar/Navbar1";
 import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
@@ -336,8 +336,8 @@ const router = createBrowserRouter([
         element: <JobScore />,
       },
       {
-        path: "meetingview",
-        element: <Meetingview />,
+        path: "appliedcard",
+        element: <AppliedCard />,
       },
     ],
   },
