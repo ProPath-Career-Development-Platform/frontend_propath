@@ -21,6 +21,9 @@ import axios from "axios";
 import BusinessIcon from "@mui/icons-material/Business";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import Meetingview from "../../components/JobSeeker/meetingview";
+import ReactDOM from "react-dom";
 
 const AppliedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -274,19 +277,62 @@ const AppliedJobs = () => {
                   </td>
                   <td>
                     <Button
-                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }} 
+                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }}
                       variant="contained"
                       size="md"
                       onClick={() => window.open(job.cv, "_blank")}
+                      startDecorator={<OpenInNew />}
                     >
                       View Your CV
                     </Button>
                   </td>
                   <td>
-                    <Button 
-                      sx={{ backgroundColor: "#5D3FD3", color: "#e7e7e7" }} 
+                    <Button
+                      sx={{
+                        backgroundColor:
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                            ? "#5D3FD3"
+                            : "#E0E0E0",
+                        color:
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                            ? "#e7e7e7"
+                            : "#A0A0A0",
+                        cursor:
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                            ? "pointer"
+                            : "not-allowed",
+                      }}
                       variant="contained"
-                      size="md"  
+                      size="md"
+                      disabled={
+                        !(
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                        )
+                      }
+                      onClick={() => {
+                        if (
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                        ) {
+                          const rootElement = document.createElement("div");
+                          rootElement.id = "calendar-root";
+                          document.body.appendChild(rootElement);
+
+                          const root = ReactDOM.createRoot(rootElement); // Use createRoot instead of render
+                          const closeModal = () => {
+                            root.unmount(); // Clean up the component
+                            document.body.removeChild(rootElement);
+                          };
+
+                          root.render(
+                            <Meetingview status={true} callback={closeModal} />
+                          );
+                        }
+                      }}
                     >
                       Calendar
                     </Button>

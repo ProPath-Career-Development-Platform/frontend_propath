@@ -49,8 +49,11 @@ export default function Meetingview({ status, callback }) {
     <Box>
       {num == 1 && (
         <Modal
-          open={status}
-          onClose={() => setOpen(false)}
+          open={open} // Ensure `open` state is used
+          onClose={() => {
+            setOpen(false);
+            callback(); // Trigger callback to close dynamically created root
+          }}
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -155,6 +158,7 @@ export default function Meetingview({ status, callback }) {
               >
                 {date.slice(datenum, datenum + 4).map((item, index) => (
                   <Button
+                    key={`date-${index}`}
                     onClick={() => {
                       setSelectedDate(index), setSelectedTime(-1);
                     }}
@@ -225,6 +229,7 @@ export default function Meetingview({ status, callback }) {
                   >
                     {time.map((item, index) => (
                       <Button
+                        key={`time-${index}`}
                         onClick={() => {
                           setSelectedTime(index);
                         }}
