@@ -24,6 +24,7 @@ import ModalClose from "@mui/joy/ModalClose";
 import Modal from "@mui/joy/Modal";
 import LocationOn from "@mui/icons-material/LocationOn";
 import Interviewcart from "./interviewcart";
+import axios from "axios";
 
 export default function Meetingview({ status, callback }) {
   const time = ["7.30am", "8.30am", "9.30am", "10.30am", "11.30am"];
@@ -41,9 +42,89 @@ export default function Meetingview({ status, callback }) {
   const [datenum, setDatenum] = useState(0);
   const [open, setOpen] = useState(status);
   const [num, setNum] = useState(1);
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const [companyDetails, setCompanyDetails] = useState([]);
   useEffect(() => {
     setOpen(status);
   }, [status]);
+
+  // Fetch User Details
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getUserDetails`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching user details: ", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  // Fetch Applied Jobs
+  useEffect(() => {
+    if (!userDetails?.user?.id) return; // Wait until userDetails is available
+
+    const fetchAppliedJobs = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/applied-jobs/${userDetails.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAppliedJobs(response.data);
+      } catch (error) {
+        console.error("Error fetching applied jobs: ", error);
+      }
+    };
+
+    fetchAppliedJobs();
+  }, [userDetails]);
+
+  useEffect(() => {
+    if (!appliedJobs || appliedJobs.length === 0) return;
+
+    const fetchCompanyDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const jobIds = appliedJobs.map((job) => job.job?.id).filter(Boolean);
+
+        const responses = await Promise.all(
+          jobIds.map((jobId) =>
+            axios.get(
+              `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+          )
+        );
+
+        const companyData = responses.map((res) => res.data);
+        setCompanyDetails(companyData);
+      } catch (error) {
+        console.error("Error fetching company details: ", error);
+      }
+    };
+
+    fetchCompanyDetails();
+  }, [appliedJobs]);
 
   return (
     <Box>
@@ -98,9 +179,31 @@ export default function Meetingview({ status, callback }) {
                 }}
                 level="body-sm"
               >
-                {" "}
-                <LocationOn></LocationOn>4th floor,Sysco Labs, Colombo{" "}
+                <LocationOn />
+                {[
+                  ...new Set(
+                    appliedJobs.map((job) => {
+                      const jobProviderId = job.job?.user?.id;
+                      const company = companyDetails.find(
+                        (company) => company.user?.id === jobProviderId
+                      );
+                      return company?.location; // Collecting all locations
+                    })
+                  ),
+                ].map((location, index) => (
+                  <Typography
+                    key={`location-${index}`}
+                    sx={{
+                      marginLeft: "7px",
+                      fontWeight: 500,
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {location}
+                  </Typography>
+                ))}
               </Typography>
+
               <hr />
 
               <Box

@@ -23,7 +23,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import Meetingview from "../../components/JobSeeker/meetingview";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 
 const AppliedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
