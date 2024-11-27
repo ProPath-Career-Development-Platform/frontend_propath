@@ -7,7 +7,7 @@ import {Button, Link} from "@nextui-org/react";
 import ApplyATS from './applyATS';
 
 const Banner = () => {
-  const [open1,setOpen1] = useState(0)
+  const [open1,setOpen1] = useState(false)
   return (
 
     <div className='relative flex'>

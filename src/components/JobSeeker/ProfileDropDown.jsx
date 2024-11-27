@@ -4,6 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Button, Typography } from '@mui/joy';
 import { useNavigate } from 'react-router-dom';
+import seba from '/seba.jpg'
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -17,6 +18,11 @@ const ProfileDropdown = () => {
     event.preventDefault()
     navigate('/JobSeeker/Profile/' )
 }
+
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  navigate("/login");
+};
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -37,9 +43,9 @@ const ProfileDropdown = () => {
     <div className="relative ml-4" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="relative flex items-center p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+        className="relative flex items-center p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
       >
-        <AccountCircleIcon sx={{height:'24px' , width:'24px'}}/>
+        <img src={seba} alt="icon" style={{ height: '35px', width: '55px' , borderRadius: '50%'}} />
       </button>
 
       {isOpen && (
@@ -51,11 +57,11 @@ const ProfileDropdown = () => {
             </li>
             <li className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
               <SettingsIcon className="mr-2 text-gray-500 dark:text-gray-200" />
-              <a onClick= {applyHandleChange} className="block text-gray-800 dark:text-gray-200 hover:cursor-pointer">Settings</a>
+              <a onClick= {applyHandleChange} className="block text-gray-800 dark:text-gray-200 hover:cursor-pointer">Edit</a>
             </li>
             <li className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
               <ExitToAppIcon className="mr-2 text-gray-500 dark:text-gray-200" />
-              <a href="#" className="block text-gray-800 dark:text-gray-200">Logout</a>
+              <a onClick={handleLogout} className="block text-gray-800 dark:text-gray-200">Logout</a>
             </li>
           </ul>
         </div>
