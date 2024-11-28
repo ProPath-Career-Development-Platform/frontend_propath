@@ -26,29 +26,19 @@ import LocationOn from "@mui/icons-material/LocationOn";
 import Interviewcart from "./interviewcart";
 import axios from "axios";
 
-export default function Meetingview({ status, callback }) {
-  const time = ["7.30am", "8.30am", "9.30am", "10.30am", "11.30am"];
-  const date = [
-    ["Mon", "11", "7 slots"],
-    ["Tue", "12", "7 slots"],
-    ["Wed", "13", "7 slots"],
-    ["Thu", "14", "7 slots"],
-    ["Fri", "15", "7 slots"],
-    ["Sat", "16", "7 slots"],
-    ["Sun", "17", "7 slots"],
-  ];
-  const [selectedDate, setSelectedDate] = useState(-1);
-  const [selectedTime, setSelectedTime] = useState(-1);
-  const [datenum, setDatenum] = useState(0);
+export default function Meetingview({ status, callback, jobId, location }) {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [open, setOpen] = useState(status);
-  const [num, setNum] = useState(1);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
+  const [selectedInterviewId, setSelectedInterviewId] = useState(null);
   const [companyDetails, setCompanyDetails] = useState([]);
+  const [interviewDetails, setInterviewDetails] = useState([]);
+  const [updateInterview, setUpdateInterview] = useState(false);
   useEffect(() => {
     setOpen(status);
   }, [status]);
-
   // Fetch User Details
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -126,253 +116,219 @@ export default function Meetingview({ status, callback }) {
     fetchCompanyDetails();
   }, [appliedJobs]);
 
+  useEffect(() => {
+    const fetchInterviewDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/interviews/${jobId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setInterviewDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching interview details: ", error);
+      }
+    };
+
+    fetchInterviewDetails();
+  }, [jobId]);
+
+  const [availableDates, setAvailableDates] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // Extract unique dates and time slots dynamically
+  useEffect(() => {
+    const dates = [
+      ...new Set(interviewDetails.map((interview) => interview.interviewDate)),
+    ];
+    setAvailableDates(dates);
+
+    // Pre-select the first available date if dates exist
+    if (dates.length > 0) {
+      setSelectedDate(dates[0]);
+    }
+  }, [interviewDetails]);
+
+  const formatDate = (date) => {
+    const [month, day, year] = date.split("/");
+    return `${day}/${month}/${year}`;
+  };
+
+  // Update time slots and IDs when the date changes
+  useEffect(() => {
+    if (selectedDate) {
+      const slots = interviewDetails
+        .filter((interview) => interview.interviewDate === selectedDate)
+        .flatMap((interview) =>
+          interview.timeSlot.map((time) => ({ time, id: interview.id }))
+        );
+      setTimeSlots(slots);
+    }
+  }, [selectedDate, interviewDetails]);
+
+
+  const handleTimeSlotSelection = (time, id) => {
+    setSelectedTime(time);
+    setSelectedInterviewId(id);
+  };
+  const handleConfirm = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `http://localhost:8080/jobseeker/update-interview/${selectedInterviewId}`,
+        {
+          user: {
+            id: userDetails.user.id,
+          },
+          interviewDate: selectedDate,
+          timeSlot: [selectedTime], // Send the selected time in an array
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Interview confirmed: ", response.data);
+      alert("Interview successfully scheduled!");
+    } catch (error) {
+      console.error("Error confirming interview: ", error);
+      alert("Failed to schedule interview. Please try again later.");
+    }
+  };
+
   return (
     <Box>
-      {num == 1 && (
-        <Modal
-          open={open} // Ensure `open` state is used
-          onClose={() => {
-            setOpen(false);
-            callback(); // Trigger callback to close dynamically created root
-          }}
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          callback();
+        }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Card
+          variant="outlined"
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            width: "480px",
+            margin: "10px",
+            height: "auto",
+            overflow: "auto",
           }}
         >
-          <Card
-            variant="outlined"
-            sx={{
-              width: "480px",
-              margin: "10px",
-              height: "auto",
-              // to make the card resizable
-              overflow: "auto",
-            }}
-          >
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <GroupsSharpIcon sx={{ fontSize: "50px", color: "#814DDE" }} />
-              </Box>
-              <ModalClose />
-              <Typography sx={{ marginLeft: "10px" }} level="title-lg">
-                Interview Scheduler
-              </Typography>
-              <Typography
-                sx={{ marginLeft: "10px", marginTop: "10px" }}
-                level="body-sm"
-              >
-                Please select a preferred date and time
-              </Typography>
+          <CardContent>
+            <Typography sx={{ marginLeft: "10px" }} level="title-lg">
+              Interview Scheduler
+            </Typography>
+            <Typography
+              sx={{
+                marginLeft: "7px",
+                fontWeight: 500,
+                marginBottom: "10px",
+              }}
+              level="body-sm"
+            >
+              <LocationOn />
               <Typography
                 sx={{
                   marginLeft: "7px",
                   fontWeight: 500,
-                  marginBottom: "10px",
+                  marginBottom: "5px",
                 }}
-                level="body-sm"
               >
-                <LocationOn />
-                {[
-                  ...new Set(
-                    appliedJobs.map((job) => {
-                      const jobProviderId = job.job?.user?.id;
-                      const company = companyDetails.find(
-                        (company) => company.user?.id === jobProviderId
-                      );
-                      return company?.location; // Collecting all locations
-                    })
-                  ),
-                ].map((location, index) => (
-                  <Typography
-                    key={`location-${index}`}
-                    sx={{
-                      marginLeft: "7px",
-                      fontWeight: 500,
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {location}
-                  </Typography>
-                ))}
+                {location}
               </Typography>
+            </Typography>
+            <Typography level="body-sm" sx={{ marginTop: "10px" }}>
+              Please select a preferred date and time for your interview.
+            </Typography>
 
-              <hr />
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  margin: "10px",
-                }}
+            <Box sx={{ marginTop: "20px" }}>
+              {/* Date Dropdown */}
+              <Select
+                sx={{ width: "200px" }}
+                value={selectedDate}
+                onChange={(event, newValue) => setSelectedDate(newValue)}
+                indicator={<KeyboardArrowDown />}
               >
-                <Select
+                {availableDates.map((date, index) => (
+                  <Option key={index} value={date}>
+                    {formatDate(date)}
+                  </Option>
+                ))}
+              </Select>
+            </Box>
+
+            {selectedDate && (
+              <Box sx={{ marginTop: "20px" }}>
+                <Typography level="body-sm">Available Time Slots:</Typography>
+                <Box
                   sx={{
-                    width: "200px",
-                  }}
-                  defaultValue="September 2023"
-                  indicator={<KeyboardArrowDown />}
-                  slotProps={{
-                    button: {
-                      id: "select-field-demo-button",
-                      "aria-labelledby":
-                        "select-field-demo-label select-field-demo-button",
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "repeat(2, 1fr)",
+                      sm: "repeat(3, 1fr)",
                     },
+                    gap: 2,
+                    marginTop: "10px",
                   }}
                 >
-                  <Option value="September 2023">September 2023</Option>
-                  <Option value="October 2023">October 2023</Option>
-                </Select>
-                <ButtonGroup aria-label="outlined primary button group">
-                  <Button
-                    onClick={() => datenum != 0 && setDatenum(datenum - 4)}
-                  >
-                    {<KeyboardArrowLeft />}
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      datenum != date.length - 3 && setDatenum(datenum + 4)
-                    }
-                  >
-                    {<KeyboardArrowRight />}
-                  </Button>
-                </ButtonGroup>
-              </Box>
-              <Box
-                sx={{
-                  marginLeft: "10px",
-                  marginBottom: "20px",
-                  display: "grid",
-                  gridTemplateColumns: {
-                    xs: "repeat(1, 1fr)", // 1 column for extra-small screens (mobile)
-                    sm: "repeat(2, 1fr)", // 2 columns for small screens (tablet)
-                    md: "repeat(4, 1fr)", // 3 columns for medium and larger screens (desktop)
-                  },
-
-                  gap: 1,
-                }}
-              >
-                {date.slice(datenum, datenum + 4).map((item, index) => (
-                  <Button
-                    key={`date-${index}`}
-                    onClick={() => {
-                      setSelectedDate(index), setSelectedTime(-1);
-                    }}
-                    sx={{
-                      width: "100px",
-                      height: "125px",
-                      display: "flex",
-                      flexDirection: "column",
-                      backgroundColor:
-                        index == selectedDate
-                          ? "Var(--joy-palette-primary-100)"
-                          : "#fff",
-                    }}
-                    variant="outlined"
-                  >
-                    <Typography level="title-lg">{item[0]}</Typography>
-                    <Typography level="title-lg">{item[1]}</Typography>
-                    <Typography level="body-sm">{item[2]}</Typography>
-                  </Button>
-                ))}
-              </Box>
-
-              {selectedDate != -1 && (
-                <Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginBottom: "10px",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    <Chip
+                  {timeSlots.map((slot) => (
+                    <Button
+                      key={slot.id} // Use the unique id as the key
+                      onClick={() =>
+                        handleTimeSlotSelection(slot.time, slot.id)
+                      }
                       sx={{
+                        width: "130px",
                         backgroundColor:
-                          "linear-gradient(to left, #E1CBFF , #fff, 200px)",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          color: "#814DDE",
-                          width: "400px",
-                          margin: "5px",
-                        }}
-                        level="title-md"
-                      >
-                        <AccessTimeIcon
-                          sx={{ color: "#814DDE", marginRight: "5px" }}
-                        />
-                        Time Slots
-                      </Typography>
-                    </Chip>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "repeat(1, 1fr)", // 1 column for extra-small screens (mobile)
-                        sm: "repeat(2, 1fr)", // 2 columns for small screens (tablet)
-                        md: "repeat(3, 1fr)", // 3 columns for medium and larger screens (desktop)
-                      },
-
-                      gap: 1,
-                    }}
-                  >
-                    {time.map((item, index) => (
-                      <Button
-                        key={`time-${index}`}
-                        onClick={() => {
-                          setSelectedTime(index);
-                        }}
-                        sx={{
-                          width: "130px",
-                          marginLeft: "10px",
+                          selectedTime === slot.time ? "green" : "#fff",
+                        color: selectedTime === slot.time ? "#fff" : "inherit",
+                        borderColor:
+                          selectedTime === slot.time ? "green" : "gray",
+                        "&:hover": {
                           backgroundColor:
-                            index == selectedTime
-                              ? "Var(--joy-palette-primary-100)"
-                              : "#fff",
-                        }}
-                        variant="outlined"
-                      >
-                        {item}
-                      </Button>
-                    ))}
-                  </Box>
+                            selectedTime === slot.time
+                              ? "darkgreen"
+                              : "lightgray",
+                        },
+                      }}
+                      variant="outlined"
+                    >
+                      {slot.time} {/* Display the time property */}
+                    </Button>
+                  ))}
                 </Box>
-              )}
+              </Box>
+            )}
 
-              <Button
-                sx={{
-                  width: "30%",
-                  display: "flex",
-                  justifyContent: "center",
-                  marginLeft: "70%",
-                  marginTop: "20px",
-                }}
-                onClick={() => {
-                  setNum(2);
-                }}
-              >
-                Confirm
-              </Button>
-            </CardContent>
-          </Card>
-        </Modal>
-      )}
-
-      {num == 2 && <Interviewcart></Interviewcart>}
+            <Button
+              sx={{
+                marginTop: "20px",
+                width: "100%",
+              }}
+              onClick={handleConfirm}
+            >
+              Confirm
+            </Button>
+            {successMessage && (
+              <p style={{ color: "green" }}>{successMessage}</p>
+            )}
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          </CardContent>
+        </Card>
+      </Modal>
     </Box>
   );
 }

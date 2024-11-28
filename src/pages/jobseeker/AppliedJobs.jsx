@@ -30,6 +30,7 @@ const AppliedJobs = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const [companyDetails, setCompanyDetails] = useState([]);
+  const [interviewDetails, setInterviewDetails] = useState([]); // Add state for interview details
   const jobsPerPage = 7;
 
   // Calculate indexes for pagination
@@ -76,7 +77,6 @@ const AppliedJobs = () => {
             },
           }
         );
-        console.log("Applied Jobs: ", response.data);
         setAppliedJobs(response.data);
       } catch (error) {
         console.error("Error fetching applied jobs: ", error);
@@ -108,7 +108,6 @@ const AppliedJobs = () => {
         );
 
         const companyData = responses.map((res) => res.data);
-        console.log("Fetched Company Details: ", companyData);
         setCompanyDetails(companyData);
       } catch (error) {
         console.error("Error fetching company details: ", error);
@@ -122,6 +121,28 @@ const AppliedJobs = () => {
     // Reset currentPage when appliedJobs changes
     setCurrentPage(1);
   }, [appliedJobs]);
+
+  // Fetch Interview Details
+  useEffect(() => {
+    const fetchInterviewDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/selected-preselected-interviews`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setInterviewDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching interview details: ", error);
+      }
+    };
+
+    fetchInterviewDetails();
+  }, []);
 
   // Change page function
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -197,15 +218,15 @@ const AppliedJobs = () => {
           <tbody>
             {currentJobs.map((job, index) => {
               const jobProviderId = job.job?.user?.id;
-
-              console.log("Job Provider ID: ", jobProviderId);
               // Find the company that matches the job's user ID
               const company = companyDetails.find(
                 (comp) => comp?.user?.id === jobProviderId
               );
 
-              // Debugging to check if the company is being found
-              console.log("Company: ", company);
+              // Find the interview that matches the job's ID
+              // const interview = interviewDetails.find(
+              //   (interview) => interview.job?.id === job.job?.id
+              // );
 
               return (
                 <tr key={index}>
@@ -329,12 +350,19 @@ const AppliedJobs = () => {
                           };
 
                           root.render(
-                            <Meetingview status={true} callback={closeModal} />
+                            <Meetingview
+                              status={true}
+                              callback={closeModal}
+                              jobId={job?.job?.id}
+                              location={company?.location}
+                              userId={userDetails?.user?.id}
+                              // interviewId={interview?.id} 
+                            />
                           );
                         }
                       }}
                     >
-                      Calendar
+                      Schedule
                     </Button>
                   </td>
                 </tr>
