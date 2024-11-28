@@ -197,7 +197,6 @@ export default function Meetingview({ status, callback, jobId, location }) {
         }
       );
       console.log("Interview confirmed: ", response.data);
-      alert("Interview successfully scheduled!");
     } catch (error) {
       console.error("Error confirming interview: ", error);
       alert("Failed to schedule interview. Please try again later.");
@@ -323,7 +322,7 @@ export default function Meetingview({ status, callback, jobId, location }) {
               Confirm
             </Button>
             {successMessage && (
-              <p style={{ color: "green" }}>{successMessage}</p>
+              <Interviewcart />
             )}
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
           </CardContent>
