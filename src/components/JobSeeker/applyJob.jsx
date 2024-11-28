@@ -22,10 +22,16 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import ImageKit from "imagekit";
 
+// import * as pdfjsLib from 'pdfjs-dist';
+// import 'pdfjs-dist/build/pdf.worker.entry';
+import pdfjsLib from "../../../pdfConfig";
+
 const CVUploadField = ({ formData, setFormData }) => {
   const inputCvRef = useRef(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // New state for loading
+
+  const [textContent, setTextContent] = useState(''); //state for pdf extracted text
 
   const imagekit = new ImageKit({
     urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
@@ -75,9 +81,36 @@ const CVUploadField = ({ formData, setFormData }) => {
           cv: result.url,
           cvName: file.name, // Store the file name
         }));
+        extractTextFromPdf(result.url);
       }
     );
+
   };
+
+  //cv text extracted funtion
+  const extractTextFromPdf = async (pdfUrl) => {
+    try {
+        // Load the PDF document
+        const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+        const totalPages = pdf.numPages;
+        let fullText = '';
+
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+            const page = await pdf.getPage(pageNum);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            fullText += pageText + '\n';
+        }
+
+        setTextContent(fullText);
+    } catch (error) {
+        console.error('Error extracting text from PDF:', error);
+    }
+};
+
+
+
+  
 
   return (
     <FormControl>
@@ -265,6 +298,7 @@ export default function AppliedJob() {
         cv: formData.cv,
         response: JSON.stringify(surveyResults),
         email: formData.email,
+        cvText:textContent,
       };
 
       console.log("Application data:", applicationData);

@@ -1,5 +1,5 @@
 import React, { useState , useContext} from "react";
-import React, { useEffect} from "react";
+import { useEffect} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
@@ -35,7 +35,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 
 import Typography from "@mui/joy/Typography";
 import UserContext from "../../utils/userContext";
-import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 
 
