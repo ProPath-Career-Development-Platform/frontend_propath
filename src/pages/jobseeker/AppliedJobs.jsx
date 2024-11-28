@@ -21,12 +21,16 @@ import axios from "axios";
 import BusinessIcon from "@mui/icons-material/Business";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import Meetingview from "../../components/JobSeeker/meetingview";
+import ReactDOM from "react-dom/client";
 
 const AppliedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const [companyDetails, setCompanyDetails] = useState([]);
+  const [interviewDetails, setInterviewDetails] = useState([]); // Add state for interview details
   const jobsPerPage = 7;
 
   // Calculate indexes for pagination
@@ -73,7 +77,6 @@ const AppliedJobs = () => {
             },
           }
         );
-        console.log("Applied Jobs: ", response.data);
         setAppliedJobs(response.data);
       } catch (error) {
         console.error("Error fetching applied jobs: ", error);
@@ -105,7 +108,6 @@ const AppliedJobs = () => {
         );
 
         const companyData = responses.map((res) => res.data);
-        console.log("Fetched Company Details: ", companyData);
         setCompanyDetails(companyData);
       } catch (error) {
         console.error("Error fetching company details: ", error);
@@ -119,6 +121,28 @@ const AppliedJobs = () => {
     // Reset currentPage when appliedJobs changes
     setCurrentPage(1);
   }, [appliedJobs]);
+
+  // Fetch Interview Details
+  useEffect(() => {
+    const fetchInterviewDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/selected-preselected-interviews`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setInterviewDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching interview details: ", error);
+      }
+    };
+
+    fetchInterviewDetails();
+  }, []);
 
   // Change page function
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -194,15 +218,15 @@ const AppliedJobs = () => {
           <tbody>
             {currentJobs.map((job, index) => {
               const jobProviderId = job.job?.user?.id;
-
-              console.log("Job Provider ID: ", jobProviderId);
               // Find the company that matches the job's user ID
               const company = companyDetails.find(
                 (comp) => comp?.user?.id === jobProviderId
               );
 
-              // Debugging to check if the company is being found
-              console.log("Company: ", company);
+              // Find the interview that matches the job's ID
+              // const interview = interviewDetails.find(
+              //   (interview) => interview.job?.id === job.job?.id
+              // );
 
               return (
                 <tr key={index}>
@@ -274,21 +298,71 @@ const AppliedJobs = () => {
                   </td>
                   <td>
                     <Button
-                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }} 
+                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }}
                       variant="contained"
                       size="md"
                       onClick={() => window.open(job.cv, "_blank")}
+                      startDecorator={<OpenInNew />}
                     >
                       View Your CV
                     </Button>
                   </td>
                   <td>
-                    <Button 
-                      sx={{ backgroundColor: "#5D3FD3", color: "#e7e7e7" }} 
+                    <Button
+                      sx={{
+                        backgroundColor:
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                            ? "#5D3FD3"
+                            : "#E0E0E0",
+                        color:
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                            ? "#e7e7e7"
+                            : "#A0A0A0",
+                        cursor:
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                            ? "pointer"
+                            : "not-allowed",
+                      }}
                       variant="contained"
-                      size="md"  
+                      size="md"
+                      disabled={
+                        !(
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                        )
+                      }
+                      onClick={() => {
+                        if (
+                          job.status === "selected" ||
+                          job.status === "preSelected"
+                        ) {
+                          const rootElement = document.createElement("div");
+                          rootElement.id = "calendar-root";
+                          document.body.appendChild(rootElement);
+
+                          const root = ReactDOM.createRoot(rootElement); // Use createRoot instead of render
+                          const closeModal = () => {
+                            root.unmount(); // Clean up the component
+                            document.body.removeChild(rootElement);
+                          };
+
+                          root.render(
+                            <Meetingview
+                              status={true}
+                              callback={closeModal}
+                              jobId={job?.job?.id}
+                              location={company?.location}
+                              userId={userDetails?.user?.id}
+                              // interviewId={interview?.id} 
+                            />
+                          );
+                        }
+                      }}
                     >
-                      Calendar
+                      Schedule
                     </Button>
                   </td>
                 </tr>
