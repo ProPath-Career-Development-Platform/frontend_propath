@@ -321,7 +321,7 @@ const AppliedJobs = () => {
                         return (
                           <Button
                             sx={{
-                              backgroundColor: "green",
+                              backgroundColor: "#BDB5D5",
                               color: "white",
                               cursor: "not-allowed",
                             }}

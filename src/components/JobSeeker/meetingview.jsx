@@ -25,7 +25,8 @@ import Modal from "@mui/joy/Modal";
 import LocationOn from "@mui/icons-material/LocationOn";
 import Interviewcart from "./interviewcart";
 import axios from "axios";
-import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
+import { format, isBefore, isToday } from "date-fns";
 
 export default function Meetingview({
   status,
@@ -68,6 +69,10 @@ export default function Meetingview({
 
     fetchUserDetails();
   }, []);
+
+  const handleOkay = () => {
+    window.location.reload("/jobseeker/applied-jobs");
+  };
 
   // Fetch Applied Jobs
   useEffect(() => {
@@ -153,14 +158,18 @@ export default function Meetingview({
   const [confirmedDate, setConfirmedDate] = useState(null);
   const [confirmedTime, setConfirmedTime] = useState(null);
 
-  // Extract unique dates and time slots dynamically
   useEffect(() => {
+    const today = new Date();
     const dates = [
-      ...new Set(interviewDetails.map((interview) => interview.interviewDate)),
+      ...new Set(
+        interviewDetails
+          .map((interview) => interview.interviewDate)
+          .filter((date) => new Date(date) > today) // Filter out past and current dates
+      ),
     ];
     setAvailableDates(dates);
 
-    // Pre-select the first available date if dates exist
+    // Pre-select the first available future date if dates exist
     if (dates.length > 0) {
       setSelectedDate(dates[0]);
     }
@@ -272,7 +281,7 @@ export default function Meetingview({
               }}
               level="body-sm"
             >
-              < QueryBuilderIcon sx={{ color: "green" }} />
+              <QueryBuilderIcon sx={{ color: "green" }} />
               <Typography
                 sx={{
                   marginLeft: "2px",
@@ -296,7 +305,7 @@ export default function Meetingview({
                     }}
                   >
                     {interviewDetails.length > 0
-                      ? interviewDetails[0].duration + " minutes" 
+                      ? interviewDetails[0].duration + " minutes"
                       : "No duration available"}
                   </Typography>
                 </Typography>
@@ -305,24 +314,28 @@ export default function Meetingview({
             <Typography level="body-sm" sx={{ marginTop: "10px" }}>
               Please select a preferred date and time for your interview.
             </Typography>
-
             <Box sx={{ marginTop: "20px" }}>
               {/* Date Dropdown */}
-              <Select
-                sx={{ width: "200px" }}
-                value={selectedDate}
-                onChange={(event, newValue) => setSelectedDate(newValue)}
-                indicator={<KeyboardArrowDown />}
-              >
-                {availableDates.map((date, index) => (
-                  <Option key={index} value={date}>
-                    {formatDate(date)}
-                  </Option>
-                ))}
-              </Select>
+              {availableDates.length > 0 ? (
+                <Select
+                  sx={{ width: "200px" }}
+                  value={selectedDate}
+                  onChange={(event, newValue) => setSelectedDate(newValue)}
+                  indicator={<KeyboardArrowDown />}
+                >
+                  {availableDates.map((date, index) => (
+                    <Option key={index} value={date}>
+                      {formatDate(date)}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <Typography level="body-sm" sx={{ color: "red" }}>
+                  No available dates for interviews.
+                </Typography>
+              )}
             </Box>
-
-            {selectedDate && (
+            {selectedDate && availableDates.length > 0 && (
               <Box sx={{ marginTop: "20px" }}>
                 <Typography level="body-sm">Available Time Slots:</Typography>
                 <Box
@@ -382,8 +395,7 @@ export default function Meetingview({
                 </Box>
               </Box>
             )}
-
-            <Button
+            {/* <Button
               sx={{
                 marginTop: "20px",
                 width: "100%",
@@ -391,7 +403,29 @@ export default function Meetingview({
               onClick={handleConfirm}
             >
               Confirm
-            </Button>
+            </Button> */}
+            {!selectedDate || !selectedTime ? (
+              <Button
+                sx={{
+                  marginTop: "20px",
+                  width: "100%",
+                }}
+                onClick={handleOkay}
+              >
+                Okay
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  marginTop: "20px",
+                  width: "100%",
+                }}
+                onClick={handleConfirm}
+              >
+                Confirm
+              </Button>
+            )}
+            
             {successMessage && (
               <Box sx={{ marginTop: "20px" }}>
                 <Interviewcart
@@ -404,7 +438,6 @@ export default function Meetingview({
                 />
               </Box>
             )}
-
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
           </CardContent>
         </Card>
