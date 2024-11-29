@@ -27,6 +27,7 @@ import axios from 'axios';
 import Skeleton from '@mui/joy/Skeleton';
 import { loadStripe } from '@stripe/stripe-js';
 import BillTable from '../../../components/jobprovider/dashboard/BillTable';
+import { SignalCellularNullSharp } from '@mui/icons-material';
 
 function PlanAndBilling() {
 
@@ -412,14 +413,17 @@ function PlanAndBilling() {
 
       <CardContent>
         <Typography level="title-lg">Remaining Plan Benefits</Typography>
+      
         <List size="md">
           {remainingPlanFeatures.map((feature, index) => (
-            <ListItem key={index}>
-              <ListItemDecorator>
-                <BlockIcon color="danger" />
-              </ListItemDecorator>
-              {feature.text}
-            </ListItem>
+            subscription.planName === "PREMIUM" ? null : (
+              <ListItem key={index}>
+                <ListItemDecorator>
+                  <BlockIcon color="danger" />
+                </ListItemDecorator>
+                {feature.text}
+              </ListItem>
+            )
           ))}
         </List>
       </CardContent>
