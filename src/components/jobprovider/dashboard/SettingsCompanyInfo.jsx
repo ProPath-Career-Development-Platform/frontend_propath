@@ -217,7 +217,7 @@ function SettingsCompanyInfo() {
     if (Object.keys(validationErrors).length > 0) {
       setError(validationErrors);
     } else {
-      alert(JSON.stringify(formData));
+      //alert(JSON.stringify(formData));
 
       //form loading
 
