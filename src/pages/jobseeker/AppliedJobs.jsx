@@ -356,6 +356,8 @@ const AppliedJobs = () => {
                               jobId={job?.job?.id}
                               location={company?.location}
                               userId={userDetails?.user?.id}
+                              companyName= {company?.companyName}
+                              companyLogo={company?.logoImg}
                               // interviewId={interview?.id} 
                             />
                           );

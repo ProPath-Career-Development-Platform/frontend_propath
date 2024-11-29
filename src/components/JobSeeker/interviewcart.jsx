@@ -16,6 +16,7 @@ import ListItemButton from "@mui/joy/ListItemButton";
 import Home from "@mui/icons-material/Home";
 import Apps from "@mui/icons-material/Apps";
 import Chip from "@mui/joy/Chip";
+import Button from "@mui/joy/Button";
 import Divider from "@mui/joy/Divider";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { AccessTime } from "@mui/icons-material";
@@ -24,10 +25,67 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Modal from "@mui/joy/Modal";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import LocationOn from "@mui/icons-material/LocationOn";
+import { useNavigate } from "react-router-dom";
 
-export default function Interviewcart() {
+const getDayOfWeek = (dateString) => {
+  const date = new Date(dateString);
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return daysOfWeek[date.getDay()];
+};
+
+const formatDate = (date) => {
+  const [month, day, year] = date.split("/");
+  return `${day}/${month}/${year}`;
+};
+
+export default function Interviewcart({
+  jobId,
+  companyName,
+  companyLogo,
+  companyLocation,
+  selectedDate,
+  selectedTime,
+}) {
   const [open, setOpen] = React.useState(true);
-  const [position, setPosition] = React.useState(50);
+  const [interviewDetails, setInterviewDetails] = useState([]);
+  const dayOfWeek = getDayOfWeek(selectedDate);
+
+  useEffect(() => {
+    const fetchInterviewDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/interviews/${jobId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setInterviewDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching interview details: ", error);
+      }
+    };
+
+    fetchInterviewDetails();
+  }, [jobId]);
+
+  const handleClose = () => {
+    window.location.href = "/jobseeker/applied-jobs";
+  };
+
   return (
     <Modal
       open={open}
@@ -75,7 +133,7 @@ export default function Interviewcart() {
             <CheckCircleOutlineIcon sx={{ color: "green", fontSize: "50px" }} />
           </Box>
           <Typography level="title-lg" sx={{ textAlign: "center" }}>
-            Thank you! your meeting is confirmed.
+            Thank you! Your interview time slot is confirmed
           </Typography>
           <Box sx={{ display: "flex", gap: 1, alignItem: "center" }}>
             <Chip
@@ -92,11 +150,11 @@ export default function Interviewcart() {
                 sx={{ backgroundColor: "rgb(134 239 172)", margin: "2px" }}
                 variant="soft"
               >
-                Email sent
+                Email will be sent.
               </Chip>
 
               <Chip sx={{ backgroundColor: "rgb(226 232 240)" }} variant="soft">
-                check your inbox with an email with all details!
+                Check your inbox for an email with all the details!
               </Chip>
             </Chip>
           </Box>
@@ -119,25 +177,25 @@ export default function Interviewcart() {
                 }}
               ></Box>
               <CardContent>
-                <Typography level="body-xs">You are meeting with </Typography>
+                <Typography level="body-xs">Your interview in </Typography>
                 <Typography
                   sx={{
-                    fontSize: "28px",
+                    fontSize: "20px",
                     display: "flex",
                     justifyContent: "space-between",
                   }}
                   level="title-lg"
                 >
-                  David Bromberg
-                  <Avatar src="/static/images/avatar/1.jpg" size="lg" />
+                  {companyName}
+                  <Avatar
+                    sx={{
+                      marginTop: "-20px",
+                    }}
+                    src={companyLogo}
+                    size="lg"
+                  />
                 </Typography>
                 <hr />
-                {/* <Typography level="body-sm">
-            <List
-                sx={{
-                    maxWidth: 'auto',
-                }}
-                > */}
                 <Table aria-label="basic table">
                   <tbody>
                     <tr
@@ -148,51 +206,42 @@ export default function Interviewcart() {
                         Time
                       </td>
 
-                      <td>Thursday, Sep 14th, 15:00 - 15:30 CEST</td>
+                      <td>
+                        {dayOfWeek}, {formatDate(selectedDate)}, {selectedTime}{" "}
+                        (India Standard Time - Colombo)
+                      </td>
                     </tr>
                     <tr>
                       <td>
-                        <PeopleAltIcon />
-                        Guests
+                        <LocationOn />
+                        Location
                       </td>
-                      <td>mark.twain@example.com</td>
+                      <td>{companyLocation}</td>
                     </tr>
                     <tr>
                       <td>
                         <FormatAlignLeftIcon />
                         Details
                       </td>
-                      <td>we've sent and email with your booking details</td>
+                      <td>we've sent and email with your interview details</td>
                     </tr>
                   </tbody>
                 </Table>
-                {/* <ListItem>
-                    <ListItemDecorator />
-                        <AccessTimeIcon />
-                        <Typography level="title-md">Time</Typography>
-                        Thursday, Sep 14th, 15:00 - 15:30 CEST
-                        <Divider sx={{ '--Divider-childPosition': `${position}%` }}/>
-                    </ListItem>
-                    <hr/>
-                    <ListItem>
-                        <ListItemButton>
-                        <ListItemDecorator>
-                            <Apps />
-                        </ListItemDecorator>
-                        <Typography level="title-md">Guests</Typography>
-                        mark.twain@example.com
-                        </ListItemButton>
-                    </ListItem>
-                    <hr/>
-                    <ListItem>
-                        <ListItemButton>
-                        <ListItemDecorator />
-                        <Typography level="title-md">Details</Typography>
-                          we've sent and email with your booking details
-                        </ListItemButton>
-                    </ListItem>
-                </List> */}
-                {/* </Typography> */}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    marginLeft: "9vw",
+                    width: "70px",
+                    backgroundColor: "rgb(134 239 172)",
+                    "&:hover": {
+                      backgroundColor: "#0BDA51", 
+                    },
+                  }}
+                  onClick={handleClose}
+                >
+                  Finish
+                </Button>
               </CardContent>
             </Card>
           </Typography>

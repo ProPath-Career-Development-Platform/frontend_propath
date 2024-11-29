@@ -26,7 +26,14 @@ import LocationOn from "@mui/icons-material/LocationOn";
 import Interviewcart from "./interviewcart";
 import axios from "axios";
 
-export default function Meetingview({ status, callback, jobId, location }) {
+export default function Meetingview({
+  status,
+  callback,
+  jobId,
+  location,
+  companyName,
+  companyLogo,
+}) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [open, setOpen] = useState(status);
@@ -142,6 +149,8 @@ export default function Meetingview({ status, callback, jobId, location }) {
   const [timeSlots, setTimeSlots] = useState([]);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [confirmedDate, setConfirmedDate] = useState(null);
+  const [confirmedTime, setConfirmedTime] = useState(null);
 
   // Extract unique dates and time slots dynamically
   useEffect(() => {
@@ -173,7 +182,6 @@ export default function Meetingview({ status, callback, jobId, location }) {
     }
   }, [selectedDate, interviewDetails]);
 
-
   const handleTimeSlotSelection = (time, id) => {
     setSelectedTime(time);
     setSelectedInterviewId(id);
@@ -188,7 +196,7 @@ export default function Meetingview({ status, callback, jobId, location }) {
             id: userDetails.user.id,
           },
           interviewDate: selectedDate,
-          timeSlot: [selectedTime], // Send the selected time in an array
+          timeSlot: [selectedTime],
         },
         {
           headers: {
@@ -197,6 +205,10 @@ export default function Meetingview({ status, callback, jobId, location }) {
         }
       );
       console.log("Interview confirmed: ", response.data);
+      setConfirmedDate(selectedDate);
+      setConfirmedTime(selectedTime);
+      console.log(selectedDate, selectedTime);
+      setSuccessMessage("Interview successfully scheduled!");
     } catch (error) {
       console.error("Error confirming interview: ", error);
       alert("Failed to schedule interview. Please try again later.");
@@ -322,8 +334,18 @@ export default function Meetingview({ status, callback, jobId, location }) {
               Confirm
             </Button>
             {successMessage && (
-              <Interviewcart />
+              <Box sx={{ marginTop: "20px" }}>
+                <Interviewcart
+                  jobId={jobId}
+                  companyName={companyName}
+                  companyLogo={companyLogo}
+                  companyLocation={location}
+                  selectedDate={confirmedDate}
+                  selectedTime={confirmedTime}
+                />
+              </Box>
             )}
+
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
           </CardContent>
         </Card>
