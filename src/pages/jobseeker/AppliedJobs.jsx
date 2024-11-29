@@ -135,6 +135,7 @@ const AppliedJobs = () => {
             },
           }
         );
+        console.log("Interview Details: ", response.data);
         setInterviewDetails(response.data);
       } catch (error) {
         console.error("Error fetching interview details: ", error);
@@ -308,62 +309,92 @@ const AppliedJobs = () => {
                     </Button>
                   </td>
                   <td>
-                    <Button
-                      sx={{
-                        backgroundColor:
-                          job.status === "selected" ||
-                          job.status === "preSelected"
-                            ? "#5D3FD3"
-                            : "#E0E0E0",
-                        color:
-                          job.status === "selected" ||
-                          job.status === "preSelected"
-                            ? "#e7e7e7"
-                            : "#A0A0A0",
-                        cursor:
-                          job.status === "selected" ||
-                          job.status === "preSelected"
-                            ? "pointer"
-                            : "not-allowed",
-                      }}
-                      variant="contained"
-                      size="md"
-                      disabled={
-                        !(
-                          job.status === "selected" ||
-                          job.status === "preSelected"
-                        )
+                    {(() => {
+                      // Find the interview for the current job and user
+                      const interview = interviewDetails.find(
+                        (interview) =>
+                          interview.user?.id === userDetails.user?.id &&
+                          interview.job?.id === job.job?.id
+                      );
+
+                      if (interview) {
+                        return (
+                          <Button
+                            sx={{
+                              backgroundColor: "#BDB5D5",
+                              color: "white",
+                              cursor: "not-allowed",
+                            }}
+                            variant="contained"
+                            size="md"
+                            disabled
+                          >
+                            Scheduled
+                          </Button>
+                        );
+                      } else {
+                        return (
+                          <Button
+                            sx={{
+                              backgroundColor:
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                                  ? "#5D3FD3"
+                                  : "#E0E0E0",
+                              color:
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                                  ? "#e7e7e7"
+                                  : "#A0A0A0",
+                              cursor:
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                                  ? "pointer"
+                                  : "not-allowed",
+                            }}
+                            variant="contained"
+                            size="md"
+                            disabled={
+                              !(
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                              )
+                            }
+                            onClick={() => {
+                              if (
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                              ) {
+                                const rootElement =
+                                  document.createElement("div");
+                                rootElement.id = "calendar-root";
+                                document.body.appendChild(rootElement);
+
+                                const root = ReactDOM.createRoot(rootElement);
+                                const closeModal = () => {
+                                  root.unmount();
+                                  document.body.removeChild(rootElement);
+                                };
+
+                                root.render(
+                                  <Meetingview
+                                    status={true}
+                                    callback={closeModal}
+                                    jobId={job?.job?.id}
+                                    location={company?.location}
+                                    userId={userDetails?.user?.id}
+                                    companyName={company?.companyName}
+                                    companyLogo={company?.logoImg}
+                                  />
+                                );
+                              }
+                            }}
+                          >
+                            Schedule
+                          </Button>
+                        );
                       }
-                      onClick={() => {
-                        if (
-                          job.status === "selected" ||
-                          job.status === "preSelected"
-                        ) {
-                          const rootElement = document.createElement("div");
-                          rootElement.id = "calendar-root";
-                          document.body.appendChild(rootElement);
-
-                          const root = ReactDOM.createRoot(rootElement); // Use createRoot instead of render
-                          const closeModal = () => {
-                            root.unmount(); // Clean up the component
-                            document.body.removeChild(rootElement);
-                          };
-
-                          root.render(
-                            <Meetingview
-                              status={true}
-                              callback={closeModal}
-                              jobId={job?.job?.id}
-                              location={company?.location}
-                              userId={userDetails?.user?.id}
-                              // interviewId={interview?.id} 
-                            />
-                          );
-                        }
-                      }}
-                    >
-                      Schedule
-                    </Button>
+                    })()}
                   </td>
                 </tr>
               );
