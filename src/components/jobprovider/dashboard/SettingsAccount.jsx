@@ -274,7 +274,7 @@ useEffect(()=> {
     }else{
 
       if(formId === 'contact'){
-        alert(JSON.stringify(contactFormData));
+       // alert(JSON.stringify(contactFormData));
 
         setFormLoad((prevState) => ({
           ...prevState,

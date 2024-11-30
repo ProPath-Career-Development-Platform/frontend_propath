@@ -310,7 +310,7 @@ export default function AppliedJob() {
         job: { id: jobId },
         atsScore: 85,
         appliedDate: new Date().toISOString(),
-        status: "Pending",
+        status: "pending",
         cv: formData.cv,
         response: JSON.stringify(surveyResults),
         email: formData.email,
