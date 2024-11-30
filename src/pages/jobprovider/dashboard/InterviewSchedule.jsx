@@ -290,7 +290,7 @@ function InterviewSchedule() {
           Schedule Interview
         </Typography>
 
-        <Button component={RouterLink} to="/jobprovider/home" color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={() => handleSubmit(jobId, dataToSend,selectedIds)}>
+        <Button component={RouterLink} to="/jobprovider/Interviews" color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={() => handleSubmit(jobId, dataToSend,selectedIds)}>
           Finish Schedule
         </Button>
       </Box>
