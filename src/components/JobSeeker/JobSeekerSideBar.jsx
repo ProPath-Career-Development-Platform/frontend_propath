@@ -31,7 +31,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import WorkIcon from "@mui/icons-material/Work";
 import PaymentIcon from "@mui/icons-material/Payment";
 import GroupsIcon from "@mui/icons-material/Groups";
-
+import { Link as RouterLink } from 'react-router-dom';
 import Typography from "@mui/joy/Typography";
 import UserContext from "../../utils/userContext";
 import axios from "axios";
@@ -117,8 +117,8 @@ function JobSeekerSideBar() {
         >
           <ListItem>
             <ListItemButton
-              component="a"
-              href="/jobseeker/home/"
+              component={RouterLink}
+              to="/jobseeker/home/"
               selected={location.pathname === "/jobseeker/home/"}
             >
               <LayersIcon />
@@ -130,8 +130,8 @@ function JobSeekerSideBar() {
 
           <ListItem>
             <ListItemButton
-              component="a"
-              href="/jobseeker/dashboard/"
+              component={RouterLink}
+              to="/jobseeker/dashboard/"
               selected={location.pathname === "/jobseeker/dashboard/"}
             >
               <LayersIcon />
@@ -143,8 +143,8 @@ function JobSeekerSideBar() {
 
           <ListItem>
             <ListItemButton
-              component="a"
-              href="/jobseeker/applied-jobs/"
+              component={RouterLink}
+              to="/jobseeker/applied-jobs/"
               selected={location.pathname === "/jobseeker/applied-jobs/"}
             >
               <WorkIcon />
@@ -156,8 +156,8 @@ function JobSeekerSideBar() {
 
           <ListItem>
             <ListItemButton
-              component="a"
-              href="/jobseeker/favorites/"
+              component={RouterLink}
+              to="/jobseeker/favorites/"
               selected={location.pathname === "/jobseeker/favorites/"}
             >
               <BookmarkIcon />
@@ -170,8 +170,8 @@ function JobSeekerSideBar() {
           <ListItem>
             <ListItemButton
               role="menuitem"
-              component="a"
-              href="/jobseeker/job-alert/"
+              component={RouterLink}
+              to="/jobseeker/job-alert/"
               selected={location.pathname === "/jobseeker/job-alert/"}
             >
               <NotificationsActiveIcon />
@@ -187,8 +187,8 @@ function JobSeekerSideBar() {
           <ListItem>
             <ListItemButton
               role="menuitem"
-              component="a"
-              href="/jobseeker/courses/"
+              component={RouterLink}
+              to="/jobseeker/courses/"
               selected={location.pathname === "/jobseeker/courses/"}
             >
               <NotificationsActiveIcon />
@@ -200,8 +200,8 @@ function JobSeekerSideBar() {
 
           <ListItem>
             <ListItemButton
-              component="a"
-              href="/jobseeker/setup/"
+              component={RouterLink}
+              to="/jobseeker/setup/"
               selected={location.pathname === "/jobseeker/setup/"}
             >
               <SettingsRoundedIcon />
