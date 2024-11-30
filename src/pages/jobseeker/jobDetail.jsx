@@ -219,6 +219,7 @@ const JobDetails = ({
               href="#some-link"
               fontSize={12}
               fontWeight={500}
+              onClick = {() => navigate("/JobSeeker")}
             >
               Dashboard
             </Link>

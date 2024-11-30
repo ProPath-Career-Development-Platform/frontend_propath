@@ -290,11 +290,15 @@ export default function AppliedJob() {
     <>
       <Button
         sx={{
-          backgroundColor: checkUserAlreadyApplied ? "grey" : "blue",
-          pointerEvents: checkUserAlreadyApplied ? "none" : "auto",
+          backgroundColor: checkUserAlreadyApplied ? "blue" : "blue",
+          pointerEvents: "auto", 
         }}
-        disabled={checkUserAlreadyApplied}
-        onClick={() => !checkUserAlreadyApplied && setOpen(true)}
+        onClick={
+          () =>
+            checkUserAlreadyApplied
+              ? navigate("/JobSeeker/applied-jobs/")
+              : setOpen(true) 
+        }
       >
         <Typography
           sx={{
@@ -302,7 +306,7 @@ export default function AppliedJob() {
             color: "white",
           }}
         >
-          {checkUserAlreadyApplied ? "Application Submitted" : "Apply Now"}
+          {checkUserAlreadyApplied ? "Check Status" : "Apply Now"}
         </Typography>
       </Button>
 
@@ -346,7 +350,6 @@ export default function AppliedJob() {
                           email: e.target.value,
                         }))
                       }
-                      required
                     />
                   </FormControl>
                   <CVUploadField

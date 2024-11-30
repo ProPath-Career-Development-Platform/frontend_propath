@@ -178,10 +178,15 @@ export default function JSCard({
             variant="solid"
             sx={{
               backgroundColor: checkUserAlreadyApplied ? "grey" : "#3f067a",
+              color: checkUserAlreadyApplied ? "white" : "white",
+              "&:hover": {
+                backgroundColor: checkUserAlreadyApplied ? "grey" : "#2c054d",
+              },
             }}
             onClick={handleApplyNowClick}
           >
-           {checkUserAlreadyApplied ? "Applied" : "Apply Now"} <ArrowRightAltIcon sx={{ marginLeft: "3px" }} />
+            {checkUserAlreadyApplied ? "Applied" : "Apply Now"}{" "}
+            <ArrowRightAltIcon sx={{ marginLeft: "3px" }} />
           </Button>
         </CardActions>
       </Card>
