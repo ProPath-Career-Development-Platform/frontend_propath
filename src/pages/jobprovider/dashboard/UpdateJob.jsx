@@ -49,6 +49,7 @@ import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel
 
 
 
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -136,6 +137,7 @@ const UpdateJob = () => {
 
   const [formloading,setFormLoading] = React.useState(true);
   const [readySvy,SetReadySvy] =React.useState(false);
+  const [submitLoad, setSubmitLoad] = React.useState(false);
 
    /* auto complete*/
 
@@ -484,20 +486,14 @@ function saveSurveyJson(json, saveNo, callback) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const plan = 'basic'; // Check if user is on free plan
-    const postCount = 0; // Check if user has reached the maximum number of posts allowed
+    setSubmitLoad(true);
 
-    if (plan === 'basic' && postCount >= 1) {
-      setOpen(true);
-    }else if (plan === 'standard' && postCount >= 3) {
-      setOpen(true);
-    }else if (plan === 'premium' && postCount >= 6) {
-      setOpen(true);
-    }else{
-
-      const validationErrors = validateForm();
+   
+    const validationErrors = validateForm();
+    
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
+        setSubmitLoad(false);
       } else {
         
          
@@ -563,6 +559,7 @@ function saveSurveyJson(json, saveNo, callback) {
           } finally {
             // Set loading to false after the request completes, regardless of success or failure
             setResponse(false);
+            setSubmitLoad(false);
           }
 
 
@@ -578,7 +575,7 @@ function saveSurveyJson(json, saveNo, callback) {
         //fetch to post data to the server here
       }
 
-    }
+    
 
 
 
@@ -712,7 +709,21 @@ function saveSurveyJson(json, saveNo, callback) {
             <Divider />
 
           <form onSubmit={handleSubmit}>
-            <Card
+
+            {
+              formloading ? (
+                <>
+                <Card variant="outlined" sx={{minWidth: '100%', position: 'relative' }}>
+
+                <CardContent sx={{m:'auto'}}>
+                <CircularProgress size='lg'/>
+                </CardContent>
+                </Card>
+                </>
+              ):
+              (
+
+                <Card
               variant="outlined"
               sx={{
                 maxHeight: 'max-content',
@@ -850,10 +861,17 @@ function saveSurveyJson(json, saveNo, callback) {
 
                         
                         >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                         <Option value="Developer">Developer</Option>
+                        <Option value="Designer">Designer</Option>
+                        <Option value="Manager">Manager</Option>
+                        <Option value="Analyst">Analyst</Option>
+                        <Option value="Tester">Tester</Option>
+                        <Option value="Consultant">Consultant</Option>
+                        <Option value="Coordinator">Coordinator</Option>
+                        <Option value="Specialist">Specialist</Option>
+                        <Option value="Executive">Executive</Option>
+                        <Option value="Director">Director</Option>
+                        <Option value="Intern">Intern</Option>
                       </Select>
                       </Skeleton>
 
@@ -948,10 +966,12 @@ function saveSurveyJson(json, saveNo, callback) {
                           setFormData({ ...formData, salaryType: newValue }); }}
                         
                         >
-                          <Option key='1' value="dog">Dog</Option>
-                          <Option key='2' value="cat">Cat</Option>
-                          <Option key='3' value="fish">Fish</Option>
-                          <Option key='4' value="bird">Bird</Option>
+                         <Option key="1" value="Hourly">Hourly</Option>
+                        <Option key="2" value="Daily">Daily</Option>
+                        <Option key="3" value="Weekly">Weekly</Option>
+                        <Option key="4" value="Monthly">Monthly</Option>
+                        <Option key="5" value="Yearly">Yearly</Option>
+                        <Option key="6" value="Project-Based">Project-Based</Option>
                       </Select>
                       </Skeleton>
 
@@ -994,10 +1014,15 @@ function saveSurveyJson(json, saveNo, callback) {
                             setFormData({ ...formData, education: newValue }); }
                         }
                         >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                           <Option value="High School Diploma">High School Diploma</Option>
+                          <Option value="Associate Degree">Associate Degree</Option>
+                          <Option value="Bachelor's Degree">Bachelor's Degree</Option>
+                          <Option value="Master's Degree">Master's Degree</Option>
+                          <Option value="Doctorate (PhD)">Doctorate (PhD)</Option>
+                          <Option value="Professional Certification">Professional Certification</Option>
+                          <Option value="Diploma or Vocational Training">Diploma or Vocational Training</Option>
+                          <Option value="No Formal Education">No Formal Education</Option>
+                          <Option value="Currently Enrolled in a Degree Program">Currently Enrolled in a Degree Program</Option>
                       </Select>
                       </Skeleton>
 
@@ -1030,10 +1055,12 @@ function saveSurveyJson(json, saveNo, callback) {
                               setFormData({ ...formData, experience: newValue }); }
                           }
                       >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                          <Option value="No Experience">No Experience</Option>
+                          <Option value="Less than 1 Year">Less than 1 Year</Option>
+                          <Option value="1 to 2 Years">1 to 2 Years</Option>
+                          <Option value="3 to 5 Years">3 to 5 Years</Option>
+                          <Option value="6 to 10 Years">6 to 10 Years</Option>
+                          <Option value="More than 10 Years">More than 10 Years</Option>
                       </Select>
                       </Skeleton>
 
@@ -1066,10 +1093,14 @@ function saveSurveyJson(json, saveNo, callback) {
                               setFormData({ ...formData, jobType: newValue }); }
                           }
                       >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                           <Option value="Full-Time<">Full-Time</Option>
+                          <Option value="Part-Time">Part-Time</Option>
+                          <Option value="Contract">Contract</Option>
+                          <Option value="Temporary">Temporary</Option>
+                          <Option value="Freelance">Freelance</Option>
+                          <Option value="Internship">Internship</Option>
+                          <Option value="Volunteer">Volunteer</Option>
+                          <Option value="Remote">Remote</Option>
                       </Select>
                       </Skeleton>
 
@@ -1152,10 +1183,14 @@ function saveSurveyJson(json, saveNo, callback) {
                             }
 
                         >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                         <Option value="Entry Level">Entry Level</Option>
+                          <Option value="Mid Level">Mid Level</Option>
+                          <Option value="Senior Level">Senior Level</Option>
+                          <Option value="Manager">Manager</Option>
+                          <Option value="Director">Director</Option>
+                          <Option value="Executive">Executive</Option>
+                          <Option value="Intern">Intern</Option>
+                          <Option value="Volunteer">Volunteer</Option>
                       </Select>
                       </Skeleton>
 
@@ -1284,16 +1319,22 @@ function saveSurveyJson(json, saveNo, callback) {
                   </FormControl>
 
                   <CardActions sx={{ maxWidth:'200px' }}>
-                    <Button  type='submit' variant="solid" color="primary" disabled={formloading}  endDecorator={<ArrowForwardOutlinedIcon />}>
-                      Post Job
+                    <Button  type='submit' variant="solid" color="primary" disabled={formloading || surLoad} loading={submitLoad} endDecorator={<ArrowForwardOutlinedIcon />}>
+                      Update Job
                     </Button>
                   </CardActions>
                 </CardContent>
               </Card>
 
-              </form>  
 
-              <React.Fragment>
+
+
+
+  )
+  }
+
+</form>  
+<React.Fragment>
                   
                   <Snackbar
                     variant="soft"
@@ -1399,6 +1440,7 @@ function saveSurveyJson(json, saveNo, callback) {
                     </Box>
                   </Snackbar>
                 </React.Fragment>
+            
 
                 <PaymentModel open={paymentOpen} />
           </Box>

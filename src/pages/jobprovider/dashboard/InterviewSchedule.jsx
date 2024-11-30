@@ -36,7 +36,7 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 
-import { Link as RouterLink,useLocation,useParams } from 'react-router-dom';
+import { Link as RouterLink,useLocation,useParams,useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 const token = localStorage.getItem('token');
@@ -190,7 +190,7 @@ function InterviewSchedule() {
   const handleSubmit = async(jobId,dataToSend,selectedIds) => {
 
     try{
-      const response = await axios.post(`http://localhost:8080/jobprovider/createInterview/${jobId}`,dataToSend,selectedIds,
+      const response = await axios.post(`http://localhost:8080/jobprovider/createInterview/${jobId}`,dataToSend,
         {
         headers: {
           Authorization: `Bearer ${token}` ,
@@ -206,6 +206,7 @@ function InterviewSchedule() {
       
     }catch(error){
       console.error("Error Creating Interview",error);
+      return;
     }
    
     try{
@@ -226,8 +227,10 @@ function InterviewSchedule() {
           
     }catch(error){
       console.error("Error Updating Status",error);
+      return;
     }
-
+   
+    navigate("/jobprovider/interview");
     
     
   };
@@ -287,7 +290,7 @@ function InterviewSchedule() {
           Schedule Interview
         </Typography>
 
-        <Button component={RouterLink} to="/jobprovider/home" color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={() => handleSubmit(jobId, dataToSend,selectedIds)}>
+        <Button component={RouterLink} to="/jobprovider/Interviews" color="primary" startDecorator={<ScheduleIcon />} size="sm" onClick={() => handleSubmit(jobId, dataToSend,selectedIds)}>
           Finish Schedule
         </Button>
       </Box>
