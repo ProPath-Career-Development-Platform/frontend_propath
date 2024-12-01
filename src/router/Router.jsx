@@ -33,7 +33,7 @@ import JpUpdateJob from "../pages/jobprovider/dashboard/UpdateJob";
 import JpVemail from "../pages/jobprovider/dashboard/emailVerification";
 import JpPaymentSuccess from "../pages/jobprovider/dashboard/PaymentSuccess";
 import JpPaymentFail from "../pages/jobprovider/dashboard/PaymentFailed";
-
+import JpQrScanner from "../pages/jobprovider/dashboard/QrScanner";
 import JobDetails from "../pages/jobseeker/jobDetail";
 
 //jobseeker
@@ -234,6 +234,10 @@ const router = createBrowserRouter([
       {
         path: "meet-up/preview-event/:id",
         element: <JpEventPreview />,
+      },
+      {
+        path: "meet-up/qr-scanner/:id",
+        element: <JpQrScanner/>,
       },
       {
         path: "meet-up/updateEvent/:id",

@@ -26,7 +26,9 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { getToken } from '../Auth/Auth'
 import SimpleMap from '../../components/JobSeeker/map'
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import RenderRichText from '../../components/jobprovider/dashboard/RenderRichText'
+
 
 const Course = () => {
   
@@ -161,7 +163,7 @@ const Course = () => {
               
         </Box>
         <Box sx={{position: 'absolute' , right: '8%' , top: '25%'}}>
-                <BasicCard  url = {seeekerEvent?.event?.banner} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent}></BasicCard>
+                <BasicCard  url = {seeekerEvent?.event?.banner} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent} ></BasicCard>
                 </Box>
         <Box>
             {/* <Box>
@@ -222,10 +224,10 @@ const Course = () => {
 
             <Box sx={{width : '60%' , marginTop : '40px'}} >
                 <Box sx={{width: '100%' ,marginTop : '12px' , marginBottom : '12px'}}>
-                <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Course Overview  </Typography>
+                <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Event Overview  </Typography>
                 </Box>
                 <Box>
-                    {seeekerEvent?.event?.description}
+                    <RenderRichText text={seeekerEvent?.event?.description} />
                 </Box>
             </Box>
 
