@@ -30,7 +30,7 @@ const Navbar1 = () => {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Button as={Link} to ="/jobprovider/home" className='bg-[#814DDE] text-white font-semibold' href="#" variant="flat">
+          <Button as={Link} to ="/jobprovider/dashboard" className='bg-[#814DDE] text-white font-semibold' href="#" variant="flat">
             Back to Dashboard
           </Button>
         </NavbarItem>

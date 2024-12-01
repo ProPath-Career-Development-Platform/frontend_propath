@@ -21,7 +21,7 @@ import Stack from '@mui/joy/Stack';
 import Sheet from '@mui/joy/Sheet';
 import Chip from '@mui/joy/Chip';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink ,useNavigate} from 'react-router-dom';
 import IconButton from '@mui/joy/IconButton';
 import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -70,6 +70,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
 
   const { jobId } = useParams();
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   const updateStatus = async (seekerId, jobId) => {
 
@@ -109,6 +110,33 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
     } 
 
   };
+
+
+  const updateStatusPreSelected = async (jobId, selectedIds) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/jobprovider/applicant/updateStatusPreSelected/${jobId}`, 
+        selectedIds, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      if (response.status === 200) {
+        console.log('Applicants updated successfully');
+        navigate(`/jobprovider/my-jobs/${jobId}/shedule-interview`, { state: { selectedIds } });
+        
+      } else {
+        console.error('Failed to update applicants');
+      }
+    } catch (error) {
+      console.error('Error updating applicants:', error);
+      setSnackOpen(true);
+    }
+  };
+  
   
 
   //updateStatu
@@ -151,6 +179,9 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
     
         setOpen(inOpen);
       };
+
+
+     
 
   return (
 
@@ -283,7 +314,7 @@ export default function FinalCandidateList({selectedIds, open , setOpen,count,se
             >
               Close
             </Button>
-            <Button size='sm' sx={{fontSize:{xs:'13px',sm:'sm'}}} component={RouterLink} to="/jobprovider/my-jobs/shedule-interview">Confirm & Go to Schedule</Button>
+            <Button size='sm' sx={{fontSize:{xs:'13px',sm:'sm'}}} component={RouterLink} to={`/jobprovider/my-jobs/${jobId}/shedule-interview`} onClick={()=>updateStatusPreSelected(jobId,selectedIds)} >Confirm & Go to Schedule</Button>
           </Stack>
         </Sheet>
       </Drawer>

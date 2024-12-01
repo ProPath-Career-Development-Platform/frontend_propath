@@ -342,7 +342,7 @@ export default function CandidateTable({ filteredRows , setFilteredRows, criteri
 
   const columns = [
   
-         { field: 'col0', headerName: '#', width: 10, type: 'number', },
+         { field: 'col0', headerName: '', width: 10, type: 'number', },
          { 
            field: 'col1', 
            headerName: 'Name', 

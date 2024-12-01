@@ -97,14 +97,31 @@ export default function NavigationPanel() {
 
   const {logUser,setLogUser} = useContext(UserContext);
 
-  const uploadImage = async (file) => {
+  const uploadLogo = async (file, companyName) => {
     try {
       const response = await imagekit.upload({
         file: file, // the file you want to upload
-        fileName: file.name, // file name you want to save as
+        fileName: companyName, // file name you want to save as
       });
   
       // Return the uploaded image URL
+      console.error(response.url);
+      return response.url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null; // Return null in case of an error
+    }
+  };
+
+  const uploadBusinessRegistration = async (file, companyName) => {
+    try {
+      const response = await imagekit.upload({
+        file: file, // the file you want to upload
+        fileName: `${companyName}_BusinessRegistration`, // file name you want to save as
+      });
+  
+      // Return the uploaded image URL
+      console.error(response.url);
       return response.url; 
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -408,7 +425,7 @@ const handleBannerUpload = (event) => {
         // Submit the form data
         const response = await RegisterCompany(companyData,token);
         console.log(response.data);
-        navigate('/jobprovider/home/');
+        navigate('/jobprovider/dashboard/');
       } catch (error) {
         console.error('Error submitting form:', error);
         if (error.response) {
@@ -420,8 +437,8 @@ const handleBannerUpload = (event) => {
 
         setFormLoad(true);
 
-        const logoURL =  await uploadImage(formData.logoImgFile);
-        const bannerURL = await uploadImage(formData.bannerImgFile);
+        const logoURL =  await uploadLogo(formData.logoImgFile, formData.companyName);
+        const bannerURL = await uploadBusinessRegistration(formData.bannerImgFile, formData.companyName);
 
         const companyData = {
           companyName: formData.companyName,
@@ -851,10 +868,8 @@ const [italic, setItalic] = React.useState(false);
             fontWeight: 500,
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all .3s ease',
-            '&:hover': {
-              backgroundColor: '#005DD1',
-            },
+            transition: 'all .3s ease'
+        
           }}
           onClick={handleSubmit1}
         >
@@ -1252,10 +1267,8 @@ const [italic, setItalic] = React.useState(false);
             fontWeight: 500,
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all .3s ease',
-            '&:hover': {
-              backgroundColor: '#005DD1',
-            },
+            transition: 'all .3s ease'
+            
           }}
           onClick={handleSubmit2}
         >
@@ -1444,10 +1457,8 @@ const [italic, setItalic] = React.useState(false);
           fontWeight: 500,
           fontSize: '15px',
           cursor: 'pointer',
-          transition: 'all .3s ease',
-          '&:hover': {
-            backgroundColor: '#005DD1',
-          },
+          transition: 'all .3s ease'
+        
         }}
         onClick={haddlesubmit3}
       >
@@ -1684,10 +1695,7 @@ const [italic, setItalic] = React.useState(false);
           fontWeight: 500,
           fontSize: '15px',
           cursor: 'pointer',
-          transition: 'all .3s ease',
-          '&:hover': {
-            backgroundColor: '#005DD1',
-          },
+          transition: 'all .3s ease'
         }}
        
       >

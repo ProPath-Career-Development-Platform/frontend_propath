@@ -22,153 +22,134 @@ import Stack from '@mui/joy/Stack';
 import LocationOn from '@mui/icons-material/LocationOn';
 import Checkbox from '@mui/joy/Checkbox';
 import { ButtonBase, Typography, alertTitleClasses } from '@mui/material';
+import { useState } from 'react';
+import Slider from '@mui/joy/Slider';
 
-const currencies = [
-  { value: 'USD', label: '$' },
-  { value: 'EUR', label: '€' },
-  { value: 'BTC', label: '฿' },
-  { value: 'JPY', label: '¥' },
-];
-
-const handleCheckboxClick = (item) => {
-  setSize(item);
-};
-const currencyClick = () => {
-  alert("clicked")
-};
 
 export default function JSDropDown(props) {
-  const SIZES = props.sizes;
+
+  const [value, setValue] = React.useState([20, 37]);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  
+  const [sizes,setSizes]= props.sizes;
   const [size, setSize] = React.useState('Medium');
   const [btnState, setbtnState] = React.useState('loading');
   const [currency, setCurrency] = React.useState('dollar');
+  const [filterList, setFilterList] = React.useState([]);
+  const [filterType, setFilterType] = useState('')
+  const currencies = [
+    { value: 'USD', label: '$' },
+    { value: 'EUR', label: '€' },
+    { value: 'BTC', label: '฿' },
+    { value: 'JPY', label: '¥' },
+  ];
+  const [open,setOpen] = useState(false)
+  
  
+ 
+  const handleCheckboxClick = (item) => {
+    setFilterType(props.name)
+    setFilterList((prevFilterList) => {
+      // If item is already in the filter list, remove it; otherwise, add it
+      if (prevFilterList.includes(item)) {
+        return prevFilterList.filter((i) => i !== item);
+      } else {
+        return [...prevFilterList, item];
+      }
+    });
+  };
+
+  const [minSalary, setMinSalary] = useState(''); // State to store Min Salary
+  const [maxSalary, setMaxSalary] = useState(''); // State to store Max Salary
+
+  // Handle Min Salary change
+  const handleMinSalaryChange = (e) => {
+    setMinSalary(e.target.value);
+  };
+
+  // Handle Max Salary change
+  const handleMaxSalaryChange = (e) => {
+    setMaxSalary(e.target.value);
+  };
+
+
+
+  const handleSubmit = () => {
+    // Ensure values are sent correctly to the parent component
+    props.sortData([minSalary, maxSalary], props.name);
+  };
+  
   return (
-    <Dropdown>
-      <MenuButton endDecorator={<ArrowDropDown />}>{props.name}</MenuButton>
-      <Menu sx={{ minWidth: 150, '--ListItemDecorator-size': '24px' }}>
+    <Dropdown >
+      <MenuButton  endDecorator={<ArrowDropDown />} onClick={() => { 
+      setOpen(!open); 
+    }}>{props.name}</MenuButton>
+      <Menu sx={{ minWidth: 150, '--ListItemDecorator-size': '24px' }} open={open} >
         <ListDivider />
         {props.proptype == 1 && (
-          <ListItem nested >
+          <ListItem nested>
             <List aria-label="Font sizes">
-              {SIZES.map((item) => (
+              {props.sizes.map((item ,index) => (
                 <MenuItem
                   key={item}
                   role="menuitemradio"
-                  aria-checked={item === size ? 'true' : 'false'}
-                  onClick={() => handleCheckboxClick(item)}
-                  
-                >
-                 
-                  <Checkbox label = {item} size="md"  sx = {{width: '100%'}}/>
-                </MenuItem>
-              ))}
-            </List>
-          </ListItem>
-        )}
-        {props.proptype == 0 && (
-          <ListItem nested  sx={{ width: 330 }}>
-            <List aria-label="Font sizes">
-              <MenuItem>
-                      <FormControl>
-                      <FormControl sx={{mb:2} }  
-                    >
-                      <Stack spacing={1.5}>
-                      <FormLabel>Currency</FormLabel>
-                        <Input
-                          placeholder="Amount"
-                          startDecorator={{ dollar: '$', baht: '฿', yen: '¥' }[currency]}
-                          endDecorator={
-                            <React.Fragment>
-                              <Divider orientation="vertical" />
-                              <Select
-                                variant="plain"
-                                value={currency}
-                                onChange={(e) => setCurrency(e.target.value)}
-                                slotProps={{
-                                  listbox: {
-                                    variant: 'outlined',
-                                  },
-                                }}
-                                sx={{ mr: -1.5, '&:hover': { bgcolor: 'transparent' } }}
-                              >
-                                <Option value="dollar">US dollar</Option>
-                                <Option value="baht">Thai baht</Option>
-                                <Option value="yen">Japanese yen</Option>
-                              </Select>
-                            </React.Fragment>
-                          }
-                          sx={{ width: 300 }}
-                        />
-                        
-                      </Stack>
-                      </FormControl>
-                      
                 
-               
-                      <FormControl sx={{mb:2} }  
-                      onClick = { () => currencyClick() }>
-                      <Stack spacing={1.5}>
-                      <FormLabel>Paid every</FormLabel>
-                        <Input
-                          placeholder="Amount"
-                          startDecorator={{ dollar: '$', baht: '฿', yen: '¥' }[currency]}
-                          endDecorator={
-                            <React.Fragment>
-                              <Divider orientation="vertical" />
-                              <Select
-                                variant="plain"
-                                value={currency}
-                                onChange={(_, value) => setCurrency(value)}
-                                slotProps={{
-                                  listbox: {
-                                    variant: 'outlined',
-                                  },
-                                }}
-                                sx={{ mr: -1.5, '&:hover': { bgcolor: 'transparent' } }}
-                                onClick={currencyClick}
+                  onClick={() => {
+                    handleCheckboxClick(item)
+                  }}
+                >
+                  <Checkbox label={item} size="md" sx={{ width: '100%' }} />
+                </MenuItem>
+          ))}
+    </List>
+        {/* Add the Filter button here */}
+        <Button onClick={() =>
+          {props.sortData(filterList,filterType)
+          setOpen(false)
+          setFilterList([])
+          }} variant="outlined">
+          Filter
+        </Button>
+      </ListItem>
+)}
 
-                              >
-                                <Option value="dollar">US dollar</Option>
-                                <Option value="baht">Thai baht</Option>
-                                <Option value="yen">Japanese yen</Option>
-                              </Select>
-                            </React.Fragment>
-                          }
-                          sx={{ width: 300 }}
-                        />
-                        
-                      </Stack>
-                      </FormControl>
+        {props.proptype == 0 && (
+          <ListItem nested  sx={{ width: 280 }}>
+            <List aria-label="Font sizes">
+            <MenuItem sx={{ display: 'flex', flexDirection: 'column' }}>
+              <FormControl sx={{ mb: 2 }}>
+                <FormLabel>Max Salary</FormLabel>
+                <Input
+                  name="maxSalary"
+                  value={maxSalary} // Bind the value to the state
+                  onChange={handleMaxSalaryChange} // Update state on change
+                  placeholder="Enter Maximum Salary"
+                />
+              </FormControl>
 
-                      <FormControl sx={{mb:2} }  
-                      onClick = { () => currencyClick() }>
-                        <FormLabel>Max Salary</FormLabel>
-                          <Input
-                              name="minSalary"
-                              placeholder="Enter Minimum Salary"
-                              startDecorator={<Button disabled variant="soft" color="neutral">LKR</Button>}
-                            />
-                      </FormControl>
-                       
-                      <FormControl sx={{mb:2} }  
-                      onClick = { () => currencyClick() }>
-                          <FormLabel>Min Salary</FormLabel>
-                            <Input
-                                name="minSalary"
-                                placeholder="Enter Minimum Salary"
-                                startDecorator={<Button disabled variant="soft" color="neutral">LKR</Button>}
-                              />
-                      </FormControl>
+                <FormControl sx={{ mb: 2 }}>
+                  <FormLabel>Min Salary</FormLabel>
+                  <Input
+                    name="minSalary"
+                    value={minSalary} // Bind the value to the state
+                    onChange={handleMinSalaryChange} // Update state on change
+                    placeholder="Enter Minimum Salary"
+                  />
+                </FormControl>
 
-                      </FormControl>
-                        
-                 
-                  
-              </MenuItem>
-              <Box sx={{ position: 'relative' , height:60 , padding: 2 }}>
-                      <Button  sx={{position: 'absolute' , right: 20}}>Submit</Button>
-              </Box>
+                <Box sx={{ position: 'relative', height: 60, padding: 2 }}>
+                  <Button
+                    sx={{ position: 'absolute', right: 20 }}
+                    onClick={handleSubmit} // Call handleSubmit when clicked
+                  >
+                    Submit
+                  </Button>
+                </Box>
+    </MenuItem>
+             
             </List>
           </ListItem>
         )}

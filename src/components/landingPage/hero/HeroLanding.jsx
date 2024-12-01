@@ -1,11 +1,18 @@
 import React from 'react';
-import bgimage from '/heroLanding1.jpg'
+import bgimage from '../../../assets/heroLanding1.jpg'
 import { FaBriefcase } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
 import { FaBuilding } from "react-icons/fa";
-import {Button, Link} from "@nextui-org/react";
+import {Button} from "@nextui-org/react";
+import { useNavigate } from 'react-router-dom';
+
+
 
 const HeroLanding = () => {
+const navigate = useNavigate();
+const handlesignup = () => {
+  navigate('/signup')
+}
   return (
     <div className='relative flex'>
       <div className='relative w-1/2'>
@@ -15,7 +22,7 @@ const HeroLanding = () => {
         <div className='mx-auto w-3/4 ml-8'>
           <h1 className='text-purple1 text-5xl font-bold'>Your Next Career Move Starts Here.</h1>
           <p className="mb-5 text-grey1 text-lg mt-8 font-light">Join ProPath to find career opportunities that match your skills and ambitions for a fulfilling professional journey.</p>
-          <Button as={Link} className='bg-purple1 text-white font-semibold mt-2' href="#" variant="flat">
+          <Button onClick={handlesignup} className='bg-purple1 text-white font-semibold mt-2' href="#" variant="flat">
             Join Now
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
@@ -12,109 +12,142 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
+import {
+  faCircleArrowRight,
+  faCircleArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import Divider from "@mui/joy/Divider";
-
-const jobs = [
-  {
-    title: "Networking Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Active",
-    icon: "https://via.placeholder.com/32/00FF00/FFFFFF?text=U",
-  },
-  {
-    title: "Product Designer",
-    location: "Nugegoda",
-    salary: "LKR50k-80k/month",
-    type: "Full Time",
-    dateApplied: "Dec 7, 2023 23:26",
-    status: "Expired",
-    icon: "https://via.placeholder.com/32/FF0000/FFFFFF?text=P",
-  },
-  {
-    title: "Junior Graphic Designer",
-    location: "Kandy",
-    salary: "LKR50k-80k/month",
-    type: "Casual",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Active",
-    icon: "https://via.placeholder.com/32/000000/FFFFFF?text=A",
-  },
-  {
-    title: "Visual Designer",
-    location: "Galle",
-    salary: "LKR50k-80k/month",
-    type: "Contract",
-    dateApplied: "Dec 7, 2023 23:26",
-    status: "Expired",
-    icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=M",
-  },
-  {
-    title: "Cloud Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Active",
-    icon: "https://via.placeholder.com/32/00F000/FFFFFF?text=C",
-  },
-  {
-    title: "Software Engineer",
-    location: "Colmbo 02",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Active",
-    icon: "https://via.placeholder.com/32/FFFFF/FFFFFF?text=S",
-  },
-  {
-    title: "Quality Assurance Engineer",
-    location: "Gampaha",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Expired",
-    icon: "https://via.placeholder.com/32/F0FF00/FFFFFF?text=Q",
-  },
-  {
-    title: "DevOps Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Active",
-    icon: "https://via.placeholder.com/32/000000/FFFFFF?text=D",
-  },
-  {
-    title: "Networking Engineer",
-    location: "Mount Lavinia",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    status: "Expired",
-    icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=N",
-  },
-];
+import axios from "axios";
+import BusinessIcon from "@mui/icons-material/Business";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import Meetingview from "../../components/JobSeeker/meetingview";
+import ReactDOM from "react-dom/client";
 
 const AppliedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const [companyDetails, setCompanyDetails] = useState([]);
+  const [interviewDetails, setInterviewDetails] = useState([]); // Add state for interview details
   const jobsPerPage = 7;
 
-  // Calculate total pages
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
-
-  // Calculate the jobs to display on the current page
+  // Calculate indexes for pagination
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+
+  const currentJobs = appliedJobs?.slice(indexOfFirstJob, indexOfLastJob) || [];
+  const totalPages = Math.ceil((appliedJobs?.length || 0) / jobsPerPage);
+
+  // Fetch User Details
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getUserDetails`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching user details: ", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  // Fetch Applied Jobs
+  useEffect(() => {
+    if (!userDetails?.user?.id) return; // Wait until userDetails is available
+
+    const fetchAppliedJobs = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/applied-jobs/${userDetails.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAppliedJobs(response.data);
+      } catch (error) {
+        console.error("Error fetching applied jobs: ", error);
+      }
+    };
+
+    fetchAppliedJobs();
+  }, [userDetails]);
+
+  useEffect(() => {
+    if (!appliedJobs || appliedJobs.length === 0) return;
+
+    const fetchCompanyDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const jobIds = appliedJobs.map((job) => job.job?.id).filter(Boolean);
+
+        const responses = await Promise.all(
+          jobIds.map((jobId) =>
+            axios.get(
+              `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+          )
+        );
+
+        const companyData = responses.map((res) => res.data);
+        setCompanyDetails(companyData);
+      } catch (error) {
+        console.error("Error fetching company details: ", error);
+      }
+    };
+
+    fetchCompanyDetails();
+  }, [appliedJobs]);
+
+  useEffect(() => {
+    // Reset currentPage when appliedJobs changes
+    setCurrentPage(1);
+  }, [appliedJobs]);
+
+  // Fetch Interview Details
+  useEffect(() => {
+    const fetchInterviewDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/selected-preselected-interviews`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Interview Details: ", response.data);
+        setInterviewDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching interview details: ", error);
+      }
+    };
+
+    fetchInterviewDetails();
+  }, []);
 
   // Change page function
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <Box
       component="main"
@@ -131,28 +164,19 @@ const AppliedJobs = () => {
         display: "flex",
         flexDirection: "column",
         minWidth: 0,
-        height: "100dvh",
         gap: 1,
         maxHeight: "calc(100vh - 10px)",
-        overflow: 'auto ',
-        '&::-webkit-scrollbar': {
-          display: 'none',
-        },
+        overflow: "auto",
       }}
     >
+      {/* Breadcrumbs */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Breadcrumbs
           size="sm"
           aria-label="breadcrumbs"
           separator={<ChevronRightRoundedIcon fontSize="sm" />}
-          sx={{ pl: 0 }}
         >
-          <Link
-            underline="none"
-            color="neutral"
-            href="#some-link"
-            aria-label="Home"
-          >
+          <Link underline="none" color="neutral" href="#some-link">
             <HomeRoundedIcon />
           </Link>
           <Link
@@ -160,7 +184,6 @@ const AppliedJobs = () => {
             color="neutral"
             href="/jobseeker/home/"
             fontSize={12}
-            fontWeight={500}
           >
             Dashboard
           </Link>
@@ -169,129 +192,222 @@ const AppliedJobs = () => {
           </Typography>
         </Breadcrumbs>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          mb: 1,
-          gap: 1,
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { xs: "start", sm: "center" },
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography level="h2" component="h1">
-          Applied Jobs
-        </Typography>
-      </Box>
 
-      {/*breadcrumbs over*/}
+      <Typography level="h2" component="h1" sx={{ mt: 2 }}>
+        Applied Jobs
+      </Typography>
       <Divider />
 
-      <Box
-        sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-          gap: 15,
-          marginTop: "20px",
-        }}
-      ></Box>
-
-      <Table
-        hoverRow
-        sx={{ "& tbody": { bgcolor: "background.surface" } }}
-        size="lg"
-      >
-        <thead>
-          <tr>
-            <th>Job</th>
-            <th>Date Applied</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentJobs.map((job, index) => (
-            <tr key={index}>
-              <td>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-                  <img
-                    src={job.icon}
-                    alt={job.title}
-                    style={{ width: 46, height: 46 }}
-                  />
-                  <Box>
-                    <Typography>
-                      {job.title}{" "}
-                      <Box
-                        component="span"
-                        sx={{
-                          backgroundColor: "lightblue",
-                          padding: "2px 4px",
-                          borderRadius: "8px",
-                          marginLeft: "8px",
-                        }}
-                      >
-                        {job.type}
-                      </Box>
-                    </Typography>
-                    <Typography level="body-sm">
-                      <LocationOnIcon fontSize="small" /> {job.location}
-                    </Typography>
-                    <Typography level="body-sm">
-                      <AttachMoneyIcon fontSize="small" /> {job.salary}
-                    </Typography>
-                  </Box>
-                </Box>
-              </td>
-              <td>{job.dateApplied}</td>
-              <td>
-                {job.status === "Active" ? (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <CheckCircleOutlineIcon color="success" /> {job.status}
-                  </Box>
-                ) : (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <WarningAmberIcon color="danger" /> {job.status}
-                  </Box>
-                )}
-              </td>
-              <td>
-                <Button color="primary" variant="solid" size="md">
-                  View Details
-                </Button>
-              </td>
+      {appliedJobs.length === 0 ? (
+        <Typography sx={{ mt: 3, textAlign: "center" }}>
+          No jobs applied yet.
+        </Typography>
+      ) : (
+        <Table
+          hoverRow
+          sx={{ "& tbody": { bgcolor: "background.surface" } }}
+          size="lg"
+        >
+          <thead>
+            <tr>
+              <th>Job</th>
+              <th>Status</th>
+              <th>Action</th>
+              <th>Schedule the Interview</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-      {/* Pagination Controls */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-          marginTop: 2,
-          position: "relative",
-          bottom: 0,
-          pb: 3, 
-          backgroundColor: "inherit", 
-          zIndex: 1000, 
-        }}
-      >
+          </thead>
+          <tbody>
+            {currentJobs.map((job, index) => {
+              const jobProviderId = job.job?.user?.id;
+              // Find the company that matches the job's user ID
+              const company = companyDetails.find(
+                (comp) => comp?.user?.id === jobProviderId
+              );
+
+              // Find the interview that matches the job's ID
+              // const interview = interviewDetails.find(
+              //   (interview) => interview.job?.id === job.job?.id
+              // );
+
+              return (
+                <tr key={index}>
+                  <td>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+                      <img
+                        src={company?.logoImg || ""}
+                        alt={job.job?.jobTitle || "Job"}
+                        style={{ width: 56, height: 56, borderRadius: 48 }}
+                      />
+                      <Box>
+                        <Typography>
+                          {job.job?.jobTitle}{" "}
+                          <Box
+                            component="span"
+                            sx={{
+                              backgroundColor: "lightblue",
+                              padding: "2px 4px",
+                              borderRadius: "8px",
+                              marginLeft: "8px",
+                            }}
+                          >
+                            {job.job?.jobType}
+                          </Box>
+                        </Typography>
+                        <Typography level="body-sm">
+                          <BusinessIcon fontSize="small" />{" "}
+                          {company?.companyName || "N/A"}
+                        </Typography>
+                        <Typography level="body-sm">
+                          <LocationOnIcon fontSize="small" />{" "}
+                          {company?.location || "N/A"}
+                        </Typography>
+                        <Typography level="body-sm">
+                          <AttachMoneyIcon fontSize="small" />
+                          {job.job?.minSalary} - {job.job?.maxSalary} /{" "}
+                          {job.job?.salaryType}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </td>
+                  {/* <td>{new Date(job.appliedDate).toLocaleDateString()}</td> */}
+                  <td>
+                    {job.status === "selected" ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <CheckCircleOutlineIcon color="success" /> Selected
+                      </Box>
+                    ) : job.status === "preSelected" ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <WarningAmberIcon color="success" /> Pre Selected
+                      </Box>
+                    ) : job.status === "pending" ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <WarningAmberIcon color="warning" /> Pending
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <WarningAmberIcon color="warning" /> {job.status}
+                      </Box>
+                    )}
+                  </td>
+                  <td>
+                    <Button
+                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }}
+                      variant="contained"
+                      size="md"
+                      onClick={() => window.open(job.cv, "_blank")}
+                      startDecorator={<OpenInNew />}
+                    >
+                      View Your CV
+                    </Button>
+                  </td>
+                  <td>
+                    {(() => {
+                      // Find the interview for the current job and user
+                      const interview = interviewDetails.find(
+                        (interview) =>
+                          interview.user?.id === userDetails.user?.id &&
+                          interview.job?.id === job.job?.id
+                      );
+
+                      if (interview) {
+                        return (
+                          <Button
+                            sx={{
+                              backgroundColor: "#BDB5D5",
+                              color: "white",
+                              cursor: "not-allowed",
+                            }}
+                            variant="contained"
+                            size="md"
+                            disabled
+                          >
+                            Scheduled
+                          </Button>
+                        );
+                      } else {
+                        return (
+                          <Button
+                            sx={{
+                              backgroundColor:
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                                  ? "#5D3FD3"
+                                  : "#E0E0E0",
+                              color:
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                                  ? "#e7e7e7"
+                                  : "#A0A0A0",
+                              cursor:
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                                  ? "pointer"
+                                  : "not-allowed",
+                            }}
+                            variant="contained"
+                            size="md"
+                            disabled={
+                              !(
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                              )
+                            }
+                            onClick={() => {
+                              if (
+                                job.status === "selected" ||
+                                job.status === "preSelected"
+                              ) {
+                                const rootElement =
+                                  document.createElement("div");
+                                rootElement.id = "calendar-root";
+                                document.body.appendChild(rootElement);
+
+                                const root = ReactDOM.createRoot(rootElement);
+                                const closeModal = () => {
+                                  root.unmount();
+                                  document.body.removeChild(rootElement);
+                                };
+
+                                root.render(
+                                  <Meetingview
+                                    status={true}
+                                    callback={closeModal}
+                                    jobId={job?.job?.id}
+                                    location={company?.location}
+                                    userId={userDetails?.user?.id}
+                                    companyName={company?.companyName}
+                                    companyLogo={company?.logoImg}
+                                  />
+                                );
+                              }
+                            }}
+                          >
+                            Schedule
+                          </Button>
+                        );
+                      }
+                    })()}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      )}
+
+      {/* Pagination */}
+      <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
         {currentPage > 1 && (
-          <Button
-            onClick={() => paginate(currentPage - 1)}
-            sx={{
-              backgroundColor: "transparent", 
-              color: "inherit", 
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.04)", 
-              },
-            }}
-          >
-            {<FontAwesomeIcon icon={faCircleArrowLeft} size="lg" />}
+          <Button onClick={() => paginate(currentPage - 1)}>
+            <FontAwesomeIcon icon={faCircleArrowLeft} size="lg" />
           </Button>
         )}
         {Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -304,37 +420,13 @@ const AppliedJobs = () => {
               key={pageNumber}
               onClick={() => paginate(pageNumber)}
               disabled={pageNumber === currentPage}
-              sx={{
-                backgroundColor:
-                  pageNumber === currentPage ? "#1565c0" : "transparent",
-                color: pageNumber === currentPage ? "white" : "inherit",
-                "&:hover": {
-                  backgroundColor:
-                    pageNumber === currentPage
-                      ? "#1565c0"
-                      : "rgba(0, 0, 0, 0.04)",
-                },
-                "&:disabled": {
-                  backgroundColor: "#ccc",
-                  color: "black",
-                },
-              }}
             >
               {pageNumber}
             </Button>
           ))}
         {currentPage < totalPages && (
-          <Button
-            onClick={() => paginate(currentPage + 1)}
-            sx={{
-              backgroundColor: "transparent", 
-              color: "inherit", 
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.04)", 
-              },
-            }}
-          >
-            {<FontAwesomeIcon icon={faCircleArrowRight} size="lg" />}
+          <Button onClick={() => paginate(currentPage + 1)}>
+            <FontAwesomeIcon icon={faCircleArrowRight} size="lg" />
           </Button>
         )}
       </Box>

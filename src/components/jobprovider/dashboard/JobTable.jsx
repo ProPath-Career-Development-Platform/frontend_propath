@@ -103,7 +103,7 @@ export default function JobTable({markAsExpire,change,setChange,loading,setLoadi
 
   const columns = [
   
-         { field: 'col0', headerName: '#', width: 10, type: 'number', },
+         { field: 'col0', headerName: '', width: 10, type: 'number', },
          { field: 'col1', headerName: 'Job Title', width: '250',},
          { field: 'col2', headerName: 'Job Type', width: '150',},
          { field: 'col3', headerName: 'Created At', width: '150',},

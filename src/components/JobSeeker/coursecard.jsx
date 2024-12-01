@@ -16,12 +16,12 @@ import { CardOverflow, CardActions } from '@mui/joy';
 import BakeryDiningIcon from '@mui/icons-material/BakeryDining';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useNavigate } from 'react-router-dom';
-export default function CourseCard({title, company , content , location ,type , img , slot}) {
+export default function CourseCard({title, company , content , location ,type , img , slot , maxslots , id}) {
   const Navigate = useNavigate()
   const columns = Math.ceil(Math.sqrt(content.length));
   const coursepage = () => {
  
-    Navigate('/JobSeeker/courses/course/' , { state: { title } })
+    Navigate('/JobSeeker/courses/course/' , { state: { id } })
 
   }
 
@@ -132,7 +132,7 @@ export default function CourseCard({title, company , content , location ,type , 
               }
             }}
           >
-            {slot} slots remaining
+            {maxslots - slot} slots remaining
         </Typography>
 
 
@@ -169,7 +169,7 @@ export default function CourseCard({title, company , content , location ,type , 
           <Box sx={{ display: 'flex', gap: 1.5, marginBottom : '15px' }}>
           <div>
               <Typography sx={{fontSize : '12px'}}>
-                <GroupIcon/> 12 Users Enrolled
+                <GroupIcon/> {slot} Users Enrolled
               </Typography>
               
             </div>
