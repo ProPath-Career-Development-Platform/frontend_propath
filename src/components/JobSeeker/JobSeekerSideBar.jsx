@@ -200,7 +200,7 @@ function JobSeekerSideBar() {
             </ListItemButton>
           </ListItem>
 
-          <ListItem>
+          {/* <ListItem>
             <ListItemButton
               component="a"
               href="/jobseeker/setup/"
@@ -211,7 +211,7 @@ function JobSeekerSideBar() {
                 <Typography level="title-sm">Set Up</Typography>
               </ListItemContent>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
           
         {/* <Card
