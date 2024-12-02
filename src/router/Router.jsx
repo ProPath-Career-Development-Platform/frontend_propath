@@ -76,9 +76,9 @@ import EmployerSite from "../pages/landingPage/EmployerSite";
 
 //security
 
-import  ProtectedRoute  from "../components/ProtectedRoute";
-import AdminLayout from '../layout/AdminLayout';
-import Event from '../pages/jobseeker/event';
+import ProtectedRoute from "../components/ProtectedRoute";
+import AdminLayout from "../layout/AdminLayout";
+import Event from "../pages/jobseeker/event";
 
 const router = createBrowserRouter([
   {
@@ -343,16 +343,14 @@ const router = createBrowserRouter([
         element: <AppliedCard />,
       },
 
-
       {
-        path:"event",
-        element:<Event/>
+        path: "event",
+        element: <Event />,
       },
       {
         path: "updateProfile",
-        element: <UpdateProfile />
-      }
-
+        element: <UpdateProfile />,
+      },
     ],
   },
 
