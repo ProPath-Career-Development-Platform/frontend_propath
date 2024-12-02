@@ -320,7 +320,7 @@ const JobDetails = ({
         </Box>
 
         <Box sx={{ display: "flex" }}>
-          <JSSearch />
+          {/* <JSSearch /> */}
           <Alert />
           <ProfileDropdown />
         </Box>

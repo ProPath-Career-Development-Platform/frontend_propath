@@ -128,7 +128,7 @@ function SettingsFoundingInfo() {
       setErrors(validationErrors);
      
     }else{
-      alert(JSON.stringify(formData));
+     // alert(JSON.stringify(formData));
 
       setFormLoad(true);
 
@@ -226,10 +226,10 @@ function SettingsFoundingInfo() {
 
                         
                         >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                          <Option value="Public Limited Company (PLC)">Public Limited Company (PLC)</Option>
+                          <Option value="Private Limited Company (PVT)">Private Limited Company (PVT)</Option>
+                          <Option value="Government Agency">Government Agency</Option>
+                          <Option value="Partnership">Partnership</Option>
                       </Select>
                       </Skeleton>
 
@@ -273,10 +273,11 @@ function SettingsFoundingInfo() {
 
                         
                         >
-                          <Option value="dog">Dog</Option>
-                          <Option value="cat">Cat</Option>
-                          <Option value="fish">Fish</Option>
-                          <Option value="bird">Bird</Option>
+                           <Option value="Manufacturing">Manufacturing</Option>
+                          <Option value="Software and Technology">Software and Technology</Option>
+                          <Option value="Healthcare">Healthcare</Option>
+                          <Option value="Education">Education</Option>
+                          <Option value = "Transportation">Transportation</Option>
                       </Select>
                       </Skeleton>
 

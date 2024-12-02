@@ -21,165 +21,320 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import ImageKit from "imagekit";
+import {TextCompare} from "../../services/TextCompare";
 
-// import * as pdfjsLib from 'pdfjs-dist';
-// import 'pdfjs-dist/build/pdf.worker.entry';
-import pdfjsLib from "../../../pdfConfig";
+import * as pdfjs from 'pdfjs-dist';
+import 'pdfjs-dist/build/pdf.worker.entry';
 
-const CVUploadField = ({ formData, setFormData }) => {
-  const inputCvRef = useRef(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // New state for loading
 
-  const [textContent, setTextContent] = useState(''); //state for pdf extracted text
 
-  const imagekit = new ImageKit({
-    urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
-    publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
-    privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY,
-  });
+//state for pdf extracted text
 
-  const handleCvUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
 
-    const isValidFormat = file.type === "application/pdf";
-    const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit
+// const CVUploadField = ({ formData, setFormData }) => {
+//   const inputCvRef = useRef(null);
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+//   const [extractedText,setExtractedText] = useState("");
+//    // New state for loading
 
-    if (!isValidFormat) {
-      setError("Only PDF files are allowed.");
-      return;
-    }
+  
 
-    if (!isValidSize) {
-      setError("File size exceeds 10MB.");
-      return;
-    }
+//   const imagekit = new ImageKit({
+//     urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+//     publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+//     privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY,
+//   });
 
-    setError("");
-    setLoading(true); // Set loading to true when upload starts
+//   const handleCvUpload = async(event) => {
+//     const file = event.target.files[0];
+//     if (!file) return;
 
-    imagekit.upload(
-      {
-        file: file,
-        fileName: file.name,
-        tags: ["cv"],
-      },
-      (err, result) => {
-        setLoading(false); // Set loading to false when upload finishes
+//     const text = await extractTextFromPDF(file);
+//     setExtractedText(text);
 
-        if (err) {
-          console.error("Error uploading CV:", err);
-          setError("Failed to upload CV. Please try again.");
-          return;
-        }
+//     const isValidFormat = file.type === "application/pdf";
+//     const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit
 
-        console.log("CV uploaded successfully:", result);
+//     if (!isValidFormat) {
+//       setError("Only PDF files are allowed.");
+//       return;
+//     }
 
-        setFormData((prev) => ({
-          ...prev,
-          cv: result.url,
-          cvName: file.name, // Store the file name
-        }));
-        extractTextFromPdf(result.url);
-      }
-    );
+//     if (!isValidSize) {
+//       setError("File size exceeds 10MB.");
+//       return;
+//     }
 
-  };
+//     setError("");
+//     setLoading(true); // Set loading to true when upload starts
 
-  //cv text extracted funtion
-  const extractTextFromPdf = async (pdfUrl) => {
-    try {
-        // Load the PDF document
-        const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
-        const totalPages = pdf.numPages;
-        let fullText = '';
+//     imagekit.upload(
+//       {
+//         file: file,
+//         fileName: file.name,
+//         tags: ["cv"],
+//       },
+//       (err, result) => {
+//         setLoading(false); // Set loading to false when upload finishes
 
-        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-            const page = await pdf.getPage(pageNum);
-            const textContent = await page.getTextContent();
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            fullText += pageText + '\n';
-        }
+//         if (err) {
+//           console.error("Error uploading CV:", err);
+//           setError("Failed to upload CV. Please try again.");
+//           return;
+//         }
 
-        setTextContent(fullText);
-    } catch (error) {
-        console.error('Error extracting text from PDF:', error);
-    }
-};
+//         console.log("CV uploaded successfully:", result);
 
+//         setFormData((prev) => ({
+//           ...prev,
+//           cv: result.url,
+//           cvName: file.name, // Store the file name
+//         }));
+        
+//       }
+//     );
+
+//   };
+
+//   //cv text extracted funtion
+ 
 
 
   
 
-  return (
-    <FormControl>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          border: "2px dashed #0071FF",
-          borderRadius: "8px",
-          padding: "20px",
-          width: "100%",
-          cursor: "pointer",
-          "&:hover": { backgroundColor: "#f0f7ff" },
-        }}
-        onClick={() => inputCvRef.current.click()}
-      >
-        <FontAwesomeIcon icon={faPlusCircle} size="2xl" />
-        <Typography variant="subtitle1" sx={{ mt: 1 }}>
-          {formData.cv ? "Replace CV/Resume" : "Add CV/Resume"}
-        </Typography>
+//   return (
+//     <FormControl>
+//       <Box
+//         sx={{
+//           display: "flex",
+//           flexDirection: "column",
+//           alignItems: "center",
+//           border: "2px dashed #0071FF",
+//           borderRadius: "8px",
+//           padding: "20px",
+//           width: "100%",
+//           cursor: "pointer",
+//           "&:hover": { backgroundColor: "#f0f7ff" },
+//         }}
+//         onClick={() => inputCvRef.current.click()}
+//       >
+//         <FontAwesomeIcon icon={faPlusCircle} size="2xl" />
+//         <Typography variant="subtitle1" sx={{ mt: 1 }}>
+//           {formData.cv ? "Replace CV/Resume" : "Add CV/Resume"}
+//         </Typography>
 
-        {/* Display uploaded CV name if available */}
-        {formData.cv && !loading && (
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Uploaded CV: {formData.cvName}
-            <a
-              href={formData.cv}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#0071FF", marginLeft: "8px" }}
-            >
-              View CV
-            </a>
-          </Typography>
-        )}
+//         {/* Display uploaded CV name if available */}
+//         {formData.cv && !loading && (
+//           <Typography variant="body2" sx={{ mt: 1 }}>
+//             Uploaded CV: {formData.cvName}
+//             <a
+//               href={formData.cv}
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               style={{ color: "#0071FF", marginLeft: "8px" }}
+//             >
+//               View CV
+//             </a>
+//           </Typography>
+//         )}
 
-        {/* Show loading message */}
-        {loading && (
-          <Typography variant="body2" sx={{ mt: 1, color: "blue" }}>
-            Uploading your CV... Please wait.
-          </Typography>
-        )}
+//         {/* Show loading message */}
+//         {loading && (
+//           <Typography variant="body2" sx={{ mt: 1, color: "blue" }}>
+//             Uploading your CV... Please wait.
+//           </Typography>
+//         )}
 
-        <input
-          type="file"
-          hidden
-          ref={inputCvRef}
-          onChange={handleCvUpload}
-          accept="application/pdf"
-        />
-      </Box>
+//         <input
+//           type="file"
+//           hidden
+//           ref={inputCvRef}
+//           onChange={handleCvUpload}
+//           accept="application/pdf"
+//         />
+//       </Box>
 
-      {error && (
-        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-          {error}
-        </Typography>
-      )}
-    </FormControl>
-  );
-};
+//       {error && (
+//         <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+//           {error}
+//         </Typography>
+//       )}
+//     </FormControl>
+//   );
+// };
 
 export default function AppliedJob() {
+  
+   
+  const { jobId } = useParams(); 
+    console.log("This is ID :", jobId);
+
+    
+  const [jobDetail,setJobDetail] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+  
+    const fetchJobDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/jobDetails/${jobId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (mounted) setJobDetail(response.data);
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+      }
+    };
+  
+    fetchJobDetails();
+    return () => {
+      mounted = false;
+    };
+  }, [jobId]);
+  
+
+  const CVUploadField = ({ formData, setFormData }) => {
+    const inputCvRef = useRef(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+   
+     // New state for loading
+  
+    
+  
+    const imagekit = new ImageKit({
+      urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+      publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+      privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY,
+    });
+  
+    const handleCvUpload = async(event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+  
+      const text = await extractTextFromPDF(file);
+      setExtractedText(text);
+  
+      const isValidFormat = file.type === "application/pdf";
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit
+  
+      if (!isValidFormat) {
+        setError("Only PDF files are allowed.");
+        return;
+      }
+  
+      if (!isValidSize) {
+        setError("File size exceeds 10MB.");
+        return;
+      }
+  
+      setError("");
+      setLoading(true); // Set loading to true when upload starts
+  
+      imagekit.upload(
+        {
+          file: file,
+          fileName: file.name,
+          tags: ["cv"],
+        },
+        (err, result) => {
+          setLoading(false); // Set loading to false when upload finishes
+  
+          if (err) {
+            console.error("Error uploading CV:", err);
+            setError("Failed to upload CV. Please try again.");
+            return;
+          }
+  
+          console.log("CV uploaded successfully:", result);
+
+  
+          setFormData((prev) => ({
+            ...prev,
+            cv: result.url,
+            cvName: file.name, // Store the file name
+          }));
+          
+        }
+      );
+  
+    };
+  
+
+    //cv text extracted funtion
+   
+  return (
+      <FormControl>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            border: "2px dashed #0071FF",
+            borderRadius: "8px",
+            padding: "20px",
+            width: "100%",
+            cursor: "pointer",
+            "&:hover": { backgroundColor: "#f0f7ff" },
+          }}
+          onClick={() => inputCvRef.current.click()}
+        >
+          <FontAwesomeIcon icon={faPlusCircle} size="2xl" />
+          <Typography variant="subtitle1" sx={{ mt: 1 }}>
+            {formData.cv ? "Replace CV/Resume" : "Add CV/Resume"}
+          </Typography>
+  
+          {/* Display uploaded CV name if available */}
+          {formData.cv && !loading && (
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Uploaded CV: {formData.cvName}
+              <a
+                href={formData.cv}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#0071FF", marginLeft: "8px" }}
+              >
+                View CV
+              </a>
+            </Typography>
+          )}
+  
+          {/* Show loading message */}
+          {loading && (
+            <Typography variant="body2" sx={{ mt: 1, color: "blue" }}>
+              Uploading your CV... Please wait.
+            </Typography>
+          )}
+  
+          <input
+            type="file"
+            hidden
+            ref={inputCvRef}
+            onChange={handleCvUpload}
+            accept="application/pdf"
+          />
+        </Box>
+  
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+            {error}
+          </Typography>
+        )}
+      </FormControl>
+    );
+  };
+
+
   const scaleFadeIn = keyframes`
     0% { transform: scale(0); opacity: 0; }
     50% { transform: scale(1.1); opacity: 0.5; }
     100% { transform: scale(1); opacity: 1; }
   `;
 
+  const [extractedText,setExtractedText] = useState("");
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -198,7 +353,6 @@ export default function AppliedJob() {
   const [checkUserAlreadyApplied, setCheckUserAlreadyApplied] = useState();
 
   const navigate = useNavigate();
-  const { jobId } = useParams();
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -211,6 +365,7 @@ export default function AppliedJob() {
           }
         );
         setJobDetails(response.data);
+        console.log("jobDetails :",jobDetails);
       } catch (error) {
         console.error("Error fetching job details:", error);
       }
@@ -254,7 +409,7 @@ export default function AppliedJob() {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log("User already applied:", response.data);
+          // console.log("User already applied:", response.data);
           setCheckUserAlreadyApplied(response.data);
         } catch (error) {
           console.error("Error checking if user already applied:", error);
@@ -276,6 +431,50 @@ export default function AppliedJob() {
     return null;
   };
 
+  const handleFile = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      
+      
+     
+    }
+  };
+
+
+
+  const extractTextFromPDF = async (file) => {
+    const fileData = await readFileAsArrayBuffer(file);
+    const pdf = await pdfjs.getDocument({ data: fileData }).promise;
+    let text = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map((item) => item.str).join(" ");
+    }
+
+    console.log("Extracted Text:", text);
+    return text;
+  };
+
+  const readFileAsArrayBuffer = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+ ;
+  
+ 
+
+
+  // extractTextFromPdf(formData.cv);
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("response", surveyResults);
@@ -289,16 +488,21 @@ export default function AppliedJob() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("No token found in localStorage");
 
+      
+      console.log("jobDetails:",jobDetails);
+      const score = await TextCompare(extractedText,jobDetails.jobDescription);
+      console.log(userDetails.user.id);
+
       const applicationData = {
-        user: { id: userDetails.id },
-        job: { id: jobId },
-        atsScore: 85,
+        user: { id: userDetails.user.id},
+        job: { id:jobId },
+        atsScore: score.percentage,
         appliedDate: new Date().toISOString(),
         status: "pending",
         cv: formData.cv,
         response: JSON.stringify(surveyResults),
         email: formData.email,
-        cvText:textContent,
+        cvText:extractedText,
       };
 
       console.log("Application data:", applicationData);
