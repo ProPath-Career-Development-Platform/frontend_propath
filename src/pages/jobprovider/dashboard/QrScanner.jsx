@@ -414,7 +414,7 @@ function QrScannerComponent() {
                   </Box>
                 ) : user && ver ? (
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'center' ,flexDirection:'column'}}>
-                    <Avatar src={user.userProPic} sx={{ '--Avatar-size': '15rem' }}  />
+                    <Avatar src={user.userProPic} sx={{ '--Avatar-size': '15rem' }} alt={user.userName} />
         
                     <Box>
                       <Typography level="h1" >
