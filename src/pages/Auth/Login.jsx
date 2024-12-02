@@ -220,7 +220,7 @@ function Login() {
                 <button type="submit" className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#6756a8] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]">
                   Sign in
                 </button>
-                <button
+                {/* <button
                   type="button"
                   onClick={handlesignup}
                   className="flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-2 px-4 rounded-xl text-gray-700 font-semibold text-lg border-2 bg-violet-200  hover:text-[#6756a8]"
@@ -250,7 +250,7 @@ function Login() {
                     />
                   </svg>
                   Sign in with Google
-                </button>
+                </button> */}
               </div>
               <div className="flex items-center justify-center mt-8">
                 <p className="text-base font-medium text-black">Don't have an account?</p>

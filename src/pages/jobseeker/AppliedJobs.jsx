@@ -12,6 +12,7 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CelebrationIcon from '@mui/icons-material/Celebration';
 import {
   faCircleArrowRight,
   faCircleArrowLeft,
@@ -288,6 +289,18 @@ const AppliedJobs = () => {
                         sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
                       >
                         <WarningAmberIcon color="warning" /> Pending
+                      </Box>
+                    ) : job.status === "HIRED" ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <CelebrationIcon color="success" /> Hired
+                      </Box>
+                    ) : job.status === "REJECTED" ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <CancelIcon color="error" /> Not Selected
                       </Box>
                     ) : (
                       <Box
