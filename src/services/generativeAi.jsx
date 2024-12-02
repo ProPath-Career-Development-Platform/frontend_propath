@@ -89,3 +89,83 @@ import {
     return JSON.parse(generatedQuestions);
   };
   
+  export const CVanalysis = async (cvText, jobDescription) => {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+  
+    const generationConfig = {
+      temperature: 1,
+      topP: 0.95,
+      topK: 40,
+      maxOutputTokens: 8192,
+      responseMimeType: "application/json",
+    };
+  
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [
+    ],
+    });
+  
+    const result = await chatSession.sendMessage(
+      `You are an expert resume evaluator. I will provide a job description and a CV text. Your task is to evaluate the CV based on the following criteria:
+    
+    1. *Style*: Assess the formatting, consistency, and readability of the CV. Consider font size, alignment, use of whitespace, and overall presentation.
+    2. *Format*: Evaluate the logical structure and proper organization of sections (e.g., Summary, Skills, Experience, Education).
+    3. *Skills*: Match the skills listed in the CV against the job description. Highlight missing but relevant skills.
+    4. *Sections*: Check for the presence of essential sections (e.g., Contact Information, Summary, Experience, Skills, Education).
+    5. *Spelling and Grammar*: Identify spelling and grammatical errors.
+    6. *Repetition*: Check for unnecessary repetition of information. List repeated words (excluding common verbs like 'a', 'the', 'it', etc.) and the number of times each word appears.
+    7. *Resume Length*: Determine if the CV is an appropriate length based on the candidate's experience (e.g., 1-2 pages for most roles).
+    
+    ### Output:
+    Provide the evaluation as a JSON object with a percentage score for each criterion and an overall percentage score. Also, include specific feedback for improvement under each criterion. Include a list of repeated words with their counts under the 'repetition' criterion.
+    
+    #### Example Output:
+    \\\`json
+    {
+      "scores": {
+        "style": 85,
+        "format": 90,
+        "skills": 75,
+        "sections": 80,
+        "spelling_and_grammar": 95,
+        "repetition": 88,
+        "resume_length": 92
+      },
+      "overall_score": 86,
+      "feedback": {
+        "style": "The font and alignment are consistent, but the use of whitespace could improve readability.",
+        "format": "The CV is well-organized, but the education section is not detailed enough.",
+        "skills": "The CV covers most required skills but is missing 'Project Management' as listed in the job description.",
+        "sections": "The CV is missing a summary section. Add a brief summary to highlight key strengths.",
+        "spelling_and_grammar": "No errors found.",
+        "repetition": {
+          "feedback": "The description of roles in the experience section repeats similar phrases. Consolidate for clarity.",
+          "repeated_words": {
+            "management": 5,
+            "strategy": 3,
+            "budgeting": 2
+          }
+        },
+        "resume_length": "The CV length is appropriate for the level of experience."
+      }
+    }
+    \\\`
+    
+    #### Input:
+    - *Job Description*: "${jobDescription}"
+    - *CV Text*: "${cvText}"
+    
+    Use the job description to evaluate relevance and provide feedback tailored to the candidate's strengths and gaps. Output the JSON object as described above, including the repeated words and their counts under the 'repetition' criterion.`
+    );
+    
+    const generatedQuestions = result.response.text();
+    
+    console.log(JSON.parse(generatedQuestions));
+    return JSON.parse(generatedQuestions);
+  };
+
+  
+  

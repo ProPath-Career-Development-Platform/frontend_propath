@@ -177,7 +177,7 @@ function InterviewSchedule() {
     interviewDate: tab.date,
     duration: tab.duration,
     timeSlot: tab.holdTime,
-    
+    status:"pending",
     
     
   }));
