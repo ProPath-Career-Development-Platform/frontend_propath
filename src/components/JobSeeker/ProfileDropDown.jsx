@@ -45,7 +45,7 @@ const handleLogout = () => {
         onClick={toggleDropdown}
         className="relative flex items-center p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
       >
-        <img src={seba} alt="icon" style={{ height: '35px', width: '55px' , borderRadius: '50%'}} />
+        <img src={seba} alt="icon" style={{ height: '35px', width: '35px' , borderRadius: '50%'}} />
       </button>
 
       {isOpen && (

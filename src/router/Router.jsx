@@ -55,6 +55,7 @@ import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
+import UpdateProfile from "../components/JobSeeker/profile/updateProfile";
 
 //Admin
 import AdminHome from "../pages/Admin/AdminHome";
@@ -348,6 +349,10 @@ const router = createBrowserRouter([
       {
         path:"event",
         element:<Event/>
+      },
+      {
+        path: "updateProfile",
+        element: <UpdateProfile />
       }
 
     ],

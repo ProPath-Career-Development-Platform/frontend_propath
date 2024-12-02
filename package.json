@@ -51,6 +51,7 @@
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "mapbox-gl": "^3.5.2",
+    "mdb-react-ui-kit": "^9.0.0",
     "pdfjs-dist": "^4.8.69",
     "propath": "file:",
     "quill": "^2.0.2",
