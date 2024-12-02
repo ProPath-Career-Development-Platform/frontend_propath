@@ -150,6 +150,8 @@ const UpdateJob = () => {
    const [response, setResponse] = React.useState(false);
    const [surLoad,setSurLoad] = React.useState(true);
 
+   const [formNull,setFormNull] = React.useState(null);
+
    //fetch job details by id
    const {jobId} = useParams();
 
@@ -187,6 +189,10 @@ const UpdateJob = () => {
 
       );
 
+      if(response.data.customizedForm ===null){
+        setFormNull(true);
+      }
+
       setText(response.data.jobDescription);
       setFormLoading(false);
       
@@ -207,6 +213,17 @@ const UpdateJob = () => {
     }
   }, [formData.customizedForm]);
   
+
+  React.useEffect(() => {
+    console.log("need",formData.isCustomizedFormNeeded);
+  }, [formData.isCustomizedFormNeeded]);
+
+  React.useEffect(() => {
+    if (formData.jobTitle != null) {
+    checkCreatorIfNull(formData.jobTitle);
+    }
+    
+  }, [formNull]);
 
 
   
@@ -327,9 +344,69 @@ if (creator === undefined) {
        category: "Custom",
      });
    });
- }
+ } 
  setCreator(creator);
  setChecked(true); // Update the state with the creator instance
+ setSurLoad(false);
+}
+
+
+const checkCreatorIfNull = async (jobTitle) => {
+
+
+  const questionBank = await generateQuestions(jobTitle);
+  
+if (creator === undefined) {
+  let options = { 
+    showLogicTab: false, 
+    showTranslationTab: false,
+    showJSONEditorTab: false, 
+    showEmbededSurveyTab: false, 
+    isAutoSave: true
+  };
+  
+  creator = new SurveyCreator(options);
+
+  // Add each question from the bank to the toolbox
+  questionBank.forEach((question) => {
+    creator.toolbox.addItem({
+      name: question.name,
+      iconName: "icon-default",
+      title: question.title,
+      json: question,
+      category: "Custom" // Optional: Organize in a specific category
+    });
+  });
+
+  
+
+  creator.saveSurveyFunc = (saveNo, callback) => {
+    callback(saveNo, true);
+
+    saveSurveyJson(creator.JSON, saveNo, callback);
+  };
+
+
+  
+}else{
+
+  const customItems = creator.toolbox.items.filter(item => item.category === "Custom");
+   customItems.forEach(item => {
+   creator.toolbox.removeItem(item.name); // Remove the item by name
+ });
+   // If creator already exists, add new questions to the toolbox
+   questionBank.forEach((question) => {
+     creator.toolbox.addItem({
+       name: question.name,
+       iconName: "icon-default",
+       title: question.title,
+       json: question,
+       category: "Custom",
+     });
+   });
+ } 
+ setCreator(creator);
+ setChecked(false); // Update the state with the creator instance
  setSurLoad(false);
 }
 
