@@ -18,20 +18,22 @@ import LoopIcon from '@mui/icons-material/Loop';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SpellcheckIcon from '@mui/icons-material/Spellcheck';
 import { ExitToApp, Spellcheck } from '@mui/icons-material';
-
+import { useLocation } from 'react-router-dom';
 const JobScore = () => {
   const [progress, setProgress] = useState(0)
   const [state, setState] = useState("neutral")
+  const location = useLocation();
+  const { res } = location.state || {}; 
+ 
   useEffect(() =>{
     const change = setInterval(() => {
      
        
 
-       if(progress <=76 ){
+       if(progress <= res.overall_score ){
            setProgress(progress+1)
        }
-       
-       console.log(progress)
+      
     }, 100);
 
     return () => clearInterval(change); 
@@ -83,7 +85,7 @@ const JobScore = () => {
                         
                       
                         <Box sx={{ display: 'flex' }}>
-                            <JSSearch/>
+                            {/* <JSSearch/> */}
                             <Alert />
                             <ProfileDropdown />
                            
@@ -108,7 +110,7 @@ const JobScore = () => {
             <Typography sx={{fontSize: '14px' , fontWeight: 400 , marginBottom: '10px'}}>13 Issues</Typography>
         </Box>
         <Box sx={{display:'flex' , justifyContent:'space-around'}}>
-           <ATSAccordion></ATSAccordion>
+           <ATSAccordion res = {res}></ATSAccordion>
         </Box>
          </Box>
 
@@ -200,19 +202,51 @@ const JobScore = () => {
               </Box>
              
               <Box sx={{position: 'absolute' , right: 10}}>
-                <Chip sx={{background: 'lightgreen'}}><Typography sx={{fontSize: '13px' , fontWeight: 500}}>231 words</Typography></Chip>
+                <Chip sx={{background: 'lightgreen'}}><Typography sx={{fontSize: '13px' , fontWeight: 500}}>{res.resume_length} words</Typography></Chip>
               </Box>
             </Box>
-          
-            <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
-              <WarningAmberIcon color='danger'  sx={{ width: '60px', height: '60px' }} />
-            </Box>
+            {res.resume_length>=400 && res.resume_length<=800 && (
+              <Box>
+              <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
+              <CheckCircleOutlineIcon color='success'  sx={{ width: '60px', height: '60px' }} />
+              </Box>
 
-            <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
+              <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
+              <Typography sx={{fontWeight : 500 , color : 'green'}}>
+                Resume Length is Ideal
+              </Typography>
+              </Box>
+              </Box>
+            )}
+            {res.resume_length<400 && (
+              <Box>
+              <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
+              <WarningAmberIcon color='danger'  sx={{ width: '60px', height: '60px' }} />
+              </Box>
+
+              <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
               <Typography sx={{fontWeight : 500 , color : 'red'}}>
                 Resume Length is too Short
               </Typography>
-            </Box>
+              </Box>
+              </Box>
+
+            )}
+            {res.resume_length>800 && (
+              <Box>
+              <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
+              <WarningAmberIcon color='danger'  sx={{ width: '60px', height: '60px' }} />
+              </Box>
+
+              <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
+              <Typography sx={{fontWeight : 500 , color : 'red'}}>
+                Resume Length is too Long
+              </Typography>
+              </Box>
+              </Box>
+
+            )}
+           
 
             <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
          
@@ -238,10 +272,12 @@ const JobScore = () => {
               </Box>
              
               <Box sx={{position: 'absolute' , right: 10}}>
-                <Chip sx={{background: 'lightgreen'}}><Typography sx={{fontSize: '13px' , fontWeight: 500}}>1.87 MB</Typography></Chip>
+                <Chip sx={{background: 'lightgreen'}}><Typography sx={{fontSize: '13px' , fontWeight: 500}}>{(res.resume_length * 0.2).toString().slice(0,3)} KB</Typography></Chip>
               </Box>
             </Box>
-              <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
+              {res.resume_length*0.2 <=2000 && (
+                <Box>
+                  <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
                  <CheckCircleOutlineIcon color="success" sx={{ width: '60px', height: '60px' }} />
               </Box>
 
@@ -263,6 +299,35 @@ const JobScore = () => {
                 </Button>
               </Tooltip>
               </Box>
+                </Box>
+              )}
+               {res.resume_length*0.2 >2000 && (
+                <Box>
+                  <Box sx={{display:'flex' , justifyContent: "center" , marginTop: '20px'}}>
+                 <WarningAmberIcon color="danger" sx={{ width: '60px', height: '60px' }} />
+              </Box>
+
+              <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
+              <Typography sx={{fontWeight : 500 , color : 'green'}}>
+                File size is too large
+              </Typography>
+              </Box>
+              
+              <Box sx = {{display: 'flex' , justifyContent: 'center' , marginTop: '10px'}}>
+         
+              <Tooltip title={
+                <Box sx={{}}>
+                  <Typography>Ideally, your resume should be less than 2MB in size. Anything larger will most likely not be accepted on majority of platforms.</Typography>
+                </Box>
+              }  placement="right" sx={{background: 'white' , width: '200px'}}>
+                <Button variant="plain" color="neutral">
+                  <InfoIcon/>
+                </Button>
+              </Tooltip>
+              </Box>
+                </Box>
+              )}
+              
            </Box>
           </Box> 
         </Box>
@@ -335,11 +400,17 @@ const JobScore = () => {
 
 
           }}>
-            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Project: 8 times</Typography></Chip>
-            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Design: 5 times</Typography></Chip>
-            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>React: 4 times</Typography></Chip>
-            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Frontend: 4 times</Typography></Chip>
-            <Chip sx={{border:"1px solid #f38989"}}><Typography sx={{lineHeight: '30px'}}>Software: 4 times</Typography></Chip>
+         {Object.entries(res.feedback.repetition.repeated_words).map(([word, count]) => (
+            count >= 3 && (
+              <Chip sx={{ border: "1px solid #f38989", margin: "5px" }} key={word}>
+                <Typography sx={{ lineHeight: '30px' }}>
+                  {word} :  {count} times
+                </Typography>
+              </Chip>
+            )
+          ))}
+
+           
             
             </Box>
           </Box>

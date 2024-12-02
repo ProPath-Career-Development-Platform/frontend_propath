@@ -49,9 +49,12 @@ export default function ApplyATS({ title, open1 }) {
   const submit = async () => {
    setLoad(true);
 
-   const res = await CVanalysis(extractedText,jobDesc);
+   const res = await CVanalysis(extractedText);
    console.log(res);
    setLoad(false);
+   if(res){
+    navigate('/jobseeker/jobscore' , { state: { res } });
+    }
 
 
   };
@@ -62,6 +65,7 @@ export default function ApplyATS({ title, open1 }) {
       
       const text = await extractTextFromPDF(file);
       setExtractedText(text);
+     
      
     }
   };
