@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from "react";
-import ImageSlider from "../../components/JobSeeker/course/imageslider";
-import BasicCard from "../../components/JobSeeker/course/cardSlider";
-import { Box } from "@mui/material";
-import logo from "/logo.png";
-import JSSearch from "../../components/JobSeeker/search";
-import Alert from "../../components/JobSeeker/alert";
-import ProfileDropdown from "../../components/JobSeeker/ProfileDropDown";
-import DoneIcon from "@mui/icons-material/Done";
-import { ModalClose, ModalDialog, Typography } from "@mui/joy";
-import Chip from "@mui/joy/Chip";
-import AccordionIndicator from "../../components/JobSeeker/course/accodion";
-import CourseOverview from "../../components/JobSeeker/course/courseOverview";
-import CourseFAQ from "../../components/JobSeeker/course/faq";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import WhatshotIcon from "@mui/icons-material/Whatshot";
-import Modal from "@mui/joy/Modal";
-import Button from "@mui/joy/Button";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import Input from "@mui/joy/Input";
-import Stack from "@mui/joy/Stack";
-import IconButton from "@mui/joy/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
-import { getToken } from "../Auth/Auth";
-import SimpleMap from "../../components/JobSeeker/map";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import RenderRichText from "../../components/jobprovider/dashboard/RenderRichText";
+import React , {useState, useEffect} from 'react'
+import ImageSlider from '../../components/JobSeeker/course/imageslider'
+import BasicCard from '../../components/JobSeeker/course/cardSlider'
+import { Box } from '@mui/material'
+import logo from '/logo.png'
+import JSSearch from '../../components/JobSeeker/search'
+import Alert from '../../components/JobSeeker/alert'
+import ProfileDropdown from '../../components/JobSeeker/ProfileDropDown'
+import DoneIcon from '@mui/icons-material/Done';
+import { ModalClose, ModalDialog, Typography } from '@mui/joy'
+import Chip from '@mui/joy/Chip';
+import AccordionIndicator from '../../components/JobSeeker/course/accodion'
+import CourseOverview from '../../components/JobSeeker/course/courseOverview'
+import CourseFAQ from '../../components/JobSeeker/course/faq'
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+import Modal from '@mui/joy/Modal'
+import Button from '@mui/joy/Button';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
+import IconButton from '@mui/joy/IconButton'
+import CloseIcon from '@mui/icons-material/Close';
+import { useLocation } from 'react-router-dom'
+import axios from 'axios'
+import { getToken } from '../Auth/Auth'
+import SimpleMap from '../../components/JobSeeker/map'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import RenderRichText from '../../components/jobprovider/dashboard/RenderRichText'
 
 const Course = () => {
   const location = useLocation();
@@ -189,18 +189,13 @@ const Course = () => {
             </Typography>
           </Box>
         </Box>
-      </Box>
-      <Box sx={{ position: "absolute", right: "8%", top: "25%" }}>
-        <BasicCard
-          url={seeekerEvent?.event?.banner}
-          callback={(value) => {
-            setOpen(true);
-          }}
-          details={seeekerEvent}
-        ></BasicCard>
-      </Box>
-      <Box>
-        {/* <Box>
+
+        <Box sx={{position: 'absolute' , right: '8%' , top: '25%'}}>
+                <BasicCard  url = {seeekerEvent?.event?.banner} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent} ></BasicCard>
+                </Box>
+        <Box>
+            {/* <Box>
+
             <Box sx={{marginTop : '10px' , }}>
                 <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Skills you will learn</Typography>
             </Box>
@@ -256,15 +251,38 @@ const Course = () => {
                 </Box>
             </Box> */}
 
-        <Box sx={{ width: "60%", marginTop: "40px" }}>
-          <Box sx={{ width: "100%", marginTop: "12px", marginBottom: "12px" }}>
-            <Typography sx={{ fontWeight: 500, fontSize: "25px" }}>
-              Course Overview{" "}
-            </Typography>
-          </Box>
-          <RenderRichText text={seeekerEvent?.event?.description} />
-          {/* <Box>{seeekerEvent?.event?.description}</Box> */}
-        </Box>
+
+            <Box sx={{width : '60%' , marginTop : '40px'}} >
+                <Box sx={{width: '100%' ,marginTop : '12px' , marginBottom : '12px'}}>
+                <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Event Overview  </Typography>
+                </Box>
+                <Box>
+                    <RenderRichText text={seeekerEvent?.event?.description} />
+                </Box>
+            </Box>
+
+            <Box sx={{ width: '60%', marginTop: '40px' }}>
+  {/* Section Title */}
+  <Box sx={{ marginBottom: '20px' }}>
+    <Typography sx={{ fontWeight: 600, fontSize: '24px', color: 'text.primary' }}>
+      Location
+    </Typography>
+  </Box>
+
+  {/* Map Container */}
+  <Box
+    sx={{
+      width: '100%',
+      height: '400px', // Set a fixed height for the map
+      borderRadius: '12px', // Rounded corners for a modern look
+      overflow: 'hidden', // Ensure content doesn't overflow the border radius
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Add a subtle shadow
+    }}
+  >
+    <SimpleMap latitude = {6.0535} longitude = {80.2205}/>
+  </Box>
+</Box>
+
 
         <Box sx={{ width: "60%", marginTop: "40px" }}>
           {/* Section Title */}

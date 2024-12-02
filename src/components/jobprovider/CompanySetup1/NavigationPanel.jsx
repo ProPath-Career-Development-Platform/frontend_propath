@@ -82,6 +82,10 @@ export default function NavigationPanel() {
     location:'',
     contactNumber:'',
     email:'',
+    xurl: '',
+    fbUrl: '',
+    linkedinUrl: '',
+    youtubeUrl: '',
     
   });
 
@@ -454,6 +458,10 @@ const handleBannerUpload = (event) => {
           contactNumber: formData.contactNumber,
           email: formData.email,
           status:"pending",
+          xurl:formData.xurl,
+          fbUrl:formData.fbUrl,
+          linkedinUrl: formData.linkedinUrl,
+          youtubeUrl: formData.youtubeUrl,
           //userId:userId
         };
         try{
@@ -1327,12 +1335,96 @@ const [italic, setItalic] = React.useState(false);
                 
                 }}
             >
-            <img src="/social_media.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
+            <img src="/Social_media.jpg" alt="" style={{ borderRadius: '20px',height:'100%',objectFit: 'cover'}} />
             </Box> 
             </Box>
            
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '40px', pt: 12, alignItems: 'center' }}>
-          {links.map((link, index) => (
+
+
+            <FormControl sx={{ width: '95%', paddingLeft: '30px' }} error={Boolean(error.fbUrl)}>
+              <FormLabel>Facebook</FormLabel>
+              <Input
+                name="fbUrl"
+                placeholder="Enter URL here"
+                value={formData.fbUrl}
+                onChange={handleInputChange}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={faLink} style={{ color: "#74C0FC" }} />
+                  </InputAdornment>
+                }
+              />
+              {error.fbUrl && (
+                <FormHelperText>
+                  <InfoOutlined /> {error.fbUrl}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+
+            <FormControl sx={{ width: '95%', paddingLeft: '30px' }} error={Boolean(error.xurl)}>
+              <FormLabel>X (twitter)</FormLabel>
+              <Input
+                name="xurl"
+                placeholder="Enter URL here"
+                value={formData.xurl}
+                onChange={handleInputChange}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={faLink} style={{ color: "#74C0FC" }} />
+                  </InputAdornment>
+                }
+              />
+              {error.xurl && (
+                <FormHelperText>
+                  <InfoOutlined /> {error.xurl}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+
+            <FormControl sx={{ width: '95%', paddingLeft: '30px' }} error={Boolean(error.linkedinUrl)}>
+              <FormLabel>LinkedIn</FormLabel>
+              <Input
+                name="linkedinUrl"
+                placeholder="Enter URL here"
+                value={formData.linkedinUrl}
+                onChange={handleInputChange}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={faLink} style={{ color: "#74C0FC" }} />
+                  </InputAdornment>
+                }
+              />
+              {error.linkedinUrl && (
+                <FormHelperText>
+                  <InfoOutlined /> {error.linkedinUrl}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+            <FormControl sx={{ width: '95%', paddingLeft: '30px' }} error={Boolean(error.youtubeUrl)}>
+              <FormLabel>Youtube</FormLabel>
+              <Input
+                name="youtubeUrl"
+                placeholder="Enter URL here"
+                value={formData.youtubeUrl}
+                onChange={handleInputChange}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={faLink} style={{ color: "#74C0FC" }} />
+                  </InputAdornment>
+                }
+              />
+              {error.youtubeUrl && (
+                <FormHelperText>
+                  <InfoOutlined /> {error.youtubeUrl}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+     { /*    {links.map((link, index) => (
             <Box
             key={index} sx={{ width: '100%',paddingLeft:10 }}
             >
@@ -1407,7 +1499,7 @@ const [italic, setItalic] = React.useState(false);
       onClick={handleAddLink}
     >
       
-      Add Another Link</Button>
+      Add Another Link</Button> */}
         
       <Box
               sx={{
