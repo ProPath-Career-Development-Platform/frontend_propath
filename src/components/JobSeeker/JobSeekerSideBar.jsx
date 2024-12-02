@@ -198,7 +198,7 @@ function JobSeekerSideBar() {
             </ListItemButton>
           </ListItem>
 
-          <ListItem>
+          {/* <ListItem>
             <ListItemButton
               component={RouterLink}
               to="/jobseeker/setup/"
@@ -209,7 +209,7 @@ function JobSeekerSideBar() {
                 <Typography level="title-sm">Set Up</Typography>
               </ListItemContent>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
           
         {/* <Card

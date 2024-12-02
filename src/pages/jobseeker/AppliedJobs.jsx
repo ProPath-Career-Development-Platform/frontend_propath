@@ -299,7 +299,7 @@ const AppliedJobs = () => {
                   </td>
                   <td>
                     <Button
-                      sx={{ backgroundColor: "#800080", color: "#e7e7e7" }}
+                      sx={{ backgroundColor: "#DA70D6", color: "#e7e7e7" }}
                       variant="contained"
                       size="md"
                       onClick={() => window.open(job.cv, "_blank")}
