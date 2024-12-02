@@ -409,7 +409,7 @@ export default function AppliedJob() {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log("User already applied:", response.data);
+          // console.log("User already applied:", response.data);
           setCheckUserAlreadyApplied(response.data);
         } catch (error) {
           console.error("Error checking if user already applied:", error);

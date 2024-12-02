@@ -16,6 +16,7 @@ import JSCard from "../../components/JobSeeker/card";
 import Pagination from "../../components/JobSeeker/pagination";
 import Banner from "../../components/JobSeeker/banner";
 import logo from "../../assets/logo.png";
+import JobType from "../../components/JobSeeker/advancedfilter/jobType";
 
 function decodeJWT(token) {
   const base64Url = token.split(".")[1];
@@ -41,7 +42,7 @@ const JobSeekerHome = () => {
 
   const token = localStorage.getItem("token");
   const decodedToken = decodeJWT(token);
-  console.log("decodedToken", decodedToken);
+  // console.log("decodedToken", decodedToken);
 
   const handleSizeChange = (newValue) => {
     const x = newValue.split(" ");
@@ -71,15 +72,20 @@ const JobSeekerHome = () => {
       return { location: "Unknown" }; // Fallback value
     }
   };
+  
+  const [filter , setJobType] = useState([])
+  const [filterType, setFilterType] = useState('')
 
   const fetchJobs = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/jobseeker/all-jobs",
+         `http://localhost:8080/jobseeker/getCompany?filter=${filter}&jobType=${filterType}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+     
+
       const currentDate = new Date();
       const validJobs = response.data.filter((job) => {
         const expiryDate = new Date(job.expiryDate);
@@ -91,15 +97,12 @@ const JobSeekerHome = () => {
       const jobsWithCompanyDetails = await Promise.all(
         validJobs.map(async (job) => {
           const companyDetails = await fetchCompanyDetails(job.id);
-          console.log("Hi")
           return { ...job, companyDetails }; // Add company details to the job object
         })
       );
 
-      console.log("Jobs with company details:", jobsWithCompanyDetails);
       setJobs(jobsWithCompanyDetails);
       setTotalPages(Math.ceil(validJobs.length / selectedSize)-1);
-      console.log(Response)
     } catch (error) {
       console.error("Error fetching job data:", error);
     }
@@ -108,13 +111,22 @@ const JobSeekerHome = () => {
   useEffect(() => {
     fetchJobs();
     fetchCompanyDetails();
-  }, [selectedSize, pageNumber]);
+    setJobType();
+  }, [selectedSize, pageNumber, filter]);
 
   const handlePageChange = (value) => {
     setPageNumber(value);
   };
   
 
+
+  const setSortData = (e,x) => {
+    setJobType(e);
+    setFilterType(x);
+    console.log("Size : " + JobType + " " + filterType)
+       
+  };
+  
   return (
     <Box
       component="main"
@@ -182,30 +194,37 @@ const JobSeekerHome = () => {
       >
         <Box sx={{ display: "flex", gap: 2 }}>
           <JSDropDown
-            name={"Job Type "}
-            sizes={["Fulltime", "Contract", "Internship", "PartTime", "Casual"]}
+            name={"Job Type"}
+            sizes= {["Full-Time", "Contract", "Internship", "Part-Time", "Casual"]}
             proptype="1"
+            sortData = {setSortData}
           />
           <JSDropDown
-            name={"Modality "}
-            sizes={["Onsite", "Remote", "Hybrid"]}
+            name={"Experience"}
+            sizes={["No Experience", "1+ year", "2+ years","3+ years","5+ years"]}
             proptype="1"
+            sortData = {setSortData}
+
           />
           <JSDropDown
             name={"Job Role"}
             sizes={[
-              "Srilanka",
-              "Bangladesh",
-              "Internship",
-              "PartTime",
-              "Casual",
+              "Developer",
+              "Markerter",
+              "Designer",
+              "Manager",
+              "Analyst",
             ]}
             proptype="1"
+            sortData = {setSortData}
+
           />
           <JSDropDown
             name={"Job Title"}
-            sizes={["Fulltime", "Contract", "Internship", "PartTime", "Casual"]}
+            sizes={["Fulltme", "Contract", "Internship", "PartTime", "Casual"]}
             proptype="0"
+            sortData = {setSortData}
+
           />
           <AdvancedFilter />
         </Box>
@@ -250,8 +269,11 @@ const JobSeekerHome = () => {
       </Box>
 
       <Divider />
-
-      {type === 1 ? (
+      {jobs.length ==0 ? (
+        <div style={{ fontSize: '40px', fontWeight: 'bold', justifyContent:'center' , display:'flex',  marginTop:'140px' }}>
+                    No jobs found
+                  </div>):
+      type === 1 ? (
         <Box
           sx={{
             display: "grid",
@@ -272,23 +294,23 @@ const JobSeekerHome = () => {
             .map((job, index) => (
               <JSCard
                 jobId={job.id}
-                title={job.jobTitle}
+                title={job.location}
                 content={removeHtmlTags(job.jobDescription)}
                 location={
-                  job.companyDetails?.location || "Location not available"
+                  job?.company?.location || "Location not available"
                 } // Pass location from companyDetails
                 company={
-                  job.companyDetails?.companyName || "Company not available"
+                  job?.company?.companyName || "Company not available"
                 } // Pass companyName from companyDetails
                 type={type}
-                img={job.companyDetails?.bannerImg}
+                img={job?.company?.bannerImg}
                 customizedForm={job.customizedForm}
                 applicantCount={job.applicantCount || 0} // Default value if null
                 education={job.education}
                 experience={job.experience}
                 expiryDate={job.expiryDate}
                 jobType={job.jobType}
-                jobLevel={job.jobLevel}
+                jobLevel={removeHtmlTags(job.jobDescription.split(".")[0])}
                 jobRole={job.jobRole}
                 logoImg={job.companyDetails?.logoImg || job.logoImg} // Use company logo if available
                 maxSalary={job.maxSalary}
@@ -314,7 +336,7 @@ const JobSeekerHome = () => {
                 title={job.jobTitle}
                 content={removeHtmlTags(job.jobDescription)}
                 location={
-                  job.companyDetails?.location || "Location not available"
+                  job.location || "Location not available"
                 } // Pass location from companyDetails
                 company={
                   job.companyDetails?.companyName || "Company not available"
