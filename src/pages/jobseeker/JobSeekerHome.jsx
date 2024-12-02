@@ -294,7 +294,7 @@ const JobSeekerHome = () => {
             .map((job, index) => (
               <JSCard
                 jobId={job.id}
-                title={job.location}
+                title={job.jobTitle}
                 content={removeHtmlTags(job.jobDescription)}
                 location={
                   job?.company?.location || "Location not available"
