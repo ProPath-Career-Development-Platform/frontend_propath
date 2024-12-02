@@ -24,6 +24,9 @@ import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import {getUserId} from '../../../utils/auth';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 
 
 
@@ -107,7 +110,10 @@ export default function EventParticipantTable({eventId,userData,loading}) {
          { 
             field: 'col1', 
             headerName: 'Name', 
-            width: '200',
+            width: '300',
+            align: 'center',
+           
+            
             renderCell: (params) => (
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 {params.value.url  ? (
@@ -133,8 +139,43 @@ export default function EventParticipantTable({eventId,userData,loading}) {
              return a.name.localeCompare(b.name);
            }
           },
-         { field: 'col2', headerName: 'Email', width: '250',},
+         { field: 'col2', headerName: 'Email', width: '310', },
          { field: 'col3', headerName: 'Applied Date', width: '200',},
+         { field: 'col4', headerName: 'Participate', width: '100', align: 'center', type: 'boolean',
+
+          renderCell: (params) => (
+            params.value.participate == true ? (
+             <><CheckCircleIcon color="success" /></>  
+            ) : (
+              <><CancelIcon color="error" /></>  
+              )
+          ),
+
+        
+         },
+         { field: 'col5', headerName: 'Actions', width: 150,type: 'actions',
+
+          getActions: (params) => [
+              <Tooltip title="Show QR">
+              <GridActionsCellItem
+                icon={<QrCodeScannerIcon />}
+                label="QR Code"
+                onClick = {() => window.open(params.row.col5.qrImg)}
+              />
+              </Tooltip> /*
+              ,
+              <GridActionsCellItem
+            
+                icon={<RemoveRedEyeIcon />}
+                label="Preview Job"
+               // onClick={toggleAdmin(params.id)}
+                showInMenu
+              />,
+*/
+              
+          
+            ],
+          },
          
         
        ];
@@ -161,6 +202,9 @@ export default function EventParticipantTable({eventId,userData,loading}) {
             col1: {name: user.userName, url: user.profilePicture},
             col2: user.userEmail,
             col3: user.appliedDate,
+            col4: {participate:user.IsParticipate},
+            col5: {id: user.regID, qrImg: user.qrImg},
+
           };
         });
       

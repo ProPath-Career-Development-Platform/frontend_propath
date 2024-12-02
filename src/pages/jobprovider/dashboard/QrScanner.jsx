@@ -102,9 +102,15 @@ function QrScannerComponent() {
     const [isScanning, setIsScanning] = useState(false); // Flag to prevent duplicate scans
 
     const [webCam ,setWebCam] = useState(true);
+    const [lQr,setLQr] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState(null);
     const[wLoading, setWLoading] = useState(true);
+    const [event,setEvent] = useState(null);
+    const [eLoad, setELoad] = useState(true);
+    
+  const navigate = useNavigate();
+
 
     useEffect(() => {
 
@@ -116,6 +122,7 @@ function QrScannerComponent() {
         setErrorMessage(null); 
         setWebCam(false);
         setWLoading(false);
+        setLQr(true);
       })
       .catch((error) => {
         setWLoading(false);
@@ -211,6 +218,27 @@ function QrScannerComponent() {
         
     };
 
+
+    useEffect(() => {
+      axios.get(`http://localhost:8080/jobprovider/event/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        setEvent(response.data);
+        setELoad(false);
+        console.log(response.data);
+      }).catch((error) => {
+        console.error('Error fetching events:', error);
+        navigate('/jobprovider/error/404');
+      });
+  
+      
+  
+  
+    }, []);
+  
+
     
 
 
@@ -267,14 +295,68 @@ function QrScannerComponent() {
           <Divider />
   
           <Card variant="outlined" sx={{ minWidth: 300 }}>
-            <CardContent orientation="horizontal" sx={{ alignItems: "center", gap: 1 }}>
+            <CardContent orientation="horizontal" sx={{ display:{xs:'none',md:'flex'},justifyContent: "space-between", gap: 1 }}>
+
+              <Box sx={{display:'flex', justifyContent:'center', alignItems:'center'}}>
               <Avatar
                 size="md"
                 src="https://ik.imagekit.io/propath/camera-png-icon-3.png"
                 sx={{ p: 0, border: "2px solid", borderColor: "background.body" }}
               />
-              <Typography sx={{ fontWeight: "lg" }}>QR Scanner</Typography>
+              
+
+              <Typography sx={{ fontWeight: "lg" }}>QR Scanner |  </Typography> <Typography sx={{ml:1}} level="title-md"> <Skeleton animation="wave" variant="rectangular" sx={{width:'300px'}} height="1.5em" loading={eLoad}> {event?.title}</Skeleton></Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {isScanning ? (
+                <Typography level="title-md" startDecorator={<CircularProgress size="sm" />}>
+                  Scanning for QR Code...
+                </Typography>
+              ) : lQr ? (
+                <Typography level="title-md" startDecorator={<CircularProgress size="sm" />}>
+                  Searching for QR Code...
+                </Typography>
+              ) : null}
+            </Box>
             </CardContent>
+
+
+            <CardContent orientation="horizontal" sx={{ display:{xs:'flex',md:'none'},justifyContent: "center", gap: 1,flexDirection:'column' }}>
+
+           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+           <Avatar
+                size="md"
+                src="https://ik.imagekit.io/propath/camera-png-icon-3.png"
+                sx={{ p: 0, border: "2px solid", borderColor: "background.body" }}
+              />
+              
+
+              <Typography sx={{ fontWeight: "lg" }}>QR Scanner</Typography> 
+
+
+           </Box>
+             
+              <Typography  sx={{textAlign:'center'}} level="title-md"> <Skeleton animation="wave" variant="rectangular" sx={{width:'300px'}} height="1.5em" loading={eLoad}> {event?.title}</Skeleton></Typography>
+              
+
+             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              {isScanning ? (
+                <Typography   level="body-xs" startDecorator={<CircularProgress sx={{"--CircularProgress-size": "15px",  "--CircularProgress-trackThickness": "1px","--CircularProgress-progressThickness": "1px" }}  />}>
+                  Scanning for QR Code...
+                </Typography>
+              ) : lQr ? (
+                <Typography  level="body-xs" startDecorator={<CircularProgress sx={{"--CircularProgress-size": "15px",  "--CircularProgress-trackThickness": "1px","--CircularProgress-progressThickness": "1px" }}  />}>
+                  Searching for QR Code...
+                </Typography>
+              ) : null}
+
+              </Box>
+          
+            </CardContent>
+
+
             <Divider />
             <CardContent sx={{ m: "auto", width: { xs: "90%", md: "50%" } }}>
              {
@@ -293,7 +375,7 @@ function QrScannerComponent() {
 
                     <Box sx={{ display: 'flex', gap: 5, alignItems: 'center', justifyContent: 'center' ,flexDirection:'column'}}>
                 <AspectRatio ratio="16/9" objectFit="contain" sx={{width:{xs:'90%', sm:'500px'}, borderRadius:10}}>
-                <img src='https://ik.imagekit.io/propath/QR%20Code-pana%20(1).png?updatedAt=1733078636648' alt="QR Code" />
+                <img src='https://ik.imagekit.io/propath/QR%20Code-bro.png?updatedAt=1733114305982' alt="QR Code" />
                 </AspectRatio>
 
                 <Box>
@@ -301,7 +383,7 @@ function QrScannerComponent() {
                     
                    
                     <Typography level="title-lg" variant='soft' color='danger' sx={{mt:1,borderRadius:5}} >
-                        Please, Allow Camera Access.
+                        Please Allow Camera Access.
                       </Typography>
                 
               
