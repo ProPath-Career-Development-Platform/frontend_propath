@@ -176,7 +176,7 @@ function JobSeekerSideBar() {
             >
               <NotificationsActiveIcon />
               <ListItemContent>
-                <Typography level="title-sm">Job Alert</Typography>
+                <Typography level="title-sm">Notificiations</Typography>
               </ListItemContent>
               <Chip size="sm" color="primary" variant="solid">
                 7

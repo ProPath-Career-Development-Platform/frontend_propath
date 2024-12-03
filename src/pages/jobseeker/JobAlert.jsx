@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
@@ -17,10 +17,14 @@ import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
-
+import { Alert } from "@mui/joy";
 import Divider from "@mui/joy/Divider";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import logo from "../../assets/logo.png";
+import JSSearch from "../../components/JobSeeker/search";
+import ProfileDropdown from "../../components/JobSeeker/ProfileDropDown";
+import Alert1 from "../../components/JobSeeker/alert";
 const jobs = [
   {
     title: "Networking Engineer",
@@ -115,6 +119,59 @@ const jobs = [
 ];
 
 const JobAlert = () => {
+  const [notificationList, setNotificationList] = useState();
+ 
+  const token = localStorage.getItem("token");
+
+  
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      if (!token) {
+        setError("Authorization token is missing.");
+        return; // Return early if no token is available
+      }
+
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getNotifications/1`, // API URL
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,  // Authorization header with token
+            },
+          }
+        );
+        setNotificationList(response.data);  // Set the fetched data to state
+        console.log("Fetched job details:", response.data);  // Optional: for debugging
+      } catch (error) {
+        setError("Error fetching job details.");
+        console.error("Error fetching job details:", error);  // Optional: for debugging
+      }
+    };
+
+    // Trigger fetch when the token changes
+    if (token) {
+      fetchJobDetails();
+    }
+  }, [token]);
+
+  if(notificationList){
+    const sortedData = notificationList.sort((a, b) => {
+      const dateA = new Date(a[2]);
+      const dateB = new Date(b[2]);
+      return dateA - dateB; // Ascending order (earliest first)
+  });
+  }
+
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: 'You have a new message!' },
+    { id: 2, message: 'Your order has been shipped!' },
+    { id: 3, message: 'New update available for your app.' },
+  ]);
+  
+  const removeNotification = (index) => {
+    setNotificationList(notificationList.filter((_, i) => i !== index));
+  };
+  
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 6;
 
@@ -156,9 +213,31 @@ const JobAlert = () => {
         height: "100dvh",
         gap: 1,
         maxHeight: "calc(100vh - 10px)",
+        overflow: "auto",
+        "&::-webkit-scrollbar": { display: "none" },
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          mb: 1,
+          gap: 1,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "start", sm: "center" },
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box sx={{ width: 130 }}>
+          <img src={logo} alt="Logo" />
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          {/* <JSSearch /> */}
+          <Alert1 />
+          <ProfileDropdown />
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center" , }}>
         <Breadcrumbs
           size="sm"
           aria-label="breadcrumbs"
@@ -187,211 +266,228 @@ const JobAlert = () => {
           </Typography>
         </Breadcrumbs>
       </Box>
+     
+      {/* Notification container */}
       <Box
         sx={{
-          display: "flex",
-          mb: 1,
-          gap: 1,
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { xs: "start", sm: "center" },
-          flexWrap: "wrap",
-          justifyContent: "space-between",
+          width: '80%',
+          padding: '16px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          backgroundColor: 'white',
+          ml:'10%',
+          mt:'1%'
         }}
       >
-        <Typography level="h2" component="h1">
-          Job Alerts
-        </Typography>
-        <Link
-          component="button"
-          onClick={handleNavigate}
-          sx={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
+  <Box
+  sx={{
+    width: '80%',
+    padding: '16px',
+    borderRadius: '8px',
+    backgroundColor: 'white',
+    mt: '1%',
+    boxSizing: 'border-box', // Ensures padding doesn't affect overall width
+  }}
+>
+  <Box
+    sx={{
+      fontSize: '1.5rem',          // Larger font size for the title
+      fontWeight: '600',           // Slightly lighter than bold for a more balanced look
+      color: '#2D3A4C',            // Darker, slightly muted gray for readability
+      borderRadius: '8px',         // Keep rounded corners
+      marginBottom: '0px',        // Space below the title
+      letterSpacing: '0.5px',      // Slight spacing between letters for clarity
+    }}
+  >
+    Notifications
+  </Box>
+</Box>
+
+<Box
+  sx={{
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    mt: '1%',
+  }}
+>
+  {notificationList?.sort((a, b) => {
+    const dateA = new Date(a[2]);
+    const dateB = new Date(b[2]);
+    return dateB - dateA;
+  }).map((notification, index) => (
+    <Alert
+      key={index}
+      color="success"
+      sx={{
+        width: '100%',
+        marginBottom: '2px', // Increased spacing between alerts
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '8px', // Rounded corners for the Alert box
+       // Soft shadow for better depth
+        padding: '1px',
+        backgroundColor: 'white', // Light green background for success notifications
+      }}
+    >
+      {notification[1] === "newJob" ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            backgroundColor: '#814dde', // Lighter background for job-related notifications
+            padding: '16px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            width: '100%',
+            marginBottom: '12px',
+          }}
         >
-          <Typography level="h5">
-            <BorderColorOutlinedIcon /> Edit Job Alerts
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              color: 'white', // Darker green color for the title
+              marginBottom: '8px',
+            }}
+          >
+            New Job Posted on {notification[2]}
           </Typography>
-        </Link>
+          <Typography
+            variant="body2"
+            sx={{
+              fontSize: '14px',
+              color: 'white', // Lighter gray color for the content
+            }}
+          >
+            {notification[0]}
+          </Typography>
+        </Box>
+      ) : notification[1] === "upcoming Events" ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            backgroundColor: '#814dde',
+            padding: '16px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            width: '100%',
+            marginBottom: '12px',
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              color: 'white',
+              marginBottom: '8px',
+            }}
+          >
+            You Have an Upcoming Event:
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              fontSize: '14px',
+              color: 'white',
+            }}
+          >
+            {notification[0]}
+          </Typography>
+        </Box>
+      ) : notification[1] === "newEvent" ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            backgroundColor: '#814dde',
+            padding: '16px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            width: '100%',
+            marginBottom: '12px',
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              color: 'white',
+              marginBottom: '8px',
+            }}
+          >
+            New Event on {notification[2]}:
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              fontSize: '14px',
+              color: 'white',
+            }}
+          >
+            {notification[0]}
+          </Typography>
+        </Box>
+      ) : (
+        <div></div>
+      )}
+
+<Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column', // Stack items vertically
+    alignItems: 'flex-start', // Align children to the start horizontally
+    justifyContent: 'center', // Center content vertically
+    height: '100%', // Ensure parent container has height
+  }}
+>
+  {/* Your button and other content */}
+  <Button
+    variant="plain"
+    color="danger"
+    onClick={() => removeNotification(index)}
+    sx={{
+      fontWeight: 'bold',
+      marginTop: '8px',
+      alignSelf: 'center', // Center the button vertically
+      color: '#d32f2f',
+      textTransform: 'uppercase',
+      padding: '6px 12px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    X
+  </Button>
+</Box>
+
+    </Alert>
+  ))}
+</Box>
+
       </Box>
 
-      <Divider />
 
+      {/* Page content */}
       <Box
         sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-          gap: 15,
-          marginTop: "20px",
-        }}
-      ></Box>
-
-      <Table
-        hoverRow
-        sx={{ "& tbody": { bgcolor: "background.surface" } }}
-        size="lg"
-      >
-        <tbody>
-          {currentJobs.map((job, index) => (
-            <tr key={index} style={{ height: "100px" }}>
-              <td>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-                  <img
-                    src={job.icon}
-                    alt={job.title}
-                    style={{ width: 46, height: 46 }}
-                  />
-                  <Box>
-                    <Typography>
-                      {job.title}{" "}
-                      <Box
-                        component="span"
-                        sx={{
-                          backgroundColor: "lightblue",
-                          padding: "2px 4px",
-                          borderRadius: "8px",
-                          marginLeft: "8px",
-                        }}
-                      >
-                        {job.type}
-                      </Box>
-                    </Typography>
-                    <Typography
-                      level="body-sm"
-                      sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                    >
-                      <LocationOnIcon fontSize="small" /> {job.location}
-                      <AttachMoneyIcon fontSize="small" /> {job.salary}
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1.5,
-                        }}
-                      >
-                        <CheckCircleOutlineIcon color="success" />{" "}
-                        {job.remaining}
-                      </Box>
-                    </Typography>
-                  </Box>
-                </Box>
-              </td>
-              <td>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    width: "150%",
-                  }}
-                >
-                  {job.favorite === "yes" ? (
-                    <BookmarkAddedIcon />
-                  ) : (
-                    <BookmarkBorderIcon />
-                  )}
-                </div>
-              </td>
-              <td>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    width: "80%",
-                  }}
-                >
-                  <Button
-                    color="primary"
-                    variant="solid"
-                    size="md"
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "#0044cc",
-                      },
-                    }}
-                  >
-                    Apply Now <span style={{ marginRight: "8px" }}></span>
-                    <FontAwesomeIcon icon={faCircleArrowRight} size="md" />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      {/* Pagination Controls */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-          marginTop: 2,
-          position: "fixed",
-          marginLeft: "30%",
-          bottom: 0,
-          pb: 3,
-          backgroundColor: "inherit",
-          zIndex: 1000,
+          paddingTop: '100px',
+          textAlign: 'center',
         }}
       >
-        {currentPage > 1 && (
-          <Button
-            onClick={() => paginate(currentPage - 1)}
-            sx={{
-              backgroundColor: "transparent",
-              color: "inherit",
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.04)",
-              },
-            }}
-          >
-            {<FontAwesomeIcon icon={faCircleArrowLeft} size="lg" />}
-          </Button>
-        )}
-        {Array.from({ length: totalPages }, (_, index) => index + 1)
-          .filter(
-            (pageNumber) =>
-              pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1
-          )
-          .map((pageNumber) => (
-            <Button
-              key={pageNumber}
-              onClick={() => paginate(pageNumber)}
-              disabled={pageNumber === currentPage}
-              sx={{
-                backgroundColor:
-                  pageNumber === currentPage ? "#1565c0" : "transparent",
-                color: pageNumber === currentPage ? "white" : "inherit",
-                "&:hover": {
-                  backgroundColor:
-                    pageNumber === currentPage
-                      ? "#1565c0"
-                      : "rgba(0, 0, 0, 0.04)",
-                },
-                "&:disabled": {
-                  backgroundColor: "#ccc",
-                  color: "black",
-                },
-              }}
-            >
-              {pageNumber}
-            </Button>
-          ))}
-        {currentPage < totalPages && (
-          <Button
-            onClick={() => paginate(currentPage + 1)}
-            sx={{
-              backgroundColor: "transparent",
-              color: "inherit",
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.04)",
-              },
-            }}
-          >
-            {<FontAwesomeIcon icon={faCircleArrowRight} size="lg" />}
-          </Button>
-        )}
+        <h1>Notification Page</h1>
+        <p>This page displays all notifications at the top.</p>
       </Box>
     </Box>
+    
   );
 };
 
