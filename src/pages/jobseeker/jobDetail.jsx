@@ -14,7 +14,8 @@ import Stack from "@mui/material/Stack";
 import LinkIcon from "@mui/icons-material/Link";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import EmailIcon from "@mui/icons-material/Email";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import TimerIcon from "@mui/icons-material/Timer";
 import SchoolIcon from "@mui/icons-material/School";
@@ -64,6 +65,8 @@ const JobDetails = ({
   const [jobs, setJobs] = useState([]);
   const [companyDetails, setCompanyDetails] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
+  const [isfavorite, setIsFavorite] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
 
   const { jobId } = useParams();
@@ -92,6 +95,26 @@ const JobDetails = ({
       console.error("Error fetching job details:", error);
     }
   };
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getUserDetails`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching user details: ", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   const handleApplyNowClick = (id) => {
     navigate(`/JobSeeker/JobDetails/${id}`, {
@@ -156,7 +179,74 @@ const JobDetails = ({
     console.log(Submit);
   };
 
-  if (!jobDetails) {
+  const handleAddFavorite = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `http://localhost:8080/jobseeker/save-favorite`,
+        {
+          jobId: jobId,
+          companyId: companyDetails?.id,
+          userId: userDetails?.user?.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Added to favorites:", response.data);
+
+      // Update the state to reflect the change
+      setIsFavorite(true);
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+    }
+  };
+
+  const handleRemoveFavorite = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(
+        `http://localhost:8080/jobseeker/remove-favorite?jobId=${jobId}&companyId=${companyDetails.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Removed from favorites:", response.data);
+      setIsFavorite(false);
+    } catch (error) {
+      console.error("Error removing from favorites:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (companyDetails && companyDetails.id && jobId) {
+      const checkFavorite = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `http://localhost:8080/jobseeker/is-favorite?jobId=${jobId}&companyId=${companyDetails.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setIsFavorite(response.data);
+          console.log("Initial favorite status:", response.data);
+        } catch (error) {
+          console.error("Error fetching favorite status:", error);
+        }
+      };
+
+      checkFavorite();
+    }
+  }, [jobId, companyDetails]);
+
+  if (!jobDetails || !companyDetails) {
     return <Typography>Loading...</Typography>;
   }
 
@@ -219,7 +309,7 @@ const JobDetails = ({
               href="#some-link"
               fontSize={12}
               fontWeight={500}
-              onClick = {() => navigate("/JobSeeker")}
+              onClick={() => navigate("/JobSeeker")}
             >
               Dashboard
             </Link>
@@ -230,7 +320,7 @@ const JobDetails = ({
         </Box>
 
         <Box sx={{ display: "flex" }}>
-          <JSSearch />
+          {/* <JSSearch /> */}
           <Alert />
           <ProfileDropdown />
         </Box>
@@ -328,14 +418,20 @@ const JobDetails = ({
           >
             <Button
               variant="contained"
+              onClick={isfavorite ? handleRemoveFavorite : handleAddFavorite}
               sx={{
                 backgroundColor: "blue",
                 height: "42px",
                 width: { xs: "50px", sm: "50px", md: "50px", lg: "auto" },
               }}
             >
-              <BookmarkBorderIcon sx={{ color: "white" }} />
+              {isfavorite ? (
+                <BookmarkRemoveIcon sx={{ color: "white" }} />
+              ) : (
+                <BookmarkAddedIcon sx={{ color: "white" }} />
+              )}
             </Button>
+
             {Submit == 0 && (
               <ApplyJob title={title} callback={applyhandleChange}></ApplyJob>
             )}
@@ -473,7 +569,7 @@ const JobDetails = ({
                   <Button
                     variant="solid"
                     sx={{ backgroundColor: "#3f067a" }}
-                    onClick={() => handleApplyNowClick(job.id)} 
+                    onClick={() => handleApplyNowClick(job.id)}
                   >
                     Apply Now <ArrowRightAltIcon sx={{ marginLeft: "3px" }} />
                   </Button>

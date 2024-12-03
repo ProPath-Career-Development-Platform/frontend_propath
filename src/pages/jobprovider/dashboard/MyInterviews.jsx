@@ -42,7 +42,7 @@ import FilterButton from '../../../components/jobprovider/dashboard/filterButton
 
 import RadioButton from '../../../components/jobprovider/dashboard/RadioButton';
 
-function MeetUp() {
+function MyInterviews() {
 
   const location = useLocation();
 
@@ -355,7 +355,7 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
                 component= {RouterLink}
                 to = "/jobprovider/meet-up/createEvent"
                 > 
-                Create Event</Button>
+                Create Interview</Button>
 
           )
         }
@@ -450,7 +450,7 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
     <>
       
 
-      <TableInterview interviews={interviews}/>
+      <TableInterview/>
 
 
       {/* <Stack spacing={1} sx={{
@@ -519,4 +519,4 @@ const pageCount = Math.ceil(events.length / itemsPerPage);
   )
 }
 
-export default MeetUp
+export default MyInterviews

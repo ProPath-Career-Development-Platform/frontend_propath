@@ -27,6 +27,7 @@ import {Link as RouterLink} from 'react-router-dom';
 import MovingIcon from '@mui/icons-material/Moving';
 import Skeleton from '@mui/joy/Skeleton';
 import axios from 'axios';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 export default function EventCard(props) {
   const { eventId,status,eventName,eventImage,eventLocation,eventParticipants,eventDate,keywords , skeleton} = props;
 
@@ -329,7 +330,18 @@ export default function EventCard(props) {
               
               
             </AvatarGroup>
+
+            <Box sx={{display:'flex',gap:1}}>
             
+            <Button 
+                    startDecorator={<QrCodeScannerIcon />} 
+                    size="sm"
+                    component= {RouterLink}
+                    to={`/jobprovider/meet-up/qr-scanner/${eventId}`}
+                    > 
+                    QR
+            </Button>
+
             <Button 
                     startDecorator={<VisibilityIcon />} 
                     size="sm"
@@ -338,6 +350,8 @@ export default function EventCard(props) {
                     > 
                     Preview
             </Button>
+
+            </Box>
     
              
             </Box>

@@ -24,6 +24,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import SettingsCompanyInfo from '../../../components/jobprovider/dashboard/SettingsCompanyInfo';
 import SettingsFoundingInfo from '../../../components/jobprovider/dashboard/SettingsFoundingInfo';
 import SettingsAccount from '../../../components/jobprovider/dashboard/SettingsAccount';
+import SettingsSocial from  '../../../components/jobprovider/dashboard/SettingsSocial';
 
 import {checkUserSubscription} from '../../../utils/checkUserSubcription';
 import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
@@ -187,6 +188,10 @@ const Settings = () => {
 
 
 
+          </TabPanel>
+
+          <TabPanel value={2}>
+          <SettingsSocial/>
           </TabPanel>
 
 

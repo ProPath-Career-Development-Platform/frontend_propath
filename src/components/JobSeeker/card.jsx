@@ -72,7 +72,7 @@ export default function JSCard({
         }
       );
       setCompanyDetails(response.data);
-      console.log("Fetched company details:", response.data);
+      // console.log("Fetched company details:", response.data);
     } catch (error) {
       console.error("Error fetching company details:", error);
     }
@@ -86,7 +86,7 @@ export default function JSCard({
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("User details:", response.data);
+      // console.log("User details:", response.data);
       setUserDetails(response.data); // Update user details here
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -114,7 +114,7 @@ export default function JSCard({
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log("User already applied:", response.data);
+          // console.log("User already applied:", response.data);
           setCheckUserAlreadyApplied(response.data);
         } catch (error) {
           console.error("Error checking if user already applied:", error);
@@ -142,7 +142,7 @@ export default function JSCard({
         <CardOverflow>
           <AspectRatio sx={{ minWidth: 200, height: 90, marginBottom: "10px" }}>
             <img
-              src={logoImg}
+              src={img}
               loading="lazy"
               alt=""
               style={{

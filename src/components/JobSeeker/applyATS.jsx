@@ -19,53 +19,83 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useNavigate } from 'react-router-dom';
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { CVanalysis } from '../../services/generativeAi';
+import * as pdfjs from "pdfjs-dist";
+import "pdfjs-dist/build/pdf.worker.entry"; // Ensure the worker is included
 export default function ApplyATS({ title, open1 }) {
-
+  
   
   const navigate = useNavigate();
   const inputCvRef = useRef(null);
   const [open, setOpen] = useState(open1);
   const [load, setLoad] = useState(false);
   const [time, setTime] = useState(0);
+  const [jobDesc, setJobDesc] = useState(null);
+  const [extractedText, setExtractedText] = useState('');
+  
+  
+  
 
-  useEffect(() => {
-    let change;
-    if (load) {
-      change = setInterval(() => {
-        setTime(prevTime => prevTime + 100);
-      }, 100);
+ 
 
-      if (time >= 3000) {
-        clearInterval(change);
-        navigate('/jobseeker/jobscore');
-      }
+  const handleJobDec = (event) =>{
+    const dec = event.target.value;
+    setJobDesc(dec);
+
+  }
+
+
+
+  const submit = async () => {
+   setLoad(true);
+
+   const res = await CVanalysis(extractedText);
+   console.log(res);
+   setLoad(false);
+   if(res){
+    navigate('/jobseeker/jobscore' , { state: { res } });
     }
 
-    return () => clearInterval(change);
-  }, [time, load, navigate]);
 
-  const handleNowClick = () => {
-    setLoad(true);
   };
 
-  const handleCvUpload = (event) => {
+  const handleFile = async (event) => {
     const file = event.target.files[0];
-    if (file && file.size < 10000000) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setCvFile(reader.result);
-        setCvFileName(file.name);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("File size more than 10MB");
+    if (file) {
+      
+      const text = await extractTextFromPDF(file);
+      setExtractedText(text);
+     
+     
     }
   };
 
-  const submit = () => {
-    callback(1);
+  const extractTextFromPDF = async (file) => {
+    const fileData = await readFileAsArrayBuffer(file);
+    const pdf = await pdfjs.getDocument({ data: fileData }).promise;
+    let text = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map((item) => item.str).join(" ");
+    }
+
+    console.log("Extracted Text:", text);
+    return text;
   };
+
+  // Utility function to read a file as an ArrayBuffer
+  const readFileAsArrayBuffer = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  
 
   return (
     <React.Fragment>
@@ -73,6 +103,7 @@ export default function ApplyATS({ title, open1 }) {
         
         sx={{backgroundColor:'primary'}}
         onClick={() => setOpen(true)}
+
       >
         <Typography sx = {{display : {xs:'none' , sm:'none' , md: 'none' , lg: 'block'}, backgroundcolor: 'white'}}><Typography sx = {{color: 'white'}}>Upload Your Resume</Typography></Typography>  <ArrowRightAltIcon sx = {{marginLeft: {xs : '0px' , sm : '3px ' ,color: 'white'}}}></ArrowRightAltIcon>
       </Button>
@@ -88,11 +119,12 @@ export default function ApplyATS({ title, open1 }) {
                 }}
               >
                 <Stack spacing={2}>
-                  <FormControl fullWidth>
+                  {/* <FormControl fullWidth>
                     <FormLabel>Add Job Description</FormLabel>
                     <TextareaAutosize
                       autoFocus
                       required
+                      onChange={handleJobDec}
                       minRows={6} // Adjust this value to control the height
                       style={{
                         width: '100%',
@@ -109,7 +141,7 @@ export default function ApplyATS({ title, open1 }) {
                         },
                       }}
                     />
-                  </FormControl>
+                  </FormControl> */}
                   <FormControl>
                     <Box
                       sx={{
@@ -141,11 +173,11 @@ export default function ApplyATS({ title, open1 }) {
                         accept=".pdf"
                         hidden
                         ref={inputCvRef}
-                        onChange={handleCvUpload}
+                        onChange={handleFile}
                       />
                     </Box>
                   </FormControl>
-                  <Button type="submit" onClick={handleNowClick} sx={{ width: 'auto' }}>Check Score</Button>
+                  <Button loading={load} type="submit" onClick={submit} sx={{ width: 'auto' }} >Check Score</Button>
                 </Stack>
               </form>
             </Box>

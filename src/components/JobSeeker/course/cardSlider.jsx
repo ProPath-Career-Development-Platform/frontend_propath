@@ -1,4 +1,4 @@
-import React , {useState, useEffect} from 'react'
+import React , {useState, useEffect,useRef} from 'react'
 import AspectRatio from '@mui/joy/AspectRatio';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
@@ -19,34 +19,149 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import EventSeatIcon from '@mui/icons-material/EventSeat'; // For Seats Left
 import LocationOnIcon from '@mui/icons-material/LocationOn'; // For Location
 
+import Snackbar from '@mui/joy/Snackbar';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import Stack from '@mui/joy/Stack';
+import QRCodeStyling from "qr-code-styling";
+import CryptoJS from "crypto-js";
+import ImageKit from "imagekit";
+import { jwtDecode } from "jwt-decode";
+
+
 
 
 export default function BasicCard({url , callback ,details}) {
   const [num, setNum] = useState(0)
   const [scrollTop, setScrollTop] = useState(15); // Initial top position in percentage
+  const [response, setResponse] = useState(null);
+  const [load, setLoad] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [reasons, setReasons] = React.useState([]);
+  const [genToken,setGenToken] = useState(null);
+  const [urlQR, setUrlQR] = React.useState(null);
+  const qrRef = useRef(null);
+
+
+  
+
+  const imagekit = new ImageKit({
+   
+    urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+    publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+    privateKey: import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY
+   
+  });
+
+  React.useEffect(() => {
+    if (
+      ['timeout'].every((item) =>
+        reasons.includes(item),
+      )
+    ) {
+      setOpen(false);
+    }
+  }, [reasons]);
 
   const postEvent = async (eventId) => {
     try {
-      const token = getToken(); // Function to retrieve the token
+      setLoad(true);  // Show loading state
+      setOpen(true);  // Open snackbar or any loader
+  
+    const tokenL = localStorage.getItem('token');
+    const decoded = jwtDecode(tokenL);
+
+    const userId = decoded.user_id;
+    const email  = decoded.email;
+    const timestamp = new Date().getTime();
+    const data = `${userId}-${email}-${timestamp}`;
+    const hashedData = CryptoJS.SHA256(data).toString(CryptoJS.enc.Base64);
+
+    //generate QR
+
+    const qrCode = new QRCodeStyling({
+      width: 300,
+      height: 300,
+      data: hashedData,  // Use the generated token as the QR code data
+      dotsOptions: {
+        color: "#000000",
+        type: "square",
+      },
+      backgroundOptions: {
+        color: "#ffffff",
+      },
+    });
+
+    // Append QR code to the DOM if not already appended
+    if (qrRef.current?.childNodes.length === 0) {
+      qrCode.append(qrRef.current);
+    }
+
+    // Generate Blob from QR code
+    const qrBlob = await qrCode.getRawData("png");
+    if (!qrBlob) {
+      console.error("Failed to generate QR code Blob.");
+      
+    }
+
+    // Upload to ImageKit
+    var URL = null;
+    if(details && details.qrImg == null){
+
+      const qrUrl = await uploadImage(qrBlob);
+      URL = qrUrl;
+    }
+    
+
+      // Proceed with the API call to register the event
+      const token = getToken(); // Get the token (ensure the function is working)
       const response = await axios.post(
-        `http://localhost:8080/jobseeker/registerEvent/${details.event.id}`, // Endpoint with eventId as a path variable
-        {}, // No payload needed as eventId is in the URL
+        `http://localhost:8080/jobseeker/registerEvent/${details.event.id}`, // Endpoint with eventId
+        {
+          qrToken: hashedData,  // Use the token set earlier
+          qrImg: URL,     // Send the uploaded QR image URL
+        },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Include the token in headers
-            "Content-Type": "application/json", // Content type for the request
+            Authorization: `Bearer ${token}`, // Include token in headers
+            "Content-Type": "application/json", // Ensure correct content type
           },
         }
       );
   
       console.log("Event registration successful:", response.data);
+      setResponse(response.data);  // Update the response state
     } catch (error) {
-      console.error(
-        "Error registering for the event:",
-        error.response?.data || error.message
-      );
+      console.error("Error registering for the event:", error.response?.data || error.message);
+    } finally {
+      setLoad(false);  // Reset loading state
     }
   };
+  
+  
+  
+  useEffect(() => {
+
+   const func = () => {
+    Swal.fire({
+      title: "Successful!",
+      text: response.isApplied
+        ? "You have enrolled successfully." 
+        : `You have successfully left "${details?.event?.title}."`, // Backticks for template literal
+      icon: "success"
+    });
+
+
+   } 
+
+    if (response) {
+      func();
+    }
+
+
+  }, [response]);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -62,6 +177,52 @@ export default function BasicCard({url , callback ,details}) {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+
+  const generateToken =  () => {
+   //details.event.id, details.event.user.id
+   const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token);
+
+    const userId = decoded.user_id;
+    const email  = decoded.email;
+    const timestamp = new Date().getTime();
+    const data = `${userId}-${email}-${timestamp}`;
+    const hashedData = CryptoJS.SHA256(data).toString(CryptoJS.enc.Base64);
+    //setGenToken(hashedData);
+    return hashedData;
+  };
+
+
+
+
+ 
+    
+
+
+
+  const uploadImage = async (qrBlob) => {
+    try {
+      
+      // Upload to ImageKit
+      const response = await imagekit.upload({
+        file: qrBlob, // the file you want to upload
+        fileName: `qr-code.png`, // file name to save
+      });
+  
+      console.log("Image uploaded successfully:", response.url);
+  
+      return response.url;  // Return the URL of the uploaded image
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return { token: null, url: null };  // Return null for both token and URL in case of error
+    }
+  };
+  
+  
+  
+
+
   return (
     <Card sx={{ width: 320 }}>
       <div>
@@ -104,7 +265,7 @@ export default function BasicCard({url , callback ,details}) {
          
           setNum(1)
           callback(true)
-         { details?.event?.maxParticipant - details?.event?.currentParticipants > 0 && 
+         { details?.event.maxParticipant - details?.event.currentParticipants > 0 && 
           Swal.fire({
             title: details?.event?.title,
             text: details?.isApplied == false ? "Do you want to enroll to this event" : "Are you sure you want to leave this event?",
@@ -112,21 +273,15 @@ export default function BasicCard({url , callback ,details}) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: details?.isApplied == false ? "Yes , I enroll ": "Yes, I leave"
+            confirmButtonText: "Yes",
           }).then((result) => {
             if (result.isConfirmed) {
               postEvent();
-              Swal.fire({
-                title: "Successful!",
-                text: details?.isApplied == false 
-                  ? "You have enrolled successfully." 
-                  : `You have successfully left "${details?.event?.title}."`, // Backticks for template literal
-                icon: "success"
-              });
+             
             }
           });
         }
-        { details?.event?.maxParticipant - details?.event?.currentParticipants <=0  && 
+        { details?.event.maxParticipant - details?.event.currentParticipants <=0  && 
           Swal.fire({
             title: "Oops :-( ",
             text: "Enrollment is closed as the maximum number of participants has been reached.",
@@ -138,12 +293,12 @@ export default function BasicCard({url , callback ,details}) {
           })
         }
         }}
-      > {details?.isApplied==false && (
+      > {details?.isApplied  ==false && (
         <Typography sx={{fontWeight: "bold", color:'white'}}> Enroll</Typography>
        
 
       )}
-        {details?.isApplied==true && (
+        {details?.isApplied ==true && (
         <Typography sx={{fontWeight: "bold", color:'white'}}> Enrolled</Typography>
         
 
@@ -194,7 +349,35 @@ export default function BasicCard({url , callback ,details}) {
 
     <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{details?.event?.closeDate}</Typography>
   </Box>
+
+  
+
+  
 </Box>
+
+
+
+<Snackbar
+        autoHideDuration={response ? 1000 : null}
+        open={open}
+        size='lg'
+        onClose={(event, reason) => {
+          setReasons((prev) => [...new Set([...prev, reason])]);
+        }}
+        onUnmount={() => {
+          setReasons([]);
+        }}
+        
+      >
+        
+              {reasons.includes('timeout') ? (
+                <CheckBoxIcon color="success" />
+              ) : (
+                <CheckBoxOutlineBlankIcon />
+              )}{' '}
+              Enrolling...
+           
+      </Snackbar>
 
 
 

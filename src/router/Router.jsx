@@ -33,7 +33,7 @@ import JpUpdateJob from "../pages/jobprovider/dashboard/UpdateJob";
 import JpVemail from "../pages/jobprovider/dashboard/emailVerification";
 import JpPaymentSuccess from "../pages/jobprovider/dashboard/PaymentSuccess";
 import JpPaymentFail from "../pages/jobprovider/dashboard/PaymentFailed";
-
+import JpQrScanner from "../pages/jobprovider/dashboard/QrScanner";
 import JobDetails from "../pages/jobseeker/jobDetail";
 
 //jobseeker
@@ -55,6 +55,7 @@ import Courses from "../pages/jobseeker/courses";
 import Course from "../pages/jobseeker/course";
 import Footer from "../components/landingPage/footer/Footer";
 import Profile from "../pages/jobseeker/profile";
+import UpdateProfile from "../components/JobSeeker/profile/updateProfile";
 
 //Admin
 import AdminHome from "../pages/Admin/AdminHome";
@@ -75,9 +76,9 @@ import EmployerSite from "../pages/landingPage/EmployerSite";
 
 //security
 
-import  ProtectedRoute  from "../components/ProtectedRoute";
-import AdminLayout from '../layout/AdminLayout';
-import Event from '../pages/jobseeker/event';
+import ProtectedRoute from "../components/ProtectedRoute";
+import AdminLayout from "../layout/AdminLayout";
+import Event from "../pages/jobseeker/event";
 
 const router = createBrowserRouter([
   {
@@ -236,6 +237,10 @@ const router = createBrowserRouter([
         element: <JpEventPreview />,
       },
       {
+        path: "meet-up/qr-scanner/:id",
+        element: <JpQrScanner/>,
+      },
+      {
         path: "meet-up/updateEvent/:id",
         element: <JpUpdateEvent />,
       },
@@ -315,8 +320,6 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "JobDetails/:id",
-        element: <JobDetail />,
         path: "JobDetails/:jobId",
         element: <JobDetail />,
       },
@@ -344,12 +347,14 @@ const router = createBrowserRouter([
         element: <AppliedCard />,
       },
 
-
       {
-        path:"event",
-        element:<Event/>
-      }
-
+        path: "event",
+        element: <Event />,
+      },
+      {
+        path: "updateProfile",
+        element: <UpdateProfile />,
+      },
     ],
   },
 

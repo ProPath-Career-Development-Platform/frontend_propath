@@ -1,7 +1,7 @@
 import React , {useState, useEffect} from 'react'
 import ImageSlider from '../../components/JobSeeker/course/imageslider'
 import BasicCard from '../../components/JobSeeker/course/cardSlider'
-import { Box } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import logo from '/logo.png'
 import JSSearch from '../../components/JobSeeker/search'
 import Alert from '../../components/JobSeeker/alert'
@@ -26,7 +26,9 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { getToken } from '../Auth/Auth'
 import SimpleMap from '../../components/JobSeeker/map'
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import RenderRichText from '../../components/jobprovider/dashboard/RenderRichText'
+
 
 const Course = () => {
   
@@ -42,7 +44,7 @@ const Course = () => {
                     description:'This Python Interview Course is the ultimate answer if you are looking to crack a job in python. It will take you through all the questions that can be expected from a python developer with answers explained in Hindi. In this Interview questions series, you will learn questions and answers with python basics and advanced topics that will help you get your desired python job.' ,
                     learner: ['App developers' , 'Software Developers' , 'Full Stack Developers' , 'Coding enthuisiastics']}
 
-
+  const [loading, setLoading] = useState(true);
 //   const headline = {
 //     title: "Introduction to Flutter Course Online",
 //     h1: "Stand Out in a Python Coding Interview",
@@ -68,16 +70,17 @@ const Course = () => {
  
    useEffect(() => {
     let interval;
-
+    setLoading(true);
     const fetchData = async () => {
       try {
+        
         const res = await axios.get(`http://localhost:8080/jobseeker/getEventById/${id}`, {
           headers: {
             Authorization: `Bearer ${getToken()}`, // Include the token in the headers
           },
         });
         setSeekerEvent(res.data); // Update the state with the fetched data
-    
+        setLoading(false);
 
       } catch (error) {
         console.error("Error fetchig data:", error.response?.data || error.message);
@@ -161,7 +164,7 @@ const Course = () => {
               
         </Box>
         <Box sx={{position: 'absolute' , right: '8%' , top: '25%'}}>
-                <BasicCard  url = {seeekerEvent?.event?.banner} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent}></BasicCard>
+                <BasicCard  url = {seeekerEvent?.event?.banner} callback = {(value)=>{setOpen(true)}} details = {seeekerEvent} ></BasicCard>
                 </Box>
         <Box>
             {/* <Box>
@@ -222,10 +225,10 @@ const Course = () => {
 
             <Box sx={{width : '60%' , marginTop : '40px'}} >
                 <Box sx={{width: '100%' ,marginTop : '12px' , marginBottom : '12px'}}>
-                <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Course Overview  </Typography>
+                <Typography sx={{fontWeight : 500, fontSize: '25px'}}>Event Overview  </Typography>
                 </Box>
                 <Box>
-                    {seeekerEvent?.event?.description}
+                    <RenderRichText text={seeekerEvent?.event?.description} />
                 </Box>
             </Box>
 
@@ -247,7 +250,17 @@ const Course = () => {
       boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Add a subtle shadow
     }}
   >
-    <SimpleMap latitude = {6.0535} longitude = {80.2205}/>
+   {loading ? (
+      <CircularProgress/>
+    ):seeekerEvent ? (
+      <SimpleMap latitude = {seeekerEvent.event.latitude} longitude = {seeekerEvent.event.longitude}/>
+    ):(
+      <div>Error</div>
+    )
+  }
+    
+   
+
   </Box>
 </Box>
 
