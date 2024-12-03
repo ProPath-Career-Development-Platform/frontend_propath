@@ -132,7 +132,7 @@ function Signup() {
             <div className="relative border-gray-300">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center justify-between h-10 px-3 border-2 border-gray-400 rounded-lg shadow-sm w-36 bg-violet-100 focus:outline-none"
+                className="flex items-center justify-between h-10 px-3 border border-2 border-gray-400 rounded-lg shadow-sm w-36 bg-violet-100 focus:outline-none"
               >
                 <span className="text-gray-700">{selectedRole}</span>
                 <svg
