@@ -229,7 +229,7 @@ export default function SidebarAdmin() {
                     >
                         <BusinessIcon />
                         <ListItemContent>
-                        <Typography level="title-sm">Registered Companies</Typography>
+                        <Typography level="title-sm">Companies</Typography>
                         </ListItemContent>
                         <Chip size="sm" color="primary" variant="solid">
                             {pendingRequests}

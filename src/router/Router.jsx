@@ -64,7 +64,7 @@ import AdminUsers from "../pages/Admin/AdminUsers";
 import AdminJobs from "../pages/Admin/AdminJobs";
 import AdminCompanyInfo from "../pages/Admin/AdminCompanyInfo";
 import AdminEvents from "../pages/Admin/AdminEvents";
-import AdminCourses from "../pages/Admin/AdminCourses";
+import AdminFinance from "../pages/Admin/AdminFinance";
 import AdminInterviews from "../pages/Admin/AdminInterviews";
 
 //landing page
@@ -398,8 +398,8 @@ const router = createBrowserRouter([
         element: <AdminEvents />,
       },
       {
-        path: "PDC_Courses",
-        element: <AdminCourses />,
+        path: "Financial",
+        element: <AdminFinance />,
       },
       {
         path: "Interviews",
