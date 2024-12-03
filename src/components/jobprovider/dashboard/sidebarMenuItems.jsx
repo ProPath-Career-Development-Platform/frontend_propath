@@ -208,7 +208,7 @@ function sidebarMenuItems() {
           </ListItemButton>
         </ListItem>
 
-        <ListItem>
+      {/*<ListItem>
           <ListItemButton
             component={RouterLink}
             to="/jobprovider/home/"
@@ -220,7 +220,7 @@ function sidebarMenuItems() {
               <Typography level="title-sm">Courses</Typography>
             </ListItemContent>
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
 
         <ListItem>
           <ListItemButton
@@ -362,7 +362,7 @@ function sidebarMenuItems() {
         </List>
 
 
-        {/* card logic here */}
+        {/* card logic here 
         { stackState && 
         
         <>
@@ -391,7 +391,7 @@ function sidebarMenuItems() {
           </Button>
         </Card>
 
-        </>}
+        </>}*/}
 
       
   

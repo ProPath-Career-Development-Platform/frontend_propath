@@ -48,6 +48,9 @@ import JobBarChart from '../../../components/jobprovider/dashboard/JobBarChart'
 import EventBarChart from '../../../components/jobprovider/dashboard/EventBarChart'
 import UserContext from '../../../utils/userContext'
 
+import CircularProgress from '@mui/joy/CircularProgress';
+
+
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -95,6 +98,9 @@ const Home = () => {
   const [open,setOpen] = useState(false);
   const {logUser,setLogUser} = useContext(UserContext);
 
+  const [anyData, setAnyData] = useState(null);
+  const [loadAnyData, setLoadAnyData] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -130,6 +136,27 @@ const Home = () => {
       setLoading(false);
 
     }
+
+
+
+
+  }
+  ).catch((error) => {
+    console.error(error);
+  });
+ },[jwtToken]);
+
+
+ useEffect( ()=> {
+  axios.get('http://localhost:8080/jobprovider/analysis/home', {
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  }).then((response) => {
+
+    
+     setAnyData(response.data);
+     setLoadAnyData(false);
 
 
 
@@ -254,7 +281,7 @@ const Home = () => {
 
                 <CardContent>
                   <Typography level="body-md">Open Jobs</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">{ loadAnyData ? <CircularProgress /> :  anyData.job}</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
@@ -278,14 +305,14 @@ const Home = () => {
 
                 <CardContent>
                   <Typography level="body-md">Applicants</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">{ loadAnyData ? <CircularProgress /> :  anyData.applicants}</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
                 
                 <Button variant="solid" size="sm"
                  component= {RouterLink}
-                 to = "/jobprovider/my-jobs/applications">
+                 to = "/jobprovider/my-jobs/">
                 
                   Applicants
                 </Button>
@@ -301,7 +328,7 @@ const Home = () => {
 
                 <CardContent>
                   <Typography level="body-md">Events</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">{ loadAnyData ? <CircularProgress /> :  anyData.events}</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
