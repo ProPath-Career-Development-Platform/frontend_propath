@@ -9,7 +9,7 @@ class RevenueChart extends Component {
     this.state = {
       series: [{
         name: "Revenue",
-        data: [10250, 13000, 17700, 22500, 24300, 26000]
+        data: [10250, 13000, 17700, 22500, 24300, 26000, 27000, 30000]
       }],
       options: {
         chart: {
@@ -41,7 +41,7 @@ class RevenueChart extends Component {
           },
         },
         xaxis: {
-          categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+          categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         }
       },
     };
