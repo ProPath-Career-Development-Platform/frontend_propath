@@ -31,7 +31,7 @@ const CompanyTable = () => {
         return response.json();
       })
       .then(data => {
-        const approvedCompanies = data.filter(company => company.status === 'Approved');
+        const approvedCompanies = data.filter(company => company.status === 'active');
         console.log(approvedCompanies);
         setCompanies(approvedCompanies);
       })
@@ -75,7 +75,7 @@ const CompanyTable = () => {
           <TableColumn>COMPANY ID</TableColumn>
           <TableColumn>COMPANY NAME</TableColumn>
           <TableColumn>INDUSTRY</TableColumn>
-          <TableColumn>BUSINESS REG NO</TableColumn>
+          <TableColumn>CONTACT NO</TableColumn>
           <TableColumn>EMAIL</TableColumn>
           <TableColumn>WEBSITE</TableColumn>
           <TableColumn>ACTIONS</TableColumn>
@@ -86,7 +86,7 @@ const CompanyTable = () => {
               <TableCell>{`ppc${String(company.id).padStart(4, '0')}`}</TableCell>
               <TableCell>{company.companyName}</TableCell>
               <TableCell>{company.industryType}</TableCell>
-              <TableCell>{company.regNo}</TableCell>
+              <TableCell>{`+94 ${company.contactNumber}`}</TableCell>
               <TableCell>{company.email}</TableCell>
               <TableCell className='text-blue-600'>
                 <a href={company.companyWebsite} target="_blank" rel="noopener noreferrer">Click here</a>
@@ -114,7 +114,7 @@ const CompanyTable = () => {
       </Table>
 
  
-      <Modal size='4xl' placement='auto' isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal size='4xl' className='p-8' placement='auto' isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent style={{ marginLeft: '18rem' }}>
           {(onClose) => (
             <>
@@ -123,22 +123,28 @@ const CompanyTable = () => {
                 <div className='w-1/2'>
                     {selectedCompany && (
                     <>
-                        <p className='mb-3'><span className='text-purple2 font-medium'>Company Name:<br/></span> {selectedCompany.companyName}</p>
-                        <p className='mb-3'><span className='text-purple2 font-medium'>Industry:<br/></span> {selectedCompany.industryType}</p>
-                        <p className='mb-3'><span className='text-purple2 font-medium'>Business Reg No:<br/></span> {selectedCompany.regNo}</p>
-                        <p className='mb-3'><span className='text-purple2 font-medium'>Email:<br/></span> {selectedCompany.email}</p>
+                        <p className='mb-4'><span className='text-purple2 font-medium'>Company Name:<br/></span> {selectedCompany.companyName}</p>
+                        <p className='mb-4'><span className='text-purple2 font-medium'>Industry:<br/></span> {selectedCompany.industryType}</p>
+                        <p className='mb-4'><span className='text-purple2 font-medium'>Contact No:<br/></span> {`+94 ${selectedCompany.contactNumber}`}</p>
+                        <p className='mb-4'><span className='text-purple2 font-medium'>Address:<br/></span> {selectedCompany.location}</p>
+                        <p className='mb-4'><span className='text-purple2 font-medium'>Email:<br/></span> {selectedCompany.email}</p>
                         <p className='mb-3'><span className='text-purple2 font-medium'>Website:<br/></span> <a className='text-blue-600' href={selectedCompany.companyWebsite} target="_blank" rel="noopener noreferrer">Click Here</a></p>
                     </>
                     )}
                 </div>
-                <div className='w-1/2'>
-                    {selectedCompany && (
-                    <>
-                        <p className='mb-3'><span className='text-purple2 font-medium'>Company Logo:<br/></span> {selectedCompany.companyName}</p>
-                        <p className='mb-3'><span className='text-purple2 font-medium'>Business Registration:<br/></span> {selectedCompany.industryType}</p>
-                    </>
-                    )}
-                </div>                
+                <div className='w-1/2 flex flex-col'>
+                      {selectedCompany && (
+                        <>
+                          <p><span className='text-purple2 font-medium text-sm'>Company Logo:<br /></span>
+                            <img src={selectedCompany.logoImg} alt="Company Logo" style={{ height: '150px', width: 'auto' }} />
+                          </p>
+                          <p className='mb-3'>
+                            <span className='text-purple2 font-medium text-sm'>Company Banner:<br /></span>
+                            <img src={selectedCompany.bannerImg} alt="Company Banner" style={{ height: '250px', width: 'auto' }} />
+                          </p>
+                        </>
+                      )}
+                    </div>               
               </ModalBody>
             </>
           )}

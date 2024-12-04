@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useContext} from 'react'
 import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
@@ -44,6 +44,12 @@ import { useNavigate } from 'react-router-dom';
 
 import {checkUserSubscription} from '../../../utils/checkUserSubcription';
 import PaymentModel from '../../../components/jobprovider/dashboard/PaymentModel'
+import JobBarChart from '../../../components/jobprovider/dashboard/JobBarChart'
+import EventBarChart from '../../../components/jobprovider/dashboard/EventBarChart'
+import UserContext from '../../../utils/userContext'
+
+import CircularProgress from '@mui/joy/CircularProgress';
+
 
 
 
@@ -90,6 +96,10 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const jwtToken = localStorage.getItem('token');
   const [open,setOpen] = useState(false);
+  const {logUser,setLogUser} = useContext(UserContext);
+
+  const [anyData, setAnyData] = useState(null);
+  const [loadAnyData, setLoadAnyData] = useState(true);
 
   const navigate = useNavigate();
 
@@ -126,6 +136,27 @@ const Home = () => {
       setLoading(false);
 
     }
+
+
+
+
+  }
+  ).catch((error) => {
+    console.error(error);
+  });
+ },[jwtToken]);
+
+
+ useEffect( ()=> {
+  axios.get('http://localhost:8080/jobprovider/analysis/home', {
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  }).then((response) => {
+
+    
+     setAnyData(response.data);
+     setLoadAnyData(false);
 
 
 
@@ -185,7 +216,7 @@ const Home = () => {
                   Dashboard
                 </Link>
                 <Typography color="primary" fontWeight={500} fontSize={12}>
-                  
+                   Home
                 </Typography>
               </Breadcrumbs>
             </Box>
@@ -212,7 +243,7 @@ const Home = () => {
             <Box sx={{  alignItems: 'center', marginTop:'20px' }}>
 
               <Typography color="primary" fontSize="lg" fontWeight="lg">
-                Hello, {company?.companyName ? company.companyName : 'Company Name'}
+                Hello, {logUser ? logUser.companyName : ''}
               </Typography>
 
               <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
@@ -250,7 +281,7 @@ const Home = () => {
 
                 <CardContent>
                   <Typography level="body-md">Open Jobs</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">{ loadAnyData ? <CircularProgress /> :  anyData.job}</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
@@ -274,14 +305,14 @@ const Home = () => {
 
                 <CardContent>
                   <Typography level="body-md">Applicants</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">{ loadAnyData ? <CircularProgress /> :  anyData.applicants}</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
                 
                 <Button variant="solid" size="sm"
                  component= {RouterLink}
-                 to = "/jobprovider/my-jobs/applications">
+                 to = "/jobprovider/my-jobs/">
                 
                   Applicants
                 </Button>
@@ -297,7 +328,7 @@ const Home = () => {
 
                 <CardContent>
                   <Typography level="body-md">Events</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">{ loadAnyData ? <CircularProgress /> :  anyData.events}</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
@@ -312,179 +343,39 @@ const Home = () => {
             </Card>
             </Box>
 
-            <Box
-                sx={{
-                    width:'100%',
-                    display:'flex',
-                    flexDirection:'row',
-                    justifyContent:'space-between',
-                    marginTop:5
-                    
-                }}
-                >
-                    <Box
-                    sx={{
-                        width:'700px',
-                        
-                    }}
-                    >
-                        {/* <Typography level="h4" sx={{textAlign:'center'}}>Number of Job Posts by Each Job role</Typography>
-                        <br /> */}
-                        <Card
-                        
-                        >
-                       
-                        <ChartComponent/>
-                        </Card>
-                    </Box>
-                    <Box>
-                    {/* <Typography level="h4" sx={{textAlign:'center'}}>Events With Number of participants</Typography>
-                    <br /> */}
-                    <Card
-                      
-                    >
-                    <DoughnutChartComponent data={Subscription} /> 
-                    </Card>  
-                    </Box>
-                
+            
+
+                <Typography level="title-lg" sx={{marginTop: '20px'}}>Analysis</Typography>
+                <Box sx={{display:{sm:'row', md:'flex'} ,justifyContent:'center', gap:{sm:'0', md:'10px'}}}>
+                <Card sx={{minWidth:{sm:'90%',md:'600px'}}}>
+                    <CardContent>
+
+                  <JobBarChart/> 
+                  
+                    </CardContent>
+
+                </Card>
+
+                <Card sx={{minWidth:{sm:'90%',md:'600px'} , mt:{sm:'10px' , md:'0'}}}>
+                    <CardContent>
+
+                  <EventBarChart/> 
+                  
+                    </CardContent>
+
+                </Card>
+
                 </Box>
+
+               
 
 
             {/* insights over, Table */}
 
-            <Typography level="title-lg" sx={{marginTop: '20px'}}>Recent Posted Applications</Typography>
 
 
 
-          <Sheet  sx={{ pt: 1, borderRadius: 'sm' }}>
-            <Table
-              hoverRow
-              sx={{  '& tbody': { bgcolor: 'background.surface' } }}
-              size='md'
-            >
-              
-              <thead>
-                <tr>
-                  <th>Jobs</th>
-                  <th>Status</th>
-                  <th>Applications</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {postedJobs.map((job) => (
-                  <tr key={job.id}>
-
-                    <td>
-
-                      <Box sx={(theme)=>({
-                                 display:'flex',
-                                 flexDirection: 'column',
-                                  alignItems: 'left',
-                                  [theme.breakpoints.up(834)]: {
-                                    alignItems: 'flex-start',
-                                    textAlign: 'initial',
-                                  },
-                                  [`& .${typographyClasses.root}`]: {
-                                    textWrap: 'balance',
-                                  },
-                                  })}>
-
-                         <Typography level='title-lg' sx={{marginTop:'5px', marginBottom:'5px'}}> {job.jobTitle} </Typography> 
-
-                        <Box sx={(theme)=>({ 
-                                  display:'flex',
-                                  gap: 1.5,
-                                  alignItems: 'center',
-                                  [theme.breakpoints.down(834)]: {
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-                                    gap: 0,
-                                  },
-                            })}>
-                          <Typography level='body-md'>{job.jobType}</Typography>
-                          <Typography  level='body-md'>•</Typography>
-                          <Typography level='body-sm'>23 Days Remaining</Typography>
-                        </Box>
-                      </Box>
-                      
-                    </td>
-
-
-                    <td> 
-
-                    <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                      
-                    {new Date(job.expiryDate) > new Date() ?(
-                                                  <>
-                                                    <CheckCircleOutlineIcon color="success" /> Active
-                                                  </>
-                                                ) : (
-                                                  <>
-                                                    <WarningAmberIcon color="danger" /> Expired
-                                                  </>
-                                                )
-                    }
-
-   
-                    </Box> 
-                    </td>
-
-                    <td>
-                      <Box sx={{display:'flex', alignItems:'center', gap: 1.5}}>
-                        <PeopleAltOutlinedIcon />      {job.vacancies}
-                      </Box>
-                    </td>
-
-
-                    <td>
-
-                      <Box sx={(theme)=>({
-                                    display:'flex',
-                                    alignItems:'center',
-                                    gap: 1,
-                                    [theme.breakpoints.down(834)]: {
-                                      flexDirection: 'column',
-                                      gap: 1,
-                                    },
-                        }
-                        )}>
-                        <Button color="primary" variant='solid' size="sm">View Applications</Button>
-
-                        <Dropdown>
-                            <MenuButton
-                              slots={{ root: IconButton }}
-                              slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
-                              
-                            >
-                              <MoreVert />
-                            </MenuButton>
-                            <Menu>
-
-                              <MenuItem component="a" href="/jobprovider/my-jobs/">
-                              <ListItemDecorator>
-                                <RemoveRedEyeIcon />
-                              </ListItemDecorator>{' '}
-                                View Details
-                              </MenuItem>
-                              
-                              <MenuItem>
-                              <ListItemDecorator>
-                                <WarningAmberIcon color="danger" />
-                              </ListItemDecorator>{' '}
-                                
-                              Mark As Expired
-                              </MenuItem>
-                            </Menu>
-                          </Dropdown>
-                      </Box>
-                      
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Sheet>
+          
 
             
 

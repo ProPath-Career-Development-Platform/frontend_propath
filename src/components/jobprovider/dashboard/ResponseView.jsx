@@ -77,6 +77,8 @@ const ResponseView = ({ jobSeekerId, open, setOpen }) => {
         borderRadius: 2,
         boxShadow: 24,
         p: 4,
+        maxHeight: '95%',
+        overflow: 'auto',
     };
 
     return (

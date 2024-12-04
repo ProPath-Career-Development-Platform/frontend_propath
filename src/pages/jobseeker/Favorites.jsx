@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
@@ -15,117 +15,152 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-
 import Divider from "@mui/joy/Divider";
-
-const jobs = [
-  {
-    title: "Networking Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "4 Days Remaining",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/00FF00/FFFFFF?text=U",
-  },
-  {
-    title: "Product Designer",
-    location: "Nugegoda",
-    salary: "LKR50k-80k/month",
-    type: "Full Time",
-    dateApplied: "Dec 7, 2023 23:26",
-    remaining: "Expired",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/FF0000/FFFFFF?text=P",
-  },
-  {
-    title: "Junior Graphic Designer",
-    location: "Kandy",
-    salary: "LKR50k-80k/month",
-    type: "Casual",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "4 Days Remaining",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/000000/FFFFFF?text=A",
-  },
-  {
-    title: "Visual Designer",
-    location: "Galle",
-    salary: "LKR50k-80k/month",
-    type: "Contract",
-    dateApplied: "Dec 7, 2023 23:26",
-    remaining: "Expired",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=M",
-  },
-  {
-    title: "Cloud Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "4 Days Remaining",
-    favorite: "no",
-    icon: "https://via.placeholder.com/32/00F000/FFFFFF?text=C",
-  },
-  {
-    title: "Software Engineer",
-    location: "Colmbo 02",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "4 Days Remaining",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/FFFFF/FFFFFF?text=S",
-  },
-  {
-    title: "Quality Assurance Engineer",
-    location: "Gampaha",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "Expired",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/F0FF00/FFFFFF?text=Q",
-  },
-  {
-    title: "DevOps Engineer",
-    location: "Colmbo 06",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "4 Days Remaining",
-    favorite: "no",
-    icon: "https://via.placeholder.com/32/000000/FFFFFF?text=D",
-  },
-  {
-    title: "Networking Engineer",
-    location: "Mount Lavinia",
-    salary: "LKR50k-80k/month",
-    type: "Remote",
-    dateApplied: "Feb 2, 2024 19:28",
-    remaining: "Expired",
-    favorite: "yes",
-    icon: "https://via.placeholder.com/32/0000FF/FFFFFF?text=N",
-  },
-];
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Favorites = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 6;
 
-  // Calculate total pages
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const [favoriteJobs, setFavoriteJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
 
-  // Calculate the jobs to display on the current page
+  const navigate = useNavigate();
+
+  // Fetch favorite jobs
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        setIsLoading(true); // Start loading
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/favorites`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Fetch detailed job information for each favorite
+        const jobs = await Promise.all(
+          response.data.map(async (favorite) => {
+            const jobResponse = await axios.get(
+              `http://localhost:8080/jobseeker/jobDetails/${favorite.jobId}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+
+            // Add company details to each job
+            const companyResponse = await axios.get(
+              `http://localhost:8080/jobseeker/postedCompany/${favorite.jobId}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+
+            return {
+              ...jobResponse.data,
+              company: companyResponse.data,
+            };
+          })
+        );
+        console.log(jobs);
+        setFavoriteJobs(jobs);
+      } catch (error) {
+        console.error("Error fetching favorite jobs or related data", error);
+      } finally {
+        setIsLoading(false); // End loading
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getUserDetails`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching user details: ", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  // Fetch Applied Jobs
+  useEffect(() => {
+    if (!userDetails?.user?.id) return; // Wait until userDetails is available
+
+    const fetchAppliedJobs = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/applied-jobs/${userDetails.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("applied", response.data);
+        setAppliedJobs(response.data);
+      } catch (error) {
+        console.error("Error fetching applied jobs: ", error);
+      }
+    };
+
+    fetchAppliedJobs();
+  }, [userDetails]);
+
+  const handleApplyNowClick = (jobId, title) => {
+    navigate(`/JobSeeker/JobDetails/${jobId}`, {
+      state: { title },
+    });
+  };
+
+
+  // Pagination calculations
+  const totalPages = Math.ceil(favoriteJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  const currentJobs = favoriteJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   // Change page function
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  {
+    currentJobs.map((job, index) => {
+      const calculateRemainingDays = (expiryDate) => {
+        const currentDate = new Date();
+        const expiry = new Date(expiryDate);
+        const timeDiff = expiry - currentDate; // Difference in milliseconds
+        const remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert to days
+        return remainingDays > 0 ? remainingDays : 0;
+      };
+
+      const remainingDays = calculateRemainingDays(job.expiryDate);
+      const isExpired = job.status === "Expired" || remainingDays === 0;
+    });
+  }
+
+
   return (
     <Box
       component="main"
@@ -145,9 +180,9 @@ const Favorites = () => {
         height: "100dvh",
         gap: 1,
         maxHeight: "calc(100vh - 10px)",
-         overflow: 'auto ',
-        '&::-webkit-scrollbar': {
-          display: 'none',
+        overflow: "auto ",
+        "&::-webkit-scrollbar": {
+          display: "none",
         },
       }}
     >
@@ -196,18 +231,7 @@ const Favorites = () => {
         </Typography>
       </Box>
 
-      {/*breadcrumbs over*/}
       <Divider />
-
-      <Box
-        sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-          gap: 15,
-          marginTop: "20px",
-        }}
-      ></Box>
 
       <Table
         hoverRow
@@ -215,108 +239,146 @@ const Favorites = () => {
         size="lg"
       >
         <tbody>
-          {currentJobs.map((job, index) => (
-            <tr key={index} style={{ height: "100px" }}>
-              <td>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-                  <img
-                    src={job.icon}
-                    alt={job.title}
-                    style={{ width: 46, height: 46 }}
-                  />
-                  <Box>
-                    <Typography>
-                      {job.title}{" "}
-                      <Box
-                        component="span"
-                        sx={{
-                          backgroundColor: "lightblue",
-                          padding: "2px 4px",
-                          borderRadius: "8px",
-                          marginLeft: "8px",
-                        }}
+          {currentJobs.map((job, index) => {
+            const calculateRemainingDays = (expiryDate) => {
+              const currentDate = new Date();
+              const expiry = new Date(expiryDate);
+              const timeDiff = expiry - currentDate; // Difference in milliseconds
+              const remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert to days
+              return remainingDays > 0 ? remainingDays : 0;
+            };
+
+            const remainingDays = calculateRemainingDays(job.expiryDate);
+            const isExpired = job.status === "Expired" || remainingDays === 0;
+
+            const isApplied = appliedJobs.some(
+              (appliedJob) => appliedJob.job?.id === job.id
+            );
+
+            return (
+              <tr key={index} style={{ height: "100px" }}>
+                <td>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+                    <img
+                      src={job.logoImg || "https://via.placeholder.com/32"}
+                      alt={job.jobTtile}
+                      style={{ width: 46, height: 46 }}
+                    />
+                    <Box>
+                      <Typography>
+                        {job.jobTitle}{" "}
+                        <Box
+                          component="span"
+                          sx={{
+                            backgroundColor: "lightblue",
+                            padding: "2px 4px",
+                            borderRadius: "8px",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          {job.jobType}
+                        </Box>
+                      </Typography>
+                      <Typography
+                        level="body-sm"
+                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
-                        {job.type}
-                      </Box>
-                    </Typography>
-                    <Typography
-                      level="body-sm"
-                      sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                    >
-                      <LocationOnIcon fontSize="small" /> {job.location}
-                      <AttachMoneyIcon fontSize="small" /> {job.salary}
-                      {job.remaining === "4 Days Remaining" ? (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1.5,
-                          }}
-                        >
-                          <CheckCircleOutlineIcon color="success" />{" "}
-                          {job.remaining}
-                        </Box>
-                      ) : (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1.5,
-                          }}
-                        >
-                          <WarningAmberIcon color="danger" /> {job.remaining}
-                        </Box>
-                      )}
-                    </Typography>
+                        <LocationOnIcon fontSize="small" /> {job.location}
+                        <AttachMoneyIcon fontSize="small" /> LKR {job.minSalary} -
+                        LKR {job.maxSalary}/{job.salaryType}
+                        {remainingDays > 0 ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1.5,
+                            }}
+                          >
+                            <CheckCircleOutlineIcon color="success" />{" "}
+                            {remainingDays} Days Remaining
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1.5,
+                            }}
+                          >
+                            <WarningAmberIcon color="danger" /> Expired
+                          </Box>
+                        )}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </td>
-              <td>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    width: "150%",
-                  }}
-                >
-                  <BookmarkAddedIcon />
-                </div>
-              </td>
-              <td>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    width: "80%",
-                  }}
-                >
-                  {job.remaining === "Expired" ? (
-                    <Button color="primary" variant="solid" size="md" disabled>
-                      Deadline Expired
-                    </Button>
-                  ) : (
-                    <Button
-                      color="primary"
-                      variant="solid"
-                      size="md"
-                      sx={{
-                        "&:hover": {
-                          backgroundColor: "#0044cc",
-                        },
-                      }}
-                    >
-                      Apply Now <span style={{ marginRight: "8px" }}></span>
-                      <FontAwesomeIcon icon={faCircleArrowRight} size="md" />
-                    </Button>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      width: "150%",
+                    }}
+                  >
+                    <BookmarkAddedIcon />
+                  </div>
+                </td>
+                <td>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      width: "80%",
+                    }}
+                  >
+                    {isApplied ? (
+                      <Button
+                        color="primary"
+                        variant="solid"
+                        size="md"
+                        sx = {{backgroundColor: "#DA70D6"}}
+                        onClick={() => navigate(`/jobseeker/applied-jobs`)}
+                      >
+                        Check Status
+                      </Button>
+                    ) : isExpired ? (
+                      <Button
+                        color="primary"
+                        variant="solid"
+                        size="md"
+                        disabled
+                      >
+                        Deadline Expired
+                      </Button>
+                    ) : (
+                      <Button
+                        color="primary"
+                        variant="solid"
+                        size="md"
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "#DA70D6",
+                          },
+                        }}
+                        onClick={() =>
+                          handleApplyNowClick(job.id, job.jobTitle)
+                        }
+                      >
+                        Apply Now
+                        <span style={{ marginRight: "8px" }}></span>
+                        <FontAwesomeIcon icon={faCircleArrowRight} size="md" />
+                      </Button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
+
       {/* Pagination Controls */}
       <Box
         sx={{
@@ -343,38 +405,18 @@ const Favorites = () => {
               },
             }}
           >
-            {<FontAwesomeIcon icon={faCircleArrowLeft} size="lg" />}
+            {<FontAwesomeIcon icon={faCircleArrowLeft} />}
           </Button>
         )}
-        {Array.from({ length: totalPages }, (_, index) => index + 1)
-          .filter(
-            (pageNumber) =>
-              pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1
-          )
-          .map((pageNumber) => (
-            <Button
-              key={pageNumber}
-              onClick={() => paginate(pageNumber)}
-              disabled={pageNumber === currentPage}
-              sx={{
-                backgroundColor:
-                  pageNumber === currentPage ? "#1565c0" : "transparent",
-                color: pageNumber === currentPage ? "white" : "inherit",
-                "&:hover": {
-                  backgroundColor:
-                    pageNumber === currentPage
-                      ? "#1565c0"
-                      : "rgba(0, 0, 0, 0.04)",
-                },
-                "&:disabled": {
-                  backgroundColor: "#ccc",
-                  color: "black",
-                },
-              }}
-            >
-              {pageNumber}
-            </Button>
-          ))}
+        {[...Array(totalPages).keys()].map((page) => (
+          <Button
+            key={page}
+            onClick={() => paginate(page + 1)}
+            color={currentPage === page + 1 ? "primary" : "neutral"}
+          >
+            {page + 1}
+          </Button>
+        ))}
         {currentPage < totalPages && (
           <Button
             onClick={() => paginate(currentPage + 1)}
@@ -386,7 +428,7 @@ const Favorites = () => {
               },
             }}
           >
-            {<FontAwesomeIcon icon={faCircleArrowRight} size="lg" />}
+            {<FontAwesomeIcon icon={faCircleArrowRight} />}
           </Button>
         )}
       </Box>

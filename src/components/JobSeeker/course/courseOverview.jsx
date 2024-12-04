@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { useState } from 'react';
-import Chip from '@mui/joy/Chip';
-import { Box, Typography } from '@mui/material';
-
+import * as React from "react";
+import { useState } from "react";
+import Chip from "@mui/joy/Chip";
+import { Box, Typography } from "@mui/material";
 
 export default function CourseOverview() {
-    const dbContent = `
+  const dbContent = `
     <div>
       <p>This Flutter course is offered through Skillup by Simplilearn and is of a 2-hour duration. This course helps you to learn about UI software developed to create platform applications for iOS, Android, Windows, Mac, etc. This is a beginner-level course, where advanced programming knowledge is not necessary. Then, you will learn how to create screens and application logic and use Figma. By the end of this course, you will know how to launch an app written in Flutter on the App Store and Google Play Store. You can have access for 90 days once you enroll in the course. In the end, you will receive a course completion certificate.</p>
       <h6>Topics Covered</h6>
@@ -45,29 +44,29 @@ export default function CourseOverview() {
       <p>Start your journey with SkillUp, an education platform that helps you to identify your learning goals, choose the right courses, and make your learning experience efficient.</p>
     </div>
   `;
-  const [length , setLength] = useState(500)
-  const [read, setread] = useState('read more...')
-  
+  const [length, setLength] = useState(500);
+  const [read, setread] = useState("read more...");
+
   const readmore = () => {
-    if(length == 500){
-        const l = dbContent.length
-        setread('Read Less ...')
-        setLength(l)
-    }
-    else{
-        setread('Read More ...')
-        setLength(500)
+    if (length == 500) {
+      const l = dbContent.length;
+      setread("Read Less ...");
+      setLength(l);
+    } else {
+      setread("Read More ...");
+      setLength(500);
     }
 
-    console.log(setLength)
-  }
+    console.log(setLength);
+  };
   return (
-    
-    <Box sx={{ padding: 2  ,  bgcolor: 'background.level1',}}>
-     
-        <Typography>{dbContent.slice(0,length)}</Typography>
-        <button onClick={readmore}><Typography sx = {{marginTop : '30px' , color : 'blue'}} >{read}</Typography></button>
-  
+    <Box sx={{ padding: 2, bgcolor: "background.level1" }}>
+      <Typography>{dbContent.slice(0, length)}</Typography>
+      <button onClick={readmore}>
+        <Typography sx={{ marginTop: "30px", color: "blue" }}>
+          {read}
+        </Typography>
+      </button>
     </Box>
   );
 }

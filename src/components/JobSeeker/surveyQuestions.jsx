@@ -59,6 +59,8 @@ function SurveyQuestions({ callback }) {
     width: "100%", // Fill the available width
     padding: "20px",
     margin: "0 auto", // Center horizontally
+    height:'90%',
+    overflow:'auto'
     }}
   >
       <Survey model={survey} />

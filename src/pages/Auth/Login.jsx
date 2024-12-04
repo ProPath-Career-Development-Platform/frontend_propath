@@ -1,33 +1,36 @@
-import React, { useState, useEffect, useContext  } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import JobNav from '../../components/landingPage/navbar/JobNav'
-import UserContext from '../../utils/userContext'
+import axios from "axios";
+import JobNav from "../../components/landingPage/navbar/JobNav";
+import UserContext from "../../utils/userContext";
 
-
- function decodeJWT(token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
+function decodeJWT(token) {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
 
   return JSON.parse(jsonPayload);
 }
 
-
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const { logUser, jobProviderLogin, logout } = useContext(UserContext);
 
   useEffect(() => {
-    const savedEmail = localStorage.getItem('rememberedEmail');
-    const savedPassword = localStorage.getItem('rememberedPassword');
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    const savedPassword = localStorage.getItem("rememberedPassword");
     if (savedEmail && savedPassword) {
       setEmail(savedEmail);
       setPassword(savedPassword);
@@ -41,16 +44,15 @@ function Login() {
 
   const handleforgotpassword = () => {
     navigate("/forgotpassword");
-  }
+  };
 
   const handlesignup = () => {
-    navigate("/signup")
-  }
+    navigate("/signup");
+  };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!email) {
       setErrorMessage("Email is required.");
@@ -65,161 +67,163 @@ function Login() {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
-  
+
     try {
-      const response = await axios.post('http://localhost:8080/login', {
+      const response = await axios.post("http://localhost:8080/login", {
         email,
-        password
+        password,
       });
       console.log(response.data);
-  
+
       const token = response.data.jwt;
-  
+
       // Use the utility function to decode the token
       const decodedToken = decodeJWT(token);
       console.log(decodedToken);
       const role = decodedToken.role;
       console.log(role);
-      
+
       const user_id = decodedToken.user_id;
-
-      
-
 
       // Save the token with expiration time (3 days)
       const expirationTime = new Date();
       expirationTime.setDate(expirationTime.getDate() + 3); // 3 days from now
-      localStorage.setItem('token', token);
-      localStorage.setItem('tokenExpiration', expirationTime.getTime());
-  
-      if (role === 'JobSeeker') {
-        navigate("/jobseeker/home/");
-      } else if (role === 'JobProvider') {
+      localStorage.setItem("token", token);
+      localStorage.setItem("tokenExpiration", expirationTime.getTime());
 
-        jobProviderLogin(localStorage.getItem('token'),navigate);
+      if (role === "JobSeeker") {
+        navigate("/jobseeker/home/");
+      } else if (role === "JobProvider") {
+        jobProviderLogin(localStorage.getItem("token"), navigate);
         navigate("/jobprovider/dashboard/");
-      } else if (role === 'Admin') {
+      } else if (role === "Admin") {
         navigate("/admin/home/");
       }
-  
     } catch (error) {
-      const message = error.response?.data?.message || 'Incorrect email or password';
+      const message =
+        error.response?.data?.message || "Incorrect email or password";
       setErrorMessage(message);
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
-  
+
   // Check and remove expired tokens on component mount
   useEffect(() => {
-    const tokenExpiration = localStorage.getItem('tokenExpiration');
+    const tokenExpiration = localStorage.getItem("tokenExpiration");
     if (tokenExpiration) {
       const now = new Date().getTime();
       if (now > tokenExpiration) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('tokenExpiration');
+        localStorage.removeItem("token");
+        localStorage.removeItem("tokenExpiration");
       }
     }
   }, []);
-  
-  
 
   return (
     <>
-    <div className="flex items-center justify-center w-full h-screen overflow-hidden bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200">
-      <div className="flex items-center justify-center w-full h-full lg:w-1/2">
-        <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-violet-100 ">
-          <h1 className="flex items-center justify-center w-full text-4xl font-bold text-black">
-            Log in
-          </h1>
+      {/* <JobNav/> */}
+      <div className="flex items-center justify-center w-full h-screen overflow-hidden bg-gradient-to-r from-purple-500 via-purple-300 to-purple-200">
+        <div className="flex items-center justify-center w-full h-full lg:w-1/2">
+          <div className="w-11/12 max-w-[500px] px-6 py-12 rounded-3xl bg-violet-100 ">
+            <h1 className="flex items-center justify-center w-full text-4xl font-bold text-black">
+              Log in
+            </h1>
 
-          <form onSubmit={handleSubmit}>
-            <div className="mt-8">
-              <div className="flex flex-col">
-                <input
-                  className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
-                  placeholder="Email address"
-                  
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="relative flex flex-col mt-4">
-                <input
-                  className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
-                  placeholder="Password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3"
-                  onClick={togglePasswordVisibility}
-                >
-                  {showPassword ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-eye-off text-gray-400 hover:text-[#6756a8]"
-                    >
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-eye text-gray-400 hover:text-[#6756a8]"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                  )}
-                </button>
-                {/* {errorMessage && <div className="mt-2 text-center text-red-500">{errorMessage}</div>} */}
-              </div>
-              <div className="flex items-center justify-between mt-8">
-                <div>
-                <input 
-                    type="checkbox" 
-                    id="remember" 
-                    checked={rememberMe} 
-                    onChange={(e) => setRememberMe(e.target.checked)} 
+            <form onSubmit={handleSubmit}>
+              <div className="mt-8">
+                <div className="flex flex-col">
+                  <input
+                    className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
-                  <label
-                    className="ml-2 text-base font-medium text-black"
-                    htmlFor="remember"
-                  >
-                    Remember me
-                  </label>
                 </div>
-                <button 
-                type="button"
-                onClick={handleforgotpassword}
-                className="font-medium text-base text-[#9a80d4] hover:text-[#6756a8]">
-                  Forgot password
-                </button>
-              </div>
-              {errorMessage && <div className="mt-5 text-center text-red-500">{errorMessage}</div>}
-              <div className="flex flex-col mt-5 gap-y-4">
-                <button type="submit" className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#6756a8] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]">
-                  Sign in
-                </button>
-                <button
+                <div className="relative flex flex-col mt-4">
+                  <input
+                    className="w-full p-3 mt-1 text-base bg-transparent border-2 border-gray-400 rounded-xl"
+                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="feather feather-eye-off text-gray-400 hover:text-[#6756a8]"
+                      >
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="feather feather-eye text-gray-400 hover:text-[#6756a8]"
+                      >
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    )}
+                  </button>
+                  {/* {errorMessage && <div className="mt-2 text-center text-red-500">{errorMessage}</div>} */}
+                </div>
+                <div className="flex items-center justify-between mt-8">
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="remember"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    <label
+                      className="ml-2 text-base font-medium text-black"
+                      htmlFor="remember"
+                    >
+                      Remember me
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleforgotpassword}
+                    className="font-medium text-base text-[#9a80d4] hover:text-[#6756a8]"
+                  >
+                    Forgot password
+                  </button>
+                </div>
+                {errorMessage && (
+                  <div className="mt-5 text-center text-red-500">
+                    {errorMessage}
+                  </div>
+                )}
+                <div className="flex flex-col mt-5 gap-y-4">
+                  <button
+                    type="submit"
+                    className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-3 bg-[#6756a8] rounded-xl text-white font-bold text-lg hover:bg-[#6756a8]"
+                  >
+                    Sign in
+                  </button>
+                  {/* <button
                   type="button"
                   onClick={handlesignup}
                   className="flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out transform py-2 px-4 rounded-xl text-gray-700 font-semibold text-lg border-2 bg-violet-200  hover:text-[#6756a8]"
@@ -249,22 +253,25 @@ function Login() {
                     />
                   </svg>
                   Sign in with Google
-                </button>
+                </button> */}
+                </div>
+                <div className="flex items-center justify-center mt-8">
+                  <p className="text-base font-medium text-black">
+                    Don't have an account?
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handlesignup}
+                    className="ml-2 font-medium text-base text-[#9a80d4] hover:text-[#6756a8]"
+                  >
+                    Sign up
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center justify-center mt-8">
-                <p className="text-base font-medium text-black">Don't have an account?</p>
-                <button 
-                type="button"
-                onClick={handlesignup}
-                className="ml-2 font-medium text-base text-[#9a80d4] hover:text-[#6756a8]">
-                  Sign up
-                </button>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

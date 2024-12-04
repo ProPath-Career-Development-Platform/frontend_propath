@@ -31,6 +31,13 @@ import TopNavBar from "../../components/JobSeeker/TopNavBar";
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import logo from "/logo.png"
+import PieChart from "../../components/JobSeeker/JSCharts/PieChart";
+import { useState,useEffect } from "react";
+import axios from "axios";
+import BusinessIcon from "@mui/icons-material/Business";
+import AppliedJobs from "./AppliedJobs";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+
 
 const jobs = [
   
@@ -72,11 +79,136 @@ const jobs = [
   }
 ];
 
+const donutData = {
+  series: [5, 3],          // 5 active jobs, 3 expired jobs
+  labels: ["Active", "Expired"],   // Labels for each slice of the donut chart
+  colors: ["#8312b4", "#c781e5"],  // Colors for each slice
+};
+
+
 const JobSeekerDashboard= () => {
+
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const [companyDetails, setCompanyDetails] = useState([]);
+  const currentJobs = appliedJobs?.slice(0, 1) || [];
+  const [events, setEvents] = useState([]);
+
+ 
+  
+
+  // Fetch User Details
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getUserDetails`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserDetails(response.data);
+        console.log("User : " + userDetails.data)
+      } catch (error) {
+        console.error("Error fetching user details: ", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  // Fetch Applied Jobs
+  useEffect(() => {
+    if (!userDetails?.user?.id) return; // Wait until userDetails is available
+
+    const fetchAppliedJobs = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/applied-jobs/${userDetails.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAppliedJobs(response.data);
+        console.log(appliedJobs);
+      } catch (error) {
+        console.error("Error fetching applied jobs: ", error);
+      }
+    };
+
+    fetchAppliedJobs();
+  }, [userDetails]);
+
+  useEffect(() => {
+    if (!userDetails?.user?.id) return; // Wait until userDetails is available
+
+    const fetchAppliedEvents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/jobseeker/getAppliedEvents/${userDetails.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setEvents(response.data);
+        console.log(events)
+       
+      } catch (error) {
+        console.error("Error fetching applied events: ", error);
+      }
+    };
+
+    fetchAppliedEvents();
+  }, [userDetails]);
+
+  useEffect(() => {
+    if (!appliedJobs || appliedJobs.length === 0) return;
+
+    const fetchCompanyDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const jobIds = appliedJobs.map((job) => job.job?.id).filter(Boolean);
+
+        const responses = await Promise.all(
+          jobIds.map((jobId) =>
+            axios.get(
+              `http://localhost:8080/jobseeker/postedCompany/${jobId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+          )
+        );
+
+        const companyData = responses.map((res) => res.data);
+        setCompanyDetails(companyData);
+        console.log(companyData)
+      } catch (error) {
+        console.error("Error fetching company details: ", error);
+      }
+    };
+
+    fetchCompanyDetails();
+  }, [appliedJobs]);
+  const [notificationList, setNotificationList] = useState();
+ 
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/jobseeker/applied-jobs");
   };
+ 
+  
 
   return (
     <>
@@ -174,17 +306,114 @@ const JobSeekerDashboard= () => {
         </Box>
 
         <Divider />
+        <Box sx={{display:'flex', mt:'40px' }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)', // 2 equal-width columns
+            gap: 2, // space between the grid items
+            width: '100%',
+            padding: '16px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            backgroundColor: 'white' // full width
+          }}
+        >
+            <Card variant="soft" color="primary"  invertedColors sx={{maxWidth:'250px'}}>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
 
-        <Box sx={{ alignItems: "center", marginTop: "20px" }}>
-          <Typography color="primary" fontSize="lg" fontWeight="lg">
-            Hello, Santhush.F
-          </Typography>
+                  <WorkOutlineIcon sx ={{fontSize: 50}}/>
 
-          <Typography fontSize="md" textColor="text.secondary" lineHeight="lg">
-            Here is your daily activities and job alerts
-          </Typography>
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Open Jobs</Typography>
+                  <Typography level="h2">14</Typography>
+                </CardContent>
+              </CardContent>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+                >
+                
+                  Job Posts
+                </Button>
+              </CardActions>
+            </Card>
+            <Card variant="soft" color="primary"  invertedColors sx={{maxWidth:'250px'}}>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
+
+                  <PeopleAltOutlinedIcon sx ={{fontSize: 50}}/>
+
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Applied Jobs</Typography>
+                  <Typography level="h2">5</Typography>
+                </CardContent>
+              </CardContent>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+            
+                 >
+                
+                  view
+                </Button>
+              </CardActions>
+            </Card>
+            <Card variant="soft" color="primary"  invertedColors sx={{maxWidth:'250px'}}>
+              <CardContent orientation="horizontal">
+                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
+
+                  <EventOutlinedIcon sx ={{fontSize: 50}}/>
+
+                </IconButton>
+
+                <CardContent>
+                  <Typography level="body-md">Applied Events</Typography>
+                  <Typography level="h2">3</Typography>
+                </CardContent>
+              </CardContent>
+              <CardActions>
+                
+                <Button variant="solid" size="sm"
+                >
+                
+                  Registered Events
+                </Button>
+              </CardActions>
+            </Card>
         </Box>
-
+        <Box sx={{marginLeft:'20px', display:"flex" , padding: '7px', borderRadius: '8px',boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',backgroundColor: 'white' , paddingTop:'25px'}}>
+              <Box sx={{ alignItems: "center"  }}>
+                <PieChart
+              series={donutData.series}
+              labels={donutData.labels}
+              colors={donutData.colors}
+              title="Total Jobs Applied"
+              height={300}
+            />
+              </Box>
+              <Box sx={{ alignItems: "center" }}>
+              
+            
+          
+              <PieChart
+              series={[1,2]}
+              labels={donutData.labels}
+              colors={donutData.colors}
+              title="Total Events Applied"
+              height={300}
+            />
+              </Box>
+        </Box>
+        </Box>
+        
+       
+       
         <Box sx={{   
                         display:'flex',
                         flexDirection:'row',
@@ -202,83 +431,23 @@ const JobSeekerDashboard= () => {
             
                         />
                         ))} */}
-            <Card variant="soft" color="primary"  invertedColors>
-              <CardContent orientation="horizontal">
-                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
-
-                  <WorkOutlineIcon sx ={{fontSize: 50}}/>
-
-                </IconButton>
-
-                <CardContent>
-                  <Typography level="body-md">Open Jobs</Typography>
-                  <Typography level="h2">560</Typography>
-                </CardContent>
-              </CardContent>
-              <CardActions>
-                
-                <Button variant="solid" size="sm"
-                >
-                
-                  Job Posts
-                </Button>
-              </CardActions>
-            </Card>
-
-            <Card variant="soft" color="primary"  invertedColors>
-              <CardContent orientation="horizontal">
-                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
-
-                  <PeopleAltOutlinedIcon sx ={{fontSize: 50}}/>
-
-                </IconButton>
-
-                <CardContent>
-                  <Typography level="body-md">Applied Jobs</Typography>
-                  <Typography level="h2">12</Typography>
-                </CardContent>
-              </CardContent>
-              <CardActions>
-                
-                <Button variant="solid" size="sm"
             
-                 >
-                
-                  view
-                </Button>
-              </CardActions>
-            </Card>
-            <Card variant="soft" color="primary"  invertedColors>
-              <CardContent orientation="horizontal">
-                <IconButton variant="soft" color="primary" size="lg" sx={{width:'80px'}} >
-
-                  <EventOutlinedIcon sx ={{fontSize: 50}}/>
-
-                </IconButton>
-
-                <CardContent>
-                  <Typography level="body-md">Applied Events</Typography>
-                  <Typography level="h2">109</Typography>
-                </CardContent>
-              </CardContent>
-              <CardActions>
-                
-                <Button variant="solid" size="sm"
-                >
-                
-                  Registered Events
-                </Button>
-              </CardActions>
-            </Card>
             </Box>
 
 
-        <Box
+       
+        <Box sx={{display:'flex'}}>
+          <Box sx={{marginRight:'10px'}}>
+          <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
             marginTop: "20px",
+            gap:'15px',
+            marginBottom:"15px"
+
+         
           }}
         >
           <Typography level="h4">Recently Applied</Typography>
@@ -288,79 +457,256 @@ const JobSeekerDashboard= () => {
             sx={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
           >
             <Typography level="h5">
-              View All <FontAwesomeIcon icon={faCircleArrowRight} size="sl" />
+              <FontAwesomeIcon icon={faCircleArrowRight} size="sl" />
             </Typography>
           </Link>
-        </Box>
+          </Box>
+          <Table
+  hoverRow
+  sx={{
+    "& tbody": { bgcolor: "background.surface" },
+    borderCollapse: "collapse",
+    width: "100%",
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+  }}
+  size="md"
+>
+  <thead>
+    <tr>
+      <th
+        style={{
+          padding: "12px 16px",
+          textAlign: "center",
+          fontWeight: "bold",
+          color: "#333",
+          borderBottom: "2px solid #ddd",
+          fontSize: "14px",
+        }}
+      >
+        Job
+      </th>
 
-        <Table
+      <th
+        style={{
+          padding: "12px 16px",
+          textAlign: "center",
+          fontWeight: "bold",
+          color: "#333",
+          borderBottom: "2px solid #ddd",
+          fontSize: "14px",
+        }}
+      >
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody sx>
+    {appliedJobs.map((job, index) => {
+      const jobProviderId = job.job?.user?.id;
+      // Find the company that matches the job's user ID
+      const company = companyDetails.find(
+        (comp) => comp?.user?.id === jobProviderId
+      );
+
+      return (
+        <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+          
+          <td style={{ padding: "12px 16px" , display:'flex' , minHeight:'130px', alignItems:'center' }}>
+          <img
+                        src={company?.logoImg || ""}
+                        alt={job.job?.jobTitle || "Job"}
+                        style={{ width: 56, height: 56, borderRadius: 48 , marginRight:'20px'}}
+            />
+            <Box>
+              <Typography variant="body1" fontWeight="bold">
+                <Box>
+                {job.job?.jobTitle}{" "}
+                </Box>
+               
+                <Box
+                  component="span"
+                  sx={{
+                    backgroundColor: "lightblue",
+                    padding: "2px 4px",
+                    borderRadius: "8px",
+                    marginLeft: "1px",
+                  }}
+                >
+                  {job.job?.jobType}
+                </Box>
+              </Typography>
+              <Typography level="body-sm">
+                <BusinessIcon fontSize="small" /> {company?.companyName || "N/A"}
+              </Typography>
+              <Typography level="body-sm">
+                <LocationOnIcon fontSize="small" /> {company?.location || "N/A"}
+              </Typography>
+             
+            </Box>
+          </td>
+
+          <td style={{ padding: "12px 16px", textAlign: "center" ,  minHeight:'130px'}}>
+            <Button
+              color="primary"
+              variant="solid"
+              size="sm"
+              onClick = {(()=>{
+                  navigate(`/JobSeeker/JobDetails/${job.job?.id}`); 
+              })}
+              
+
+
+              sx={{
+                borderRadius: "8px",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                padding: "6px 12px",
+                textTransform: "none",
+              }}
+            >
+              View Details
+            </Button>
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</Table>
+
+          </Box>
+          <Box>
+          <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
+            marginBottom:"15px",
+            gap:'15px'
+          }}
+        >
+          <Typography level="h4">Recently Applied Events</Typography>
+          <Link
+            component="button"
+            onClick={handleNavigate}
+            sx={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
+          >
+            <Typography level="h5">
+               <FontAwesomeIcon icon={faCircleArrowRight} size="sl" />
+            </Typography>
+          </Link>
+          </Box>
+          <Table
           hoverRow
-          sx={{ "& tbody": { bgcolor: "background.surface" } }}
+          sx={{
+            "& tbody": { bgcolor: "background.surface" },
+            borderCollapse: "collapse",
+            width: "100%",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+          }}
           size="md"
         >
           <thead>
             <tr>
-              <th>Job</th>
-              <th>Date Applied</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th
+                style={{
+                  padding: "12px 16px",
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  color: "#333",
+                  borderBottom: "2px solid #ddd",
+                  fontSize: "14px",
+                }}
+              >
+                Job
+              </th>
+
+              <th
+                style={{
+                  padding: "12px 16px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  color: "#333",
+                  borderBottom: "2px solid #ddd",
+                  fontSize: "14px",
+                }}
+              >
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            {jobs.map((job, index) => (
-              <tr key={index}>
-                <td>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+            {events?.map((event, index) => (
+              <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "12px 16px" }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <img
-                      src={job.icon}
-                      alt={job.title}
-                      style={{ width: 46, height: 46 }}
+                      src={event?.event?.banner}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                      }}
                     />
                     <Box>
-                      <Typography>
-                        {job.title}{" "}
+                      <Typography variant="body1" fontWeight="bold">
+                        {event?.event?.title}{" "}
                         <Box
                           component="span"
                           sx={{
                             backgroundColor: "lightblue",
-                            padding: "2px 4px",
+                            padding: "2px 8px",
                             borderRadius: "8px",
-                            marginLeft: "8px",
+                            fontSize: "12px",
+                            fontWeight: "normal",
                           }}
                         >
-                          {job.type}
+                          {event?.type}
                         </Box>
                       </Typography>
                       <Typography level="body-sm">
-                        <LocationOnIcon fontSize="small" /> {job.location}
+                        <LocationOnIcon fontSize="small" sx={{ marginRight: 1 }} />
+                        {event?.event?.location}
                       </Typography>
                       <Typography level="body-sm">
-                        <AttachMoneyIcon fontSize="small" /> {job.salary}
+                        <CalendarTodayIcon fontSize="small" sx={{ marginRight: 1 }} />
+                        {event?.event?.date}
                       </Typography>
                     </Box>
                   </Box>
                 </td>
-                <td>{job.dateApplied}</td>
-                <td>
-                  {job.status === "Active" ? (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                      <CheckCircleOutlineIcon color="success" /> {job.status}
-                    </Box>
-                  ) : (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                      <WarningAmberIcon color="danger" /> {job.status}
-                    </Box>
-                  )}
-                </td>
-                <td>
-                  <Button color="primary" variant="solid" size="sm">
+             
+               
+                <td style={{ padding: "12px 16px", textAlign: "center" }}>
+                  <Button
+                    color="primary"
+                    variant="solid"
+                    size="sm"
+                    onClick={
+                      ()=>{
+                        navigate("/JobSeeker/courses/course/", { state: { id: event?.event?.id } });
+                      }
+                    }
+                    
+                    sx={{
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                      padding: "6px 12px",
+                      textTransform: "none",
+                    }}
+                  >
                     View Details
                   </Button>
                 </td>
               </tr>
             ))}
           </tbody>
-        </Table>
+          </Table>
+          </Box>
+        
+        </Box>
       </Box>
     </>
   );
