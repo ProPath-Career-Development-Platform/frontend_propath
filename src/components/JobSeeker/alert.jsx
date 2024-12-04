@@ -43,8 +43,8 @@ const Alert = () => {
                   <span className="block h-8 w-8 rounded-full bg-blue-500 text-white text-center leading-8">N</span>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-sm font-medium">New Comment</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">You have a new comment on your post.</p>
+                  <p className="text-sm font-medium">New Job Posted : </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Healthcare Innovation Anuradhapura</p>
                 </div>
               </div>
             </li>
@@ -54,8 +54,8 @@ const Alert = () => {
                   <span className="block h-8 w-8 rounded-full bg-green-500 text-white text-center leading-8">M</span>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-sm font-medium">New Message</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">You received a new message from John.</p>
+                  <p className="text-sm font-medium">New Event :</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">AI Workshop at Kandy</p>
                 </div>
               </div>
             </li>
@@ -65,13 +65,15 @@ const Alert = () => {
                   <span className="block h-8 w-8 rounded-full bg-red-500 text-white text-center leading-8">A</span>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-sm font-medium">New Alert</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Your account password was changed.</p>
+                  <p className="text-sm font-medium">You have an upcoming event </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Healthcare Innovation Anuradhapura
+
+</p>
                 </div>
               </div>
             </li>
             <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-center">
-              <a href="#" className="text-sm font-medium text-blue-500 dark:text-blue-400">View All Notifications</a>
+              <a href="#" className="text-sm font-medium text-blue-500 dark:text-blue-400">See more</a>
             </li>
           </ul>
         </div>

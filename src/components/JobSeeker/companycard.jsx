@@ -65,7 +65,7 @@ const Companycard = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
           <Typography>Salary Range:</Typography>
           <Typography sx={{ fontWeight: 500 }}>
-            ${jobDetails.minSalary} - ${jobDetails.maxSalary} / {jobDetails.salaryType}
+            LKR {jobDetails.minSalary} - LKR {jobDetails.maxSalary} / {jobDetails.salaryType}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>

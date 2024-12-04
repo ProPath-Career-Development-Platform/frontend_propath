@@ -405,6 +405,7 @@ const Courses = () => {
           }}
         >
           {courseList
+            .sort((a, b) => b.maxParticipant - a.maxParticipant) 
             .slice(
               PageNumber * Number(selectedSize),
               PageNumber * Number(selectedSize) + Number(selectedSize)

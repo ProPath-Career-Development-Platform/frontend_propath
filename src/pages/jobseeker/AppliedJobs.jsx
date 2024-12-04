@@ -300,7 +300,7 @@ const AppliedJobs = () => {
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
                       >
-                        <CancelIcon color="error" /> Not Selected
+                        <CancelIcon color="warning" /> Rejected
                       </Box>
                     ) : (
                       <Box

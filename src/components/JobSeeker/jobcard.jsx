@@ -91,7 +91,7 @@ const Jobcard = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <WalletIcon sx={{ width: 32, height: 32, color: 'blue' }} />
           <Typography>Salary</Typography>
-          <Typography sx={{ fontWeight: '700', fontSize: '13px' }}>Upto ${jobDetails.maxSalary || 'N/A'}</Typography>
+          <Typography sx={{ fontWeight: '700', fontSize: '13px' }}>Upto LKR {jobDetails.maxSalary || 'N/A'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <WorkIcon sx={{ width: 32, height: 32, color: 'blue' }} />

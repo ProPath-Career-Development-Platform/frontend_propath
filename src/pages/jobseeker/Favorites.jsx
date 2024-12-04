@@ -284,8 +284,8 @@ const Favorites = () => {
                         sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
                         <LocationOnIcon fontSize="small" /> {job.location}
-                        <AttachMoneyIcon fontSize="small" /> ${job.minSalary} -
-                        ${job.maxSalary}/{job.salaryType}
+                        <AttachMoneyIcon fontSize="small" /> LKR {job.minSalary} -
+                        LKR {job.maxSalary}/{job.salaryType}
                         {remainingDays > 0 ? (
                           <Box
                             sx={{

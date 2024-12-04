@@ -2,7 +2,7 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import { Box, Typography } from "@mui/joy";
 
-const PieChart = ({ series, labels, colors, height = 350 }) => {
+const PieChart = ({ series, labels, colors, height = 350 , title }) => {
   const chartData = {
     series,
     options: {
@@ -13,7 +13,7 @@ const PieChart = ({ series, labels, colors, height = 350 }) => {
       labels: labels,
       colors: colors,
       title: {
-        text: "Job Application Status",   // Title for the chart
+        text: title,   // Title for the chart
         align: "center",                   // Align the title to the center
         style: {
           fontSize: "20px",               // Font size of the title

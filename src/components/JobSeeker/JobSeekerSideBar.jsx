@@ -178,9 +178,9 @@ function JobSeekerSideBar() {
               <ListItemContent>
                 <Typography level="title-sm">Notificiations</Typography>
               </ListItemContent>
-              <Chip size="sm" color="primary" variant="solid">
+              {/* <Chip size="sm" color="primary" variant="solid">
                 7
-              </Chip>
+              </Chip> */}
             </ListItemButton>
           </ListItem>
 
@@ -240,10 +240,10 @@ function JobSeekerSideBar() {
       </Box>
       <Divider />
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <Avatar variant="outlined" size="sm" src={seba} />
+        <Avatar variant="outlined" size="sm" src="" />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography level="title-sm">{userDetails?.user?.name}</Typography>
-          <Typography level="body-xs">{userDetails?.user?.email}</Typography>
+          {/* <Typography level="body-xs">{userDetails?.user?.email}</Typography> */}
         </Box>
 
         <IconButton size="sm" variant="plain" color="neutral" onClick={handleLogout}>

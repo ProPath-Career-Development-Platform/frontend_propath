@@ -976,7 +976,7 @@ const Dashboard = () => {
                               setFormData({ ...formData, jobType: newValue }); }
                           }
                       >
-                          <Option value="Full-Time<">Full-Time</Option>
+                          <Option value="Full-Time">Full-Time</Option>
                           <Option value="Part-Time">Part-Time</Option>
                           <Option value="Contract">Contract</Option>
                           <Option value="Temporary">Temporary</Option>

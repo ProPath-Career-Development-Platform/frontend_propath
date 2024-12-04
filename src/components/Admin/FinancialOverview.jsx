@@ -11,7 +11,7 @@ const FinancialOverview = () => {
                     <h2 className='font-bold text-purple-700'>Total Subscription Revenue</h2>
                     <Button className='bg-purple-700 text-white font-bold'>Transfer</Button>
                 </div>
-                <p className='mt-2 font-bold text-2xl'>LKR. 370,000.00</p>
+                <p className='mt-2 font-bold text-2xl'>LKR. 37,000.00</p>
             </Card>
             <Card className='p-4'>
                 <h2 className='font-bold text-purple-700 mb-3'>Subscription Plans Summary</h2>
@@ -25,17 +25,17 @@ const FinancialOverview = () => {
                         <TableRow key="1">
                         <TableCell>BASIC</TableCell>
                         <TableCell>58</TableCell>
-                        <TableCell>LKR. 0.00</TableCell>
+                        <TableCell>LKR. 17,000.00</TableCell>
                         </TableRow>
                         <TableRow key="2">
                         <TableCell>STANDARD</TableCell>
                         <TableCell>32</TableCell>
-                        <TableCell>LKR. 160,000.00</TableCell>
+                        <TableCell>LKR. 15,000.00</TableCell>
                         </TableRow>
                         <TableRow key="3">
                         <TableCell>PREMIUM</TableCell>
                         <TableCell>21</TableCell>
-                        <TableCell>LKR. 210,000.00</TableCell>
+                        <TableCell>LKR. 5,000.00</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

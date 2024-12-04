@@ -16,7 +16,7 @@ const DashboardCards = () => {
                 </div>
                 
                 <div className="flex flex-col justify-center">
-                <p className="text-2xl font-bold">452,476.00</p>
+                <p className="text-2xl font-bold">35,000</p>
                 <p className="text-small text-default-500">Subscription Revenue</p>
                 </div>
             </CardBody>
@@ -29,7 +29,7 @@ const DashboardCards = () => {
                 </div>
                 
                 <div className="flex flex-col justify-center">
-                <p className="text-2xl font-bold">32</p>
+                <p className="text-2xl font-bold">3</p>
                 <p className="text-small text-default-500">Pending Approvals</p>
                 </div>
             </CardBody>
@@ -42,7 +42,7 @@ const DashboardCards = () => {
                 </div>
                 
                 <div className="flex flex-col justify-center">
-                <p className="text-2xl font-bold">2,423</p>
+                <p className="text-2xl font-bold">14</p>
                 <p className="text-small text-default-500">Total Companies</p>
                 </div>
             </CardBody>
@@ -55,7 +55,7 @@ const DashboardCards = () => {
                 </div>
                 
                 <div className="flex flex-col justify-center">
-                <p className="text-2xl font-bold">10,435</p>
+                <p className="text-2xl font-bold">31</p>
                 <p className="text-small text-default-500">Total Registered Users</p>
                 </div>
             </CardBody>

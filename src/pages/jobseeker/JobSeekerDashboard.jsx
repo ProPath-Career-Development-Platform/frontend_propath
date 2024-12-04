@@ -82,7 +82,7 @@ const jobs = [
 const donutData = {
   series: [5, 3],          // 5 active jobs, 3 expired jobs
   labels: ["Active", "Expired"],   // Labels for each slice of the donut chart
-  colors: ["#00E396", "#FF4560"],  // Colors for each slice
+  colors: ["#8312b4", "#c781e5"],  // Colors for each slice
 };
 
 
@@ -329,7 +329,7 @@ const JobSeekerDashboard= () => {
 
                 <CardContent>
                   <Typography level="body-md">Open Jobs</Typography>
-                  <Typography level="h2">560</Typography>
+                  <Typography level="h2">14</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
@@ -351,7 +351,7 @@ const JobSeekerDashboard= () => {
 
                 <CardContent>
                   <Typography level="body-md">Applied Jobs</Typography>
-                  <Typography level="h2">12</Typography>
+                  <Typography level="h2">5</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
@@ -374,7 +374,7 @@ const JobSeekerDashboard= () => {
 
                 <CardContent>
                   <Typography level="body-md">Applied Events</Typography>
-                  <Typography level="h2">109</Typography>
+                  <Typography level="h2">3</Typography>
                 </CardContent>
               </CardContent>
               <CardActions>
@@ -393,6 +393,7 @@ const JobSeekerDashboard= () => {
               series={donutData.series}
               labels={donutData.labels}
               colors={donutData.colors}
+              title="Total Jobs Applied"
               height={300}
             />
               </Box>
@@ -401,9 +402,10 @@ const JobSeekerDashboard= () => {
             
           
               <PieChart
-              series={donutData.series}
+              series={[1,2]}
               labels={donutData.labels}
               colors={donutData.colors}
+              title="Total Events Applied"
               height={300}
             />
               </Box>

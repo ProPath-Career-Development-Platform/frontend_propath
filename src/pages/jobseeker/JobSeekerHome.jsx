@@ -100,6 +100,12 @@ const JobSeekerHome = () => {
           return { ...job, companyDetails }; // Add company details to the job object
         })
       );
+      jobsWithCompanyDetails.sort((a, b) => {
+        const dateA = new Date(a.postedIn);
+        const dateB = new Date(b.postedIn);
+      
+        return dateB - dateA;  // Sort in descending order (newest first)
+      });
 
       setJobs(jobsWithCompanyDetails);
       setTotalPages(Math.ceil(validJobs.length / selectedSize)-1);
@@ -165,7 +171,7 @@ const JobSeekerHome = () => {
           <img src={logo} alt="Logo" />
         </Box>
         <Box sx={{ display: "flex" }}>
-          {/* <JSSearch /> */}
+          {/* <JSSearch message={jobs}/> */}
           <Alert />
           <ProfileDropdown />
         </Box>
@@ -220,7 +226,7 @@ const JobSeekerHome = () => {
 
           />
           <JSDropDown
-            name={"Job Title"}
+            name={"Job Title"}j
             sizes={["Fulltme", "Contract", "Internship", "PartTime", "Casual"]}
             proptype="0"
             sortData = {setSortData}
@@ -310,7 +316,7 @@ const JobSeekerHome = () => {
                 experience={job.experience}
                 expiryDate={job.expiryDate}
                 jobType={job.jobType}
-                jobLevel={removeHtmlTags(job.jobDescription.split(".")[0])}
+                
                 jobRole={job.jobRole}
                 logoImg={job.companyDetails?.logoImg || job.logoImg} // Use company logo if available
                 maxSalary={job.maxSalary}
